@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="1.0" method="upgrade">
+	<name>com_logbook</name>
+	<author>Amit Kumar Shukla</author>
+	<creationDate>2020-07-07</creationDate>
+	<copyright>(C) 2020 Amit Kumar Shukla. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>akshukla.dev@gmail.com</authorEmail>
+	<authorUrl></authorUrl>
+	<version>1.0.0</version>
+	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
+
+	<install>
+		<sql>
+			<file charset="utf8" driver="mysql">sql/install.mysql.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file charset="utf8" driver="mysql">sql/uninstall.mysql.sql</file>
+		</sql>
+	</uninstall>
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+
+	<media folder="media/com_logbook" destination="com_logbook">
+		<folder>js</folder>
+	</media>
+
+	<files folder="components/com_logbook">
+		<file>controller.php</file>
+        <file>metadata.xml</file>
+        <folder>models</folder>
+        <file>router.php</file>
+        <folder>controllers</folder>
+        <folder>views</folder>
+        <folder>helpers</folder>
+        <file>logbook.php</file>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.com_logbook.ini</language>
+	</languages>
+	<administration>
+		<menu img="class:logbook">com_logbook</menu>
+		<submenu>
+			<!--
+				Note that all & must be escaped to &amp; for the file to be valid
+				XML and be parsed by the installer
+			-->
+			<menu link="option=com_logbook" view="logs" img="class:logbook"
+				alt="Logbook/Logs">COM_LOGBOOK_LOGS</menu>
+			<menu link="option=com_categories&amp;extension=com_logbook"
+				view="categories" img="class:logbook-cat" alt="Logbook/Categories">COM_LOGBOOK_CATEGORIES</menu>
+            <menu link="option=com_logbook" view="blueprints" img="class:blueprint"
+				alt="Logbook/Blueprint">COM_LOGBOOK_FOLDERS</menu>
+            <menu link="option=com_logbook" view="locations" img="class:location"
+				alt="Logbook/Locations">COM_LOGBOOK_LOCATIONS</menu>
+            <menu link="option=com_logbook" view="schedules" img="class:schedule"
+				alt="Logbook/Schedule">COM_LOGBOOK_SCHEDULES</menu>
+		</submenu>
+		<files folder="administrator/components/com_logbook">
+			<file>access.xml</file>
+            <folder>tables</folder>
+            <file>controller.php</file>
+            <folder>models</folder>
+            <file>config.xml</file>
+            <file>script.php</file>
+            <folder>controllers</folder>
+            <folder>views</folder>
+            <file>logbook.xml</file>
+            <folder>helpers</folder>
+            <file>logbook.php</file>
+            <folder>sql</folder>
+		</files>
+		<languages folder="administrator/language">
+			<language tag="en-GB">en-GB/en-GB.com_logbook.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_logbook.sys.ini</language>
+		</languages>
+	</administration>
+</extension>
+
