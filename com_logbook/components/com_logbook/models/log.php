@@ -8,39 +8,57 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * HelloWorld Model.
+ * Logbook_Log Model.
  *
  * @since  0.0.1
  */
 class LogbookModelLog extends JModelItem
 {
     /**
-     * @var string message
+     * @var string log
      */
-    protected $message;
+    protected $log;
 
     /**
-     * Get the message.
+     * Method to get a table object, load it if necessary.
      *
-     * @return string The message to be displayed to the user
+     * @param string $type   The table name. Optional.
+     * @param string $prefix The class prefix. Optional.
+     * @param array  $config Configuration array for model. Optional.
+     *
+     * @return JTable A JTable object
+     *
+     * @since   1.6
      */
-    public function getMsg()
+    public function getTable($type = 'log', $prefix = 'LogTable', $config = array())
     {
-        if (!isset($this->message)) {
+        return JTable::getInstance($type, $prefix, $config);
+    }
+
+    /**
+     * Get the log.
+     *
+     * @return string The log to be displayed to the user
+     */
+    public function getLog($id = 1)
+    {
+        if (!is_array($this->logs)) {
+            $this->logs = array();
+        }
+        if (!isset($this->logs[$id])) {
+            //Request the selection ID
             $jinput = JFactory::getApplication()->input;
             $id = $jinput->get('id', 1, 'INT');
 
-            switch ($id) {
-                case 2:
-                    $this->message = 'Good bye World!';
-                    break;
-                default:
-                case 1:
-                    $this->message = 'Hello there World!';
-                    break;
-            }
+            //Get a Table Log Instance
+            $table = $this->getTable();
+            //Load the Log
+            $table->load($id);
+
+            //Assign the Log
+            $this->logs[$id] = $table->log;
         }
 
-        return $this->message;
+        return $this->logs[$id];
     }
 }

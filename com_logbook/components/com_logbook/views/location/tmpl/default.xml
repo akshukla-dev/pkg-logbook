@@ -10,9 +10,9 @@
 		<fieldset name="request">
 			<field
 				name="id"
-				type="log"
-				label="COM_LOGBOOK_LOG_TITLE_FIELD_LABEL"
-				description="COM_LOGBOOK_LOG_TITLE_FIELD_DESC"
+				type="location"
+				label="COM_LOGBOOK_LOATIONC_NAME_FIELD_LABEL"
+				description="COM_LOGBOOK_LOCATION_NAME_FIELD_DESC"
 				>
             </field>
 		</fieldset>

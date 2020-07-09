@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="1.0" method="upgrade">
-	<name>COM_LOGBOOK</name>
+	<name>com_logbook</name>
 	<author>Amit Kumar Shukla</author>
 	<creationDate>2020-07-07</creationDate>
 	<copyright>(C) 2020 Amit Kumar Shukla. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
 	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
-	<version>1.0.4</version>
+	<version>1.0.0</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
@@ -26,13 +26,13 @@
 		</schemas>
 	</update>
 
-	<!--<media folder="media/com_logbook" destination="com_logbook">
+	<media folder="media/com_logbook" destination="com_logbook">
 		<folder>js</folder>
-	</media> -->
+	</media>
 
 	<files folder="components/com_logbook">
-		<file>controller.php</file>
-        <!--<file>metadata.xml</file>
+		<!--<file>controller.php</file>
+        <file>metadata.xml</file>
         <folder>models</folder>
         <file>router.php</file>
         <folder>controllers</folder>
@@ -67,10 +67,10 @@
             <file>controller.php</file>
             <folder>models</folder>
             <file>config.xml</file>
-            <!--<folder>controllers</folder>-->
+            <folder>controllers</folder>
             <folder>views</folder>
-            <!--<file>logbook.xml</file>
-            <folder>helpers</folder>-->
+            <file>logbook.xml</file>
+            <folder>helpers</folder>
             <file>logbook.php</file>
             <folder>sql</folder>
 		</files>

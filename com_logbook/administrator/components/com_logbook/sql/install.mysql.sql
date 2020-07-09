@@ -23,9 +23,10 @@ CREATE TABLE IF NOT EXISTS `#__logbook_logs`(
 CREATE TABLE IF NOT EXISTS `#__logbook_locations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL,
-  --`alias` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
   `state` tinyint(1) NOT NULL DEFAULT 0,
-  --`checked_out` int(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`id`)
+  --`alias` varchar(400) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '',
+	--`checked_out` int(11) NOT NULL DEFAULT 0,
   --`checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   --`access` int(11) NOT NULL DEFAULT 1,
   --`params` text NOT NULL,
@@ -42,11 +43,11 @@ CREATE TABLE IF NOT EXISTS `#__logbook_locations` (
   --`publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   --`publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   --`version` int(10) unsigned NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`),
-  KEY `idx_access` (`access`),
-  KEY `idx_checkout` (`checked_out`),
-  KEY `idx_state` (`state`),
-  KEY `idx_createdby` (`created_by`),
-  KEY `idx_language` (`language`),
-  KEY `idx_xreference` (`xreference`)
+
+  --KEY `idx_access` (`access`),
+  --KEY `idx_checkout` (`checked_out`),
+  --KEY `idx_state` (`state`),
+  --KEY `idx_createdby` (`created_by`),
+ -- KEY `idx_language` (`language`),
+  --KEY `idx_xreference` (`xreference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
