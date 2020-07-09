@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="3.6" method="upgrade">
+	<name>pkg_logbook</name>
+	<packagename>logbook</packagename>
+	<creationDate>2020-06-19</creationDate>
+	<packager>Joomla! Project</packager>
+	<copyright>(C)Amit Kumar Shukla. All rights reserved.</copyright>
+	<packageremail>admin@joomla.org</packageremail>
+	<packagerurl>www.joomla.org</packagerurl>
+	<author>Amit Kumar Shukla</author>der_map
+	<authorEmail>amitkumarshukla@ntpc.co.in</authorEmail>
+	<authorUrl></authorUrl>
+	<version>1.0.0</version>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<description>PKG_LOGBOOK_XML_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<files>
+		<!-- The id for each extension is the element stored in the DB -->
+		<file type="component" id="com_logbook">com_logbook.zip</file>
+		<file type="module" id="mod_logbook" client="site">mod_logbook.zip</file>
+		<file type="plugin" id="logbook" group="finder">plg_finder_logbook.zip</file>
+		<file type="plugin" id="logbook" group="search">plg_search_logbook.zip</file>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.pkg_logbook.sys.ini</language>
+	</languages>
+	<updateservers>
+		<!-- Note: No spaces or linebreaks allowed between the server tags -->
+		<server type="extension" name="logbook Update Site">https://raw.githubusercontent.com/joomla-extensions/logbook/master/manifest.xml</server>
+	</updateservers>
+</extension>

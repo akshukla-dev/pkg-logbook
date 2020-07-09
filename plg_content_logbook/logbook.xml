@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0" type="plugin" group="content" method="upgrade">
+  <name>plg_logbook</name>
+  <author>Amit Kumar Shukla</author>
+  <creationDate>2020-06-20</creationDate>
+  <license>GPL 3.0</license>
+  <authorEmail>akshukla.dev@gmail.com</authorEmail>
+  <authorUrl></authorUrl>
+  <version>1.0</version>
+  <description>PLG_LOGBOOK_XML_DESCRIPTION</description>
+  <files>
+    <folder>language</folder>
+    <file>logbook.xml</file>
+    <file plugin="logbook">logbook.php</file>
+  </files>
+	<languages folder="language">
+		
+	</languages>
+</extension>

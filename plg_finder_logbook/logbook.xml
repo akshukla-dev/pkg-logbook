@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.5" type="plugin" group="finder" method="upgrade">
+	<name>plg_finder_logbook</name>
+	<author>Amit Kumar Shukla</author>der_map
+	<creationDate>2020-06-19</creationDate>
+	<copyright>(C)Amit Kumar Shukla. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see	LICENSE.txt</license>
+	<authorEmail>amitkumarshukla@ntpc.co.in</authorEmail>
+	<authorUrl></authorUrl>
+	<version>1.0.0</version>
+	<description>PLG_FINDER_LOGS_XML_DESCRIPTION</description>
+	<files>
+		<folder>language</folder>
+		<file plugin="logbook">logs.php</file>
+		<file>logbook.xml</file>
+	</files>
+	<languages folder="administrator/language">
+		
+	</languages>
+</extension>
