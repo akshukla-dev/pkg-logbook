@@ -6,8 +6,8 @@
 	<copyright>(C) 2020 Amit Kumar Shukla. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
-	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
-	<version>1.0.1</version>
+	<authorUrl></authorUrl>
+	<version>1.0.0</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
@@ -31,13 +31,13 @@
 	</media>
 
 	<files folder="components/com_logbook">
-		<!--<file>controller.php</file>
-        <file>metadata.xml</file>
+		<file>controller.php</file>
+        <!--<file>metadata.xml</file> -->
         <folder>models</folder>
-        <file>router.php</file>
-        <folder>controllers</folder>
+        <!--<file>router.php</file>
+        <folder>controllers</folder>-->
         <folder>views</folder>
-        <folder>helpers</folder>-->
+        <!--<folder>helpers</folder> -->
         <file>logbook.php</file>
 	</files>
 	<languages folder="language">

@@ -1,31 +1,47 @@
 <?php
 /**
- * @copyright   Copyright (C) 2020 Amit Kumar Shukla, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2020 AMit Kumar Shukla, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
 /**
- * View to edit a location.
+ * View to edit a log.
  *
  * @since  1.5
  */
-class LogbookViewLocation extends JViewLegacy
+class LogbookViewLog extends JViewLegacy
 {
-    protected $state;
-
-    protected $item;
-
-    protected $form;
-
-    /**
-     * Display the view.
-     *
-     * @param string $tpl the name of the template file to parse; automatically searches through the template paths
-     *
-     * @return mixed a string if successful, otherwise an Error object
-     */
     public function display($tpl = null)
+    {
+        // Assign data to the view
+        $this->msg = $this->get('Msg');
+
+        // Check for errors.
+        if (count($errors = $this->get('Errors'))) {
+            JLog::add(implode('<br />', $errors), JLog::WARNING, 'jerror');
+
+            return false;
+        }
+
+        // Display the view
+        parent::display($tpl);
+    }
+
+    /*protected $state;
+
+        protected $item;
+
+        protected $form;
+
+        /**
+         * Display the view.
+         *
+         * @param string $tpl the name of the template file to parse; automatically searches through the template paths
+         *
+         * @return mixed a string if successful, otherwise an Error object
+         */
+    /*public function display($tpl = null)
     {
         $this->state = $this->get('State');
         $this->item = $this->get('Item');
@@ -37,6 +53,7 @@ class LogbookViewLocation extends JViewLegacy
 
             return false;
         }
+
         // If we are forcing a language in modal (used for associations).
         if ($this->getLayout() === 'modal' && $forcedLanguage = JFactory::getApplication()->input->get('forcedLanguage', '', 'cmd')) {
             // Set the language field to the forcedLanguage and disable changing it.
@@ -49,6 +66,7 @@ class LogbookViewLocation extends JViewLegacy
             // Only allow to select tags with All language or with the forced language.
             $this->form->setFieldAttribute('tags', 'language', '*,'.$forcedLanguage);
         }
+
         $this->addToolbar();
 
         parent::display($tpl);
@@ -60,7 +78,7 @@ class LogbookViewLocation extends JViewLegacy
      *
      * @since   1.6
      */
-    protected function addToolbar()
+    /*protected function addToolbar()
     {
         JFactory::getApplication()->input->set('hidemainmenu', true);
 
@@ -71,31 +89,31 @@ class LogbookViewLocation extends JViewLegacy
         // Since we don't track these assets at the item level, use the category id.
         $canDo = JHelperContent::getActions('com_logbook', 'category', $this->item->catid);
 
-        JToolbarHelper::title($isNew ? JText::_('COM_LOGBOOK_MANAGER_LOCATION_NEW') : JText::_('COM_LOGBOOK_MANAGER_LOCATION_EDIT'), 'location locations');
+        JToolbarHelper::title($isNew ? JText::_('COM_LOGBOOK_MANAGER_LOG_NEW') : JText::_('COM_LOGBOOK_MANAGER_LOG_EDIT'), 'link logs');
 
         // If not checked out, can save the item.
         if (!$checkedOut && ($canDo->get('core.edit') || (count($user->getAuthorisedCategories('com_logbook', 'core.create'))))) {
-            JToolbarHelper::apply('location.apply');
-            JToolbarHelper::save('location.save');
+            JToolbarHelper::apply('log.apply');
+            JToolbarHelper::save('log.save');
         }
         if (!$checkedOut && (count($user->getAuthorisedCategories('com_logbook', 'core.create')))) {
-            JToolbarHelper::save2new('location.save2new');
+            JToolbarHelper::save2new('log.save2new');
         }
         // If an existing item, can save to a copy.
         if (!$isNew && (count($user->getAuthorisedCategories('com_logbook', 'core.create')) > 0)) {
-            JToolbarHelper::save2copy('location.save2copy');
+            JToolbarHelper::save2copy('log.save2copy');
         }
         if (empty($this->item->id)) {
-            JToolbarHelper::cancel('location.cancel');
+            JToolbarHelper::cancel('log.cancel');
         } else {
             if ($this->state->params->get('save_history', 0) && $user->authorise('core.edit')) {
-                JToolbarHelper::versions('com_logbook.location', $this->item->id);
+                JToolbarHelper::versions('com_logbook.log', $this->item->id);
             }
 
-            JToolbarHelper::cancel('location.cancel', 'JTOOLBAR_CLOSE');
+            JToolbarHelper::cancel('log.cancel', 'JTOOLBAR_CLOSE');
         }
 
         JToolbarHelper::divider();
-        JToolbarHelper::help('JHELP_COMPONENTS_LOGBOOK_LOCATIONS_EDIT');
-    }
+        JToolbarHelper::help('JHELP_COMPONENTS_LOGBOOK_LOGS_EDIT');
+    }*/
 }
