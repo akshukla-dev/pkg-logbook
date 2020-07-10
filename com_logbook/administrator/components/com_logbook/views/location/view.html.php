@@ -12,11 +12,11 @@ defined('_JEXEC') or die;
  */
 class LogbookViewLocation extends JViewLegacy
 {
-    protected $state;
+    //protected $state;
 
-    protected $item;
+    //protected $item;
 
-    protected $form;
+    protected $form = null;
 
     /**
      * Display the view.
@@ -27,7 +27,7 @@ class LogbookViewLocation extends JViewLegacy
      */
     public function display($tpl = null)
     {
-        $this->state = $this->get('State');
+        //$this->state = $this->get('State');
         $this->item = $this->get('Item');
         $this->form = $this->get('Form');
 
@@ -38,7 +38,7 @@ class LogbookViewLocation extends JViewLegacy
             return false;
         }
         // If we are forcing a language in modal (used for associations).
-        if ($this->getLayout() === 'modal' && $forcedLanguage = JFactory::getApplication()->input->get('forcedLanguage', '', 'cmd')) {
+        /*if ($this->getLayout() === 'modal' && $forcedLanguage = JFactory::getApplication()->input->get('forcedLanguage', '', 'cmd')) {
             // Set the language field to the forcedLanguage and disable changing it.
             $this->form->setValue('language', null, $forcedLanguage);
             $this->form->setFieldAttribute('language', 'readonly', 'true');
@@ -48,7 +48,7 @@ class LogbookViewLocation extends JViewLegacy
 
             // Only allow to select tags with All language or with the forced language.
             $this->form->setFieldAttribute('tags', 'language', '*,'.$forcedLanguage);
-        }
+        }*/
         $this->addToolbar();
 
         parent::display($tpl);
@@ -64,16 +64,16 @@ class LogbookViewLocation extends JViewLegacy
     {
         JFactory::getApplication()->input->set('hidemainmenu', true);
 
-        $user = JFactory::getUser();
-        $isNew = ($this->item->id == 0);
-        $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
+        /* $user = JFactory::getUser();
+         $isNew = ($this->item->id == 0);
+         $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 
-        // Since we don't track these assets at the item level, use the category id.
-        $canDo = JHelperContent::getActions('com_logbook', 'category', $this->item->catid);
-
+         // Since we don't track these assets at the item level, use the category id.
+         $canDo = JHelperContent::getActions('com_logbook', 'category', $this->item->catid);
+        */
         JToolbarHelper::title($isNew ? JText::_('COM_LOGBOOK_MANAGER_LOCATION_NEW') : JText::_('COM_LOGBOOK_MANAGER_LOCATION_EDIT'), 'location locations');
 
-        // If not checked out, can save the item.
+        /* If not checked out, can save the item.
         if (!$checkedOut && ($canDo->get('core.edit') || (count($user->getAuthorisedCategories('com_logbook', 'core.create'))))) {
             JToolbarHelper::apply('location.apply');
             JToolbarHelper::save('location.save');
@@ -97,5 +97,11 @@ class LogbookViewLocation extends JViewLegacy
 
         JToolbarHelper::divider();
         JToolbarHelper::help('JHELP_COMPONENTS_LOGBOOK_LOCATIONS_EDIT');
+        */
+        JToolbarHelper::save('location.save');
+        JToolbarHelper::cancel(
+            'location.cancel',
+            $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE'
+        );
     }
 }

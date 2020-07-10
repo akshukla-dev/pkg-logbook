@@ -28,7 +28,10 @@ defined('_JEXEC') or die('Restricted Access');
 		</thead>
 		<tbody>
 			<?php if (!empty($this->items)) : ?>
-				<?php foreach ($this->items as $i => $row) : ?>
+				<?php foreach ($this->items as $i => $row) :
+                    $link = JRoute::_('index.php?
+					option=com_logbook&task=location.edit&id='.$row->id);
+                    ?>
 
 					<tr>
 						<td>
@@ -38,6 +41,7 @@ defined('_JEXEC') or die('Restricted Access');
 							<?php echo JHtml::_('grid.id', $i, $row->id); ?>
 						</td>
 						<td>
+							<a href="<?php echo $link; ?>" title="<?php echo JText::_('COM_LOGBOOK_EDIT_LOCATION'); ?>">
 							<?php echo $row->name; ?>
 						</td>
 						<td align="center">
@@ -58,4 +62,7 @@ defined('_JEXEC') or die('Restricted Access');
 			</tr>
 		</tfoot>
 	</table>
+	<input type="hidden" name="task" value="" />
+	<input type="hidden" name="boxchecked" value="0" />
+	<?php echo JHtml::_('form.token'); ?>
 </form>

@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
 	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
@@ -67,7 +67,7 @@
             <file>controller.php</file>
             <folder>models</folder>
             <file>config.xml</file>
-            <!--<folder>controllers</folder>-->
+            <folder>controllers</folder>
             <folder>views</folder>
             <!--<file>logbook.xml</file>
             <folder>helpers</folder>-->

@@ -31,8 +31,24 @@ class LogbookViewLocations extends JViewLegacy
 
             return false;
         }
+        // Set the toolbar
+        $this->addToolBar();
 
         // Display the template
         parent::display($tpl);
+    }
+
+    /**
+     * Add the page title and toolbar.
+     *
+     *
+     * @since   1.6
+     */
+    protected function addToolBar()
+    {
+        JToolbarHelper::title(JText::_('COM_LOGBOOK_MANAGER_LOCATIONS'));
+        JToolbarHelper::addNew('location.add');
+        JToolbarHelper::editList('location.edit');
+        JToolbarHelper::deleteList('Are You Sure!', 'locations.delete');
     }
 }
