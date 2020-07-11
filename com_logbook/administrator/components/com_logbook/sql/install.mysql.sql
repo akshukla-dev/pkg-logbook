@@ -51,3 +51,14 @@ CREATE TABLE IF NOT EXISTS `#__logbook_locations` (
  -- KEY `idx_language` (`language`),
   --KEY `idx_xreference` (`xreference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `#__logbook_blueprints`
+--
+
+CREATE TABLE IF NOT EXISTS `#__logbook_blueprints` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(250) NOT NULL,
+  `state` tinyint(1) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;

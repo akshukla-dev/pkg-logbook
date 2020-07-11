@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @since  0.0.1
  */
-class LogbookModelLocations extends JModelList
+class LogbookModelBlueprints extends JModelList
 {
     /**
 	 * Constructor.
@@ -27,7 +27,7 @@ class LogbookModelLocations extends JModelList
 		{
 			$config['filter_fields'] = array(
 				'id',
-				'name',
+				'title',
 				'state'
 			);
 		}
@@ -48,7 +48,7 @@ class LogbookModelLocations extends JModelList
 
         // Create the base select statement.
         $query->select('*')
-                ->from($db->quoteName('#__logbook_locations'));
+                ->from($db->quoteName('#__logbook_blueprints'));
         
         // Filter: like / search
 		$search = $this->getState('filter.search');
@@ -72,7 +72,7 @@ class LogbookModelLocations extends JModelList
 		}
 
 		// Add the list ordering clause.
-		$orderCol	= $this->state->get('list.ordering', 'name');
+		$orderCol	= $this->state->get('list.ordering', 'title');
 		$orderDirn 	= $this->state->get('list.direction', 'asc');
 
 		$query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));

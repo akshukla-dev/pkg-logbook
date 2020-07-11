@@ -8,11 +8,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Location Model.
+ * Blueprint Model.
  *
  * @since  0.0.1
  */
-class LogbookModelLocation extends JModelAdmin
+class LogbookModelBlueprint extends JModelAdmin
 {
     /**
      * Method to get a table object, load it if necessary.
@@ -25,7 +25,7 @@ class LogbookModelLocation extends JModelAdmin
      *
      * @since   1.6
      */
-    public function getTable($type = 'Location', $prefix = 'LogbookTable', $config = array())
+    public function getTable($type = 'Blueprint', $prefix = 'LogbookTable', $config = array())
     {
         return JTable::getInstance($type, $prefix, $config);
     }
@@ -44,8 +44,8 @@ class LogbookModelLocation extends JModelAdmin
     {
         // Get the form.
         $form = $this->loadForm(
-            'com_logbook.location',
-            'location',
+            'com_logbook.blueprint',
+            'blueprint',
             array(
                 'control' => 'jform',
                 'load_data' => $loadData,
@@ -65,7 +65,7 @@ class LogbookModelLocation extends JModelAdmin
 	 */
 	public function getScript() 
 	{
-		return 'administrator/components/com_logbook/models/forms/location.js';
+		return 'administrator/components/com_logbook/models/forms/blueprint.js';
 	}
     /**
      * Method to get the data that should be injected in the form.
@@ -78,7 +78,7 @@ class LogbookModelLocation extends JModelAdmin
     {
         // Check the session for previously entered form data.
         $data = JFactory::getApplication()->getUserState(
-            'com_logbook.edit.location.data',
+            'com_logbook.edit.blueprint.data',
             array()
         );
 

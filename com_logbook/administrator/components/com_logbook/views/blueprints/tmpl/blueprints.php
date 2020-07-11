@@ -12,10 +12,10 @@ JHtml::_('formbehavior.chosen', 'select');
 $listOrder     = $this->escape($this->filter_order);
 $listDirn      = $this->escape($this->filter_order_Dir);
 ?>
-<form action="index.php?option=com_logbook&view=locations" method="post" id="adminForm" name="adminForm">
+<form action="index.php?option=com_logbook&view=blueprints" method="post" id="adminForm" name="adminForm">
 	<div class="row-fluid">
 		<div class="span9">
-			<?php echo JText::_('COM_LOGBOOK_LOCATIONS_FILTER'); ?>
+			<?php echo JText::_('COM_LOGBOOK_BLUEPRINTS_FILTER'); ?>
 			<?php
 				echo JLayoutHelper::render(
 					'joomla.searchtools.default',
@@ -32,21 +32,20 @@ $listDirn      = $this->escape($this->filter_order_Dir);
 				<?php echo JHtml::_('grid.checkall'); ?>
 			</th>
 			<th width="90%">
-				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOCATIONS_NAME', 'name', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_BLUEPRINTS_NAME', 'title', $listDirn, $listOrder); ?>
 			</th>
 			<th width="8%">
-				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_PUBLISHED', 'state', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('grid.sort', 'J_PUBLISHED', 'state', $listDirn, $listOrder); ?>
 			</th>
 			<th width="2%">
-				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_ID', 'id', $listDirn, $listOrder); ?>
+				<?php echo JHtml::_('grid.sort', 'J_ID', 'id', $listDirn, $listOrder); ?>
 			</th>
 		</tr>
 		</thead>
 		<tbody>
 			<?php if (!empty($this->items)) : ?>
 				<?php foreach ($this->items as $i => $row) :
-                    $link = JRoute::_('index.php?
-					option=com_logbook&task=location.edit&id='.$row->id);
+                    $link = JRoute::_('index.php?option=com_logbook&task=blueprint.edit&id='.$row->id);
                     ?>
 
 					<tr>
@@ -58,10 +57,10 @@ $listDirn      = $this->escape($this->filter_order_Dir);
 						</td>
 						<td>
 							<a href="<?php echo $link; ?>" title="<?php echo JText::_('COM_LOGBOOK_EDIT_LOCATION'); ?>">
-							<?php echo $row->name; ?>
+							<?php echo $row->title; ?>
 						</td>
 						<td align="center">
-							<?php echo JHtml::_('jgrid.published', $row->state, $i, 'locations.', true, 'cb'); ?>
+							<?php echo JHtml::_('jgrid.published', $row->state, $i, 'blueprints.', true, 'cb'); ?>
 						</td>
 						<td align="center">
 							<?php echo $row->id; ?>

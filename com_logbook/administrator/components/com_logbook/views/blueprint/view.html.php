@@ -1,12 +1,8 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  Logbook
- *
  * @copyright   Copyright (C) 2020 Amit Kumar Shukla, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
 
 /**
@@ -14,104 +10,79 @@ defined('_JEXEC') or die;
  *
  * @since  1.5
  */
-class LogbookViewBlueprint extends JViewLegacy
+class LogbookViewLocation extends JViewLegacy
 {
-	protected $state;
+    //protected $state;
 
-	protected $item;
+    //protected $item;
 
-	protected $form;
+    protected $form = null;
 
-	/**
-	 * Display the view.
+    /**
+     * Display the view.
+     *
+     * @param string $tpl the name of the template file to parse; automatically searches through the template paths
+     *
+     * @return mixed a string if successful, otherwise an Error object
+     */
+    public function display($tpl = null)
+    {
+        //$this->state = $this->get('State');
+        $this->item = $this->get('Item');
+        $this->form = $this->get('Form');
+        $this->script = $this->get('Script');
+
+        // Check for errors.
+        if (count($errors = $this->get('Errors'))) {
+            JError::raiseError(500, implode("\n", $errors));
+
+            return false;
+        }
+        
+        $this->addToolbar();
+
+        parent::display($tpl);
+
+        //Set Document
+        $this->setDocument();
+    }
+
+    /**
+     * Add the page title and toolbar.
+     *
+     *
+     * @since   1.6
+     */
+    protected function addToolbar()
+    {
+        JFactory::getApplication()->input->set('hidemainmenu', true);
+
+        JToolbarHelper::title($isNew ? JText::_('COM_LOGBOOK_MANAGER_BLUEPRINT_NEW') : JText::_('COM_LOGBOOK_MANAGER_BLUEPRINT_EDIT'), 'blueprint locations');
+
+        JToolbarHelper::save('blueprint.save');
+        JToolbarHelper::cancel(
+            'blueprint.cancel',
+            $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE'
+        );
+    }
+
+    /**
+	 * Method to set up the document properties
 	 *
-	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
-	 *
-	 * @return  mixed  A string if successful, otherwise an Error object.
+	 * @return void
 	 */
-	public function display($tpl = null)
+	protected function setDocument() 
 	{
-		$this->state = $this->get('State');
-		$this->item  = $this->get('Item');
-		$this->form  = $this->get('Form');
+        JHtml::_('behavior.framework');
+        JHtml::_('behavior.formvalidator');
 
-		// Check for errors.
-		if (count($errors = $this->get('Errors')))
-		{
-			JError::raiseError(500, implode("\n", $errors));
-
-			return false;
-		}
-		
-		// If we are forcing a language in modal (used for associations).
-		if ($this->getLayout() === 'modal' && $forcedLanguage = JFactory::getApplication()->input->get('forcedLanguage', '', 'cmd'))
-		{
-			// Set the language field to the forcedLanguage and disable changing it.
-			$this->form->setValue('language', null, $forcedLanguage);
-			$this->form->setFieldAttribute('language', 'readonly', 'true');
-
-			// Only allow to select categories with All language or with the forced language.
-			$this->form->setFieldAttribute('catid', 'language', '*,' . $forcedLanguage);
-
-			// Only allow to select tags with All language or with the forced language.
-			$this->form->setFieldAttribute('tags', 'language', '*,' . $forcedLanguage);
-		}
-
-		$this->addToolbar();
-
-		parent::display($tpl);
-	}
-
-	/**
-	 * Add the page title and toolbar.
-	 *
-	 * @return  void
-	 *
-	 * @since   1.6
-	 */
-	protected function addToolbar()
-	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
-
-		$user       = JFactory::getUser();
-		$isNew      = ($this->item->id == 0);
-		$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-
-		// Since we don't track these assets at the item level, use the category id.
-		$canDo = JHelperContent::getActions('com_logbook', 'category', $this->item->catid);
-
-		JToolbarHelper::title($isNew ? JText::_('COM_LOGBOOK_MANAGER_BLUEPRINT_NEW') : JText::_('COM_LOGBOOK_MANAGER_BLUPRINT_EDIT'), 'blueprint blueprints');
-
-		// If not checked out, can save the item.
-		if (!$checkedOut && ($canDo->get('core.edit')||(count($user->getAuthorisedCategories('com_logbook', 'core.create')))))
-		{
-			JToolbarHelper::apply('blueprint.apply');
-			JToolbarHelper::save('blueprint.save');
-		}
-		if (!$checkedOut && (count($user->getAuthorisedCategories('com_logbook', 'core.create'))))
-		{
-			JToolbarHelper::save2new('blueprint.save2new');
-		}
-		// If an existing item, can save to a copy.
-		if (!$isNew && (count($user->getAuthorisedCategories('com_logbook', 'core.create')) > 0))
-		{
-			JToolbarHelper::save2copy('blueprint.save2copy');
-		}
-		if (empty($this->item->id))
-		{
-			JToolbarHelper::cancel('blueprint.cancel');
-		}
-		else
-		{
-			if ($this->state->params->get('save_history', 0) && $user->authorise('core.edit'))
-			{
-				JToolbarHelper::versions('com_logbook.blueprint', $this->item->id);
-			}
-
-			JToolbarHelper::cancel('blueprint.cancel', 'JTOOLBAR_CLOSE');
-		}
-
-		JToolbarHelper::divider();
-		JToolbarHelper::help('JHELP_COMPONENTS_LOGBOOK_LOGS_EDIT');
+        $isNew = ($this->item->id < 1);
+		$document = JFactory::getDocument();
+		$document->setTitle($isNew ? JText::_('COM_LOGBOOK_BLUEPRINT_CREATING') :
+                JText::_('COM_LOGBOOK_BLUEPRINT_EDITING'));
+        $document->addScript(JURI::root().$this->script);
+        $document->addScript(JURI::root()."administrator/components/com_logbook/views/blueprint/submitbutton.js");
+        JText::script('COM_LOGBOOK_BLUEPRINT_ERROR_UNACCEPTABLE');
 	}
 }
+

@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
 	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
-	<version>1.0.5</version>
+	<version>1.0.8</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
@@ -26,9 +26,9 @@
 		</schemas>
 	</update>
 
-	<!--<media folder="media/com_logbook" destination="com_logbook">
-		<folder>js</folder>
-	</media> -->
+	<media folder="media/com_logbook" destination="com_logbook">
+		<folder>images</folder>
+	</media>
 
 	<files folder="components/com_logbook">
 		<file>controller.php</file>
@@ -44,21 +44,21 @@
 		<language tag="en-GB">en-GB/en-GB.com_logbook.ini</language>
 	</languages>
 	<administration>
-		<menu img="class:logbook" link='index.php?option=com_logbook'>COM_LOGBOOK</menu>
+		<menu img="../media/com_logbook/images/logbook-icon-16x16.png" link='index.php?option=com_logbook'>COM_LOGBOOK</menu>
 		<submenu>
 			<!--
 				Note that all & must be escaped to &amp; for the file to be valid
 				XML and be parsed by the installer
 			-->
-			<menu link="option=com_logbook" view="logs" img="class:logbook"
+			<menu link="option=com_logbook" view="logs" img="class:book"
 				alt="Logbook/Logs">COM_LOGBOOK_LOGS</menu>
 			<menu link="option=com_categories&amp;extension=com_logbook"
 				view="categories" img="class:logbook-cat" alt="Logbook/Categories">COM_LOGBOOK_CATEGORIES</menu>
-            <menu link="option=com_logbook" view="blueprints" img="class:blueprint"
+            <menu link="option=com_logbook" view="blueprints" img="class:paste"
 				alt="Logbook/Blueprint">COM_LOGBOOK_FOLDERS</menu>
             <menu link="option=com_logbook" view="locations" img="class:location"
 				alt="Logbook/Locations">COM_LOGBOOK_LOCATIONS</menu>
-            <menu link="option=com_logbook" view="schedules" img="class:schedule"
+            <menu link="option=com_logbook" view="schedules" img="class:alarm"
 				alt="Logbook/Schedule">COM_LOGBOOK_SCHEDULES</menu>
 		</submenu>
 		<files folder="administrator/components/com_logbook">

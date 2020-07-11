@@ -12,10 +12,10 @@ defined('_JEXEC') or die('Restricted access');
  *
  * @since  0.0.1
  */
-class LogbookViewLocations extends JViewLegacy
+class LogbookViewBlueprints extends JViewLegacy
 {
     /**
-     * Display the Locations view.
+     * Display the Blueprints view.
      *
      * @param string $tpl the name of the template file to parse; automatically searches through the template paths
      */
@@ -23,13 +23,13 @@ class LogbookViewLocations extends JViewLegacy
     {
         //Get Application
         $app = JFactory::getApplication();
-        $context = "logbook.list.admin.location";
+        $context = "logbook.list.admin.blueprint";
 
         // Get data from the model
         $this->items = $this->get('Items');
         $this->pagination = $this->get('Pagination');
         $this->state			= $this->get('State');
-		$this->filter_order 	= $app->getUserStateFromRequest($context.'filter_order', 'filter_order', 'name', 'cmd');
+		$this->filter_order 	= $app->getUserStateFromRequest($context.'filter_order', 'filter_order', 'title', 'cmd');
 		$this->filter_order_Dir = $app->getUserStateFromRequest($context.'filter_order_Dir', 'filter_order_Dir', 'asc', 'cmd');
 		$this->filterForm    	= $this->get('FilterForm');
 		$this->activeFilters 	= $this->get('ActiveFilters');
@@ -57,17 +57,17 @@ class LogbookViewLocations extends JViewLegacy
      */
     protected function addToolBar()
     {
-        $title=JText::_('COM_LOGBOOK_MANAGER_LOCATIONS');
+        $title=JText::_('COM_LOGBOOK_MANAGER_BLUEPRINTS');
         if ($this->pagination->total)
 		{
 			$title .= "<span style='font-size: 0.5em; vertical-align: middle;'>(" . $this->pagination->total . ")</span>";
 		}
 
 
-        JToolbarHelper::title($title, 'location');
-        JToolbarHelper::addNew('location.add');
-        JToolbarHelper::editList('location.edit');
-        JToolbarHelper::deleteList('Are You Sure!', 'locations.delete');
+        JToolbarHelper::title($title, 'blueprint');
+        JToolbarHelper::addNew('blueprint.add');
+        JToolbarHelper::editList('blueprint.edit');
+        JToolbarHelper::deleteList('Are You Sure!', 'blueprints.delete');
     }
 
     /**
