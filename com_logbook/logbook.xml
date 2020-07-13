@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
 	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
-	<version>1.0.8</version>
+	<version>2.0.2</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
@@ -54,25 +54,27 @@
 				alt="Logbook/Logs">COM_LOGBOOK_LOGS</menu>
 			<menu link="option=com_categories&amp;extension=com_logbook"
 				view="categories" img="class:logbook-cat" alt="Logbook/Categories">COM_LOGBOOK_CATEGORIES</menu>
-            <menu link="option=com_logbook" view="blueprints" img="class:paste"
-				alt="Logbook/Blueprint">COM_LOGBOOK_FOLDERS</menu>
             <menu link="option=com_logbook" view="locations" img="class:location"
 				alt="Logbook/Locations">COM_LOGBOOK_LOCATIONS</menu>
-            <menu link="option=com_logbook" view="schedules" img="class:alarm"
-				alt="Logbook/Schedule">COM_LOGBOOK_SCHEDULES</menu>
+            <menu link="option=com_logbook" view="blueprints" img="class:paste"
+				alt="Logbook/Blueprint">COM_LOGBOOK_BLUEPRINTS</menu>
+			<menu link="option=com_logbook" view="folders" img="class:folder-2"
+				alt="Logbook/Locations">COM_LOGBOOK_FOLDERS</menu>
+            <menu link="option=com_logbook" view="logrefs" img="class:alarm"
+				alt="Logbook/Schedule">COM_LOGBOOK_LOGREFS</menu>
 		</submenu>
 		<files folder="administrator/components/com_logbook">
 			<file>access.xml</file>
-            <folder>tables</folder>
+			<file>config.xml</file>
             <file>controller.php</file>
-            <folder>models</folder>
-            <file>config.xml</file>
-            <folder>controllers</folder>
-            <folder>views</folder>
-            <!--<file>logbook.xml</file>
-            <folder>helpers</folder>-->
+            <!--<file>logbook.xml</file> -->
             <file>logbook.php</file>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>models</folder>
             <folder>sql</folder>
+			<folder>tables</folder>
+            <folder>views</folder>
 		</files>
 		<languages folder="administrator/language">
 			<language tag="en-GB">en-GB/en-GB.com_logbook.ini</language>

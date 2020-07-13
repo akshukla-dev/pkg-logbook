@@ -12,7 +12,6 @@ defined('_JEXEC') or die;
  */
 class LogbookController extends JControllerLegacy
 {
-    protected $default_view = 'locations';
     /*
      * Method to display a view.
      *
@@ -24,11 +23,13 @@ class LogbookController extends JControllerLegacy
      *
      * @since   1.5
      */
-    /*public function display($cacheable = false, $urlparams = false)
+    public function display($cacheable = false, $urlparams = false)
     {
         require_once JPATH_COMPONENT . '/helpers/logbook.php';
+        //Display the submenu.
+        LogbookHelper::addSubmenu($this->input->get('view', 'logs'));
 
-        $view   = $this->input->get('view', 'logbook');
+        $view   = $this->input->get('view', 'locations');
         $layout = $this->input->get('layout', 'default');
         $id     = $this->input->getInt('id');
 
@@ -42,8 +43,37 @@ class LogbookController extends JControllerLegacy
 
             return false;
         }
+        if($view == 'location' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.location', $id))
+        {
+            // Somehow the person just went to the form - we don't allow that.
+            $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+            $this->setMessage($this->getError(), 'error');
+            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=locations', false));
+
+            return false;
+        }
+        if($view == 'bluprint' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.blueprint', $id))
+        {
+            // Somehow the person just went to the form - we don't allow that.
+            $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+            $this->setMessage($this->getError(), 'error');
+            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=blueprints', false));
+
+            return false;
+        }
+        if($view == 'schedule' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.schedule', $id))
+        {
+            // Somehow the person just went to the form - we don't allow that.
+            $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+            $this->setMessage($this->getError(), 'error');
+            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=schedules', false));
+
+            return false;
+        }
+        //Set the default view.
+        //$this->input->set('view', $this->input->get('view', 'locations'));
 
         return parent::display();
     }
-    */
+    
 }

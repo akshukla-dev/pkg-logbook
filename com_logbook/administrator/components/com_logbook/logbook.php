@@ -7,8 +7,9 @@ defined('_JEXEC') or die;
 
 // Set some global property
 $document = JFactory::getDocument();
-$document->addStyleDeclaration('.icon-logbook {background-image: url(../media/com_logbook/images/logbook-icon-48x48.png);}');
+$document->addStyleDeclaration('.icon-book {background-image: url(../media/com_logbook/images/logbook-icon-48x48.png);}');
 
+//Check against the user permissions
 if (!JFactory::getUser()->authorise('core.manage', 'com_logbook')) {
     throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }

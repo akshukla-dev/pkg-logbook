@@ -23,9 +23,12 @@ class LogbookController extends JControllerLegacy
      *
      * @since   1.5
      */
-    /*public function display($cacheable = false, $urlparams = false)
+    public function display($cacheable = false, $urlparams = false)
     {
         require_once JPATH_COMPONENT.'/helpers/logbook.php';
+
+        //Display the submenu.
+        LogbookHelper::addSubmenu($this->input->get('view', 'logs'));
 
         $view = $this->input->get('view', 'logbook');
         $layout = $this->input->get('layout', 'default');
@@ -42,5 +45,5 @@ class LogbookController extends JControllerLegacy
         }
 
         return parent::display();
-    }*/
+    }
 }

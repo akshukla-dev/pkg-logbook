@@ -14,6 +14,11 @@ defined('_JEXEC') or die('Restricted access');
  */
 class LogbookViewLocations extends JViewLegacy
 {
+    protected $items;
+    protected $state;
+    protected $pagination;
+    public    $filterForm;
+    public    $activeFilters;
     /**
      * Display the Locations view.
      *
@@ -39,10 +44,18 @@ class LogbookViewLocations extends JViewLegacy
 
             return false;
         }
-        // Set the toolbar and number of found items
-        $this->addToolBar();
 
-        // Display the template
+        //Check if the LMI Record Manager plugin is installed (or if it is enabled). If it doesn't we display an
+        //information note.
+        if(!JPluginHelper::isEnabled('content', 'lrm')) {
+            JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_PLUGIN_NOT_INSTALLED'), 'warning');
+        }
+
+        //Display the toolbar and the sidebar.
+        $this->addToolBar();
+        $this->sidebar = JHtmlSidebar::render();
+
+        //Display the template.
         parent::display($tpl);
 
         // Set the document
@@ -57,17 +70,35 @@ class LogbookViewLocations extends JViewLegacy
      */
     protected function addToolBar()
     {
-        $title=JText::_('COM_LOGBOOK_MANAGER_LOCATIONS');
-        if ($this->pagination->total)
-		{
-			$title .= "<span style='font-size: 0.5em; vertical-align: middle;'>(" . $this->pagination->total . ")</span>";
-		}
+        JToolBarHelper::title(JText::_('COM_LOGBOOK_MANAGER_LOCATIONS'), 'location');
 
+        require_once JPATH_COMPONENT.'/helpers/logbook.php';
+        $user = JFactory::getUser();
+        $canDo = LogbookHelper::getActions();
 
-        JToolbarHelper::title($title, 'location');
-        JToolbarHelper::addNew('location.add');
-        JToolbarHelper::editList('location.edit');
-        JToolbarHelper::deleteList('Are You Sure!', 'locations.delete');
+        if($canDo->get('core.create')) {
+        JToolBarHelper::addNew('location.add', 'JTOOLBAR_NEW');
+        JToolBarHelper::divider();
+        }
+
+        if($canDo->get('core.edit')) {
+        JToolBarHelper::editList('location.edit', 'JTOOLBAR_EDIT');
+        JToolBarHelper::divider();
+        }
+
+        if($canDo->get('core.edit.state')) { 
+        JToolBarHelper::custom('location.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
+        JToolBarHelper::divider();
+        }
+
+        if($canDo->get('core.delete')) {
+        JToolBarHelper::deleteList(JText::_('COM_LOGBOOK_DELETE_CONFIRMATION'), 'location.delete', 'JTOOLBAR_DELETE');
+        JToolBarHelper::divider();
+        }
+
+        if($canDo->get('core.admin')) {
+        JToolBarHelper::preferences('com_logbook', 550);
+        }
     }
 
     /**
@@ -81,3 +112,5 @@ class LogbookViewLocations extends JViewLegacy
 		$document->setTitle(JText::_('COM_LOGBOOK_ADMINISTRATION'));
 	}
 }
+
+
