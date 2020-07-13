@@ -4,15 +4,14 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
-
-// Set some global property
-$document = JFactory::getDocument();
-$document->addStyleDeclaration('.icon-book {background-image: url(../media/com_logbook/images/logbook-icon-48x48.png);}');
+JHtml::_('behavior.tabstate');
 
 //Check against the user permissions
 if (!JFactory::getUser()->authorise('core.manage', 'com_logbook')) {
     throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
+JLoader::register('LogbookHelper', __DIR__.'/helpers/logbook.php');
+
 // Get an instance of the controller prefixed by HelloWorld
 $controller = JControllerLegacy::getInstance('Logbook');
 // Perform the Request task
