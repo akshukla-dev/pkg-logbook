@@ -10,43 +10,36 @@ defined('_JEXEC') or die('Restricted Access');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('bootstrap.tooltip');
 
-$app       = JFactory::getApplication();
-$user      = JFactory::getUser();
-$userId    = $user->get('id');
+$app = JFactory::getApplication();
+$user = JFactory::getUser();
+$userId = $user->get('id');
 $listOrder = $this->escape($this->state->get('list.ordering'));
-$listDirn  = $this->escape($this->state->get('list.direction'));
+$listDirn = $this->escape($this->state->get('list.direction'));
 $saveOrder = $listOrder == 'l.ordering';
 $archived = $this->state->get('filter.published') == 2 ? true : false;
 $trashed = $this->state->get('filter.published') == -2 ? true : false;
 $canOrder = $user->authorise('core.edit.state', 'com_logbook.category');
 $saveOrder = $listOrder == 'l.ordering';
 
-if (strpos($listOrder, 'publish_up') !== false)
-{
-	$orderingColumn = 'publish_up';
-}
-elseif (strpos($listOrder, 'publish_down') !== false)
-{
-	$orderingColumn = 'publish_down';
-}
-elseif (strpos($listOrder, 'modified') !== false)
-{
-	$orderingColumn = 'modified';
-}
-else
-{
-	$orderingColumn = 'created';
+if (strpos($listOrder, 'publish_up') !== false) {
+    $orderingColumn = 'publish_up';
+} elseif (strpos($listOrder, 'publish_down') !== false) {
+    $orderingColumn = 'publish_down';
+} elseif (strpos($listOrder, 'modified') !== false) {
+    $orderingColumn = 'modified';
+} else {
+    $orderingColumn = 'created';
 }
 
-if($saveOrder) {
-  $saveOrderingUrl = 'index.php?option=com_logbook&task=locations.saveOrderAjax&tmpl=component';
-  JHtml::_('sortablelist.sortable', 'documentList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+if ($saveOrder) {
+    $saveOrderingUrl = 'index.php?option=com_logbook&task=locations.saveOrderAjax&tmpl=component';
+    JHtml::_('sortablelist.sortable', 'documentList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 //$listOrder     = $this->escape($this->filter_order);
 //$listDirn      = $this->escape($this->filter_order_Dir);
 ?>
 <form action="index.php?option=com_logbook&view=locations" method="post" id="adminForm" name="adminForm">
-	<?php if (!empty( $this->sidebar)) : ?>
+	<?php if (!empty($this->sidebar)) : ?>
 		<div id="j-sidebar-container" class="span2">
 			<?php echo $this->sidebar; ?>
 		</div>
@@ -55,8 +48,8 @@ if($saveOrder) {
 		<div id="j-main-container">
 	<?php endif; //Note: The 2 divs above are closed by the system.?>
 	<?php // Search tools bar
-		echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
-	?>
+        echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+    ?>
 	<?php if (empty($this->items)) : ?>
 		<div class="alert alert-no-items">
 			<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
@@ -81,10 +74,10 @@ if($saveOrder) {
 						<?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_LOCATION_NAME', 'l.name', $listDirn, $listOrder); ?>
 					</th>
 					<th width="10%" class="nowrap hidden-phone"><!--Created By -->
-						<?php echo JHtml::_('searchtools.sort',  'JAUTHOR', 'l.created_by', $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('searchtools.sort', 'JAUTHOR', 'l.created_by', $listDirn, $listOrder); ?>
 					</th>
 					<th width="10%" class="nowrap hidden-phone"><!--Date -->
-						<?php echo JHtml::_('searchtools.sort', 'COM_CONTENT_HEADING_DATE_' . strtoupper($orderingColumn), 'l.' . $orderingColumn, $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('searchtools.sort', 'COM_CONTENT_HEADING_DATE_'.strtoupper($orderingColumn), 'l.'.$orderingColumn, $listDirn, $listOrder); ?>
 					</th>
 					<th width="1%"><!--ID -->
 						<?php echo JHtml::_('grid.sort', 'J_ID', 'id', $listDirn, $listOrder); ?>
@@ -101,32 +94,29 @@ if($saveOrder) {
 			<tbody>
 				<?php if (!empty($this->items)) : ?>
 					<?php foreach ($this->items as $i => $row) :
-						$item->max_ordering = 0;
-						$ordering   = ($listOrder == 'l.ordering');
-						$canCreate  = $user->authorise('core.create',     'com_logbook.category.' . $item->catid);
-						$canEdit    = $user->authorise('core.edit',       'com_logbook.location.' . $item->id);
-						$canCheckin = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-						$canEditOwn = $user->authorise('core.edit.own',   'com_logbook.location.' . $item->id) && $item->created_by == $userId;
-						$canChange  = $user->authorise('core.edit.state', 'com_logbook.location.' . $item->id) && $canCheckin;
-						$canEditCat    = $user->authorise('core.edit',       'com_logbook.category.' . $item->catid);
-						$canEditOwnCat = $user->authorise('core.edit.own',   'com_logbook.category.' . $item->catid) && $item->category_uid == $userId;
-						$canEditParCat    = $user->authorise('core.edit',       'com_logbook.category.' . $item->parent_category_id);
-						$canEditOwnParCat = $user->authorise('core.edit.own',   'com_logbook.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
-					?>
+                        $item->max_ordering = 0;
+                        $ordering = ($listOrder == 'l.ordering');
+                        $canCreate = $user->authorise('core.create', 'com_logbook.category.'.$item->catid);
+                        $canEdit = $user->authorise('core.edit', 'com_logbook.location.'.$item->id);
+                        $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
+                        $canEditOwn = $user->authorise('core.edit.own', 'com_logbook.location.'.$item->id) && $item->created_by == $userId;
+                        $canChange = $user->authorise('core.edit.state', 'com_logbook.location.'.$item->id) && $canCheckin;
+                        $canEditCat = $user->authorise('core.edit', 'com_logbook.category.'.$item->catid);
+                        $canEditOwnCat = $user->authorise('core.edit.own', 'com_logbook.category.'.$item->catid) && $item->category_uid == $userId;
+                        $canEditParCat = $user->authorise('core.edit', 'com_logbook.category.'.$item->parent_category_id);
+                        $canEditOwnParCat = $user->authorise('core.edit.own', 'com_logbook.category.'.$item->parent_category_id) && $item->parent_category_uid == $userId;
+                    ?>
 						<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
 							<td class="order nowrap center hidden-phone"><!--Ordering Handle -->
 								<?php
-									$iconClass = '';
-									if (!$canChange)
-									{
-										$iconClass = ' inactive';
-									}
-									elseif (!$saveOrder)
-									{
-										$iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::_('tooltipText', 'JORDERINGDISABLED');
-									}
-								?>
-								<span class="sortable-handler<?php echo $iconClass ?>">
+                                    $iconClass = '';
+                                    if (!$canChange) {
+                                        $iconClass = ' inactive';
+                                    } elseif (!$saveOrder) {
+                                        $iconClass = ' inactive tip-top hasTooltip" title="'.JHtml::_('tooltipText', 'JORDERINGDISABLED');
+                                    }
+                                ?>
+								<span class="sortable-handler<?php echo $iconClass; ?>">
 									<span class="icon-menu" aria-hidden="true"></span>
 								</span>
 								<?php if ($canChange && $saveOrder) : ?>
@@ -143,13 +133,12 @@ if($saveOrder) {
 								<div class="btn-group">
 									<?php echo JHtml::_('jgrid.published', $item->state, $i, 'locations.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
 									<?php // Create dropdown items and render the dropdown list.
-									if ($canChange)
-									{
-										JHtml::_('actionsdropdown.' . ((int) $item->state === 2 ? 'un' : '') . 'archive', 'cb' . $i, 'locations');
-										JHtml::_('actionsdropdown.' . ((int) $item->state === -2 ? 'un' : '') . 'trash', 'cb' . $i, 'locations');
-										echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
-									}
-									?>
+                                    if ($canChange) {
+                                        JHtml::_('actionsdropdown.'.((int) $item->state === 2 ? 'un' : '').'archive', 'cb'.$i, 'locations');
+                                        JHtml::_('actionsdropdown.'.((int) $item->state === -2 ? 'un' : '').'trash', 'cb'.$i, 'locations');
+                                        echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
+                                    }
+                                    ?>
 								</div>
 							</td>
 							<td class="has-context"><!--NAME-->
@@ -158,7 +147,7 @@ if($saveOrder) {
 										<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'locations.', $canCheckin); ?>
 									<?php endif; ?>
 									<?php if ($canEdit || $canEditOwn) : ?>
-										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_logbook&task=location.edit&id=' . $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>">
+										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_logbook&task=location.edit&id='.$item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>">
 											<?php echo $this->escape($item->title); ?></a>
 									<?php endif; ?>
 								</div>
@@ -166,11 +155,11 @@ if($saveOrder) {
 							<td class="small hidden-phone"><!--Created By -->
 								<?php if ((int) $item->created_by != 0) : ?>
 									<?php if ($item->created_by_alias) : ?>
-										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_users&task=user.edit&id=' . (int) $item->created_by); ?>" title="<?php echo JText::_('JAUTHOR'); ?>">
+										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_users&task=user.edit&id='.(int) $item->created_by); ?>" title="<?php echo JText::_('JAUTHOR'); ?>">
 										<?php echo $this->escape($item->author_name); ?></a>
 										<div class="smallsub"><?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->created_by_alias)); ?></div>
 									<?php else : ?>
-										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_users&task=user.edit&id=' . (int) $item->created_by); ?>" title="<?php echo JText::_('JAUTHOR'); ?>">
+										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_users&task=user.edit&id='.(int) $item->created_by); ?>" title="<?php echo JText::_('JAUTHOR'); ?>">
 										<?php echo $this->escape($item->author_name); ?></a>
 									<?php endif; ?>
 								<?php else : ?>
@@ -184,9 +173,9 @@ if($saveOrder) {
 							</td>
 							<td class="nowrap small hidden-phone"><!--Date -->
 								<?php
-								$date = $item->{$orderingColumn};
-								echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : '-';
-								?>
+                                $date = $item->{$orderingColumn};
+                                echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : '-';
+                                ?>
 							</td>
 							<td class="hidden-phone"><!--ID -->
 								<?php echo (int) $item->id; ?>
@@ -196,65 +185,66 @@ if($saveOrder) {
 				<?php endif; ?>
 			</tbody>
 		</table>
+	<?php endif; ?>
 	<input type="hidden" name="task" value="" />
 	<input type="hidden" name="boxchecked" value="0" />
 	<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>"/>
 	<input type="hidden" name='filter_order_Dir' value="<?php echo $listDirn; ?>"/>
 	<?php echo JHtml::_('form.token'); ?>
-	
-	
+										
+
 	<?php /*<!--<table class="table table-striped table-hover">
-		<thead>
-		<tr>
-			<th width="2%"><?php echo JText::_('COM_LOGBOOK_NUM'); ?></th>
-			<th width="3%">
-				<?php echo JHtml::_('grid.checkall'); ?>
-			</th>
-			<th width="90%">
-				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOCATIONS_NAME', 'name', $listDirn, $listOrder); ?>
-			</th>
-			<th width="8%">
-				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_PUBLISHED', 'state', $listDirn, $listOrder); ?>
-			</th>
-			<th width="2%">
-				<?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_ID', 'id', $listDirn, $listOrder); ?>
-			</th>
-		</tr>
-		</thead>
-		<tbody>
-			<?php if (!empty($this->items)) : ?>
-				<?php foreach ($this->items as $i => $row) :
+        <thead>
+        <tr>
+            <th width="2%"><?php echo JText::_('COM_LOGBOOK_NUM'); ?></th>
+            <th width="3%">
+                <?php echo JHtml::_('grid.checkall'); ?>
+            </th>
+            <th width="90%">
+                <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOCATIONS_NAME', 'name', $listDirn, $listOrder); ?>
+            </th>
+            <th width="8%">
+                <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_PUBLISHED', 'state', $listDirn, $listOrder); ?>
+            </th>
+            <th width="2%">
+                <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_ID', 'id', $listDirn, $listOrder); ?>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($this->items)) : ?>
+                <?php foreach ($this->items as $i => $row) :
                     $link = JRoute::_('index.php?
-					option=com_logbook&task=location.edit&id='.$row->id);
+                    option=com_logbook&task=location.edit&id='.$row->id);
                     ?>
 
-					<tr>
-						<td>
-							<?php echo $this->pagination->getRowOffset($i); ?>
-						</td>
-						<td>
-							<?php echo JHtml::_('grid.id', $i, $row->id); ?>
-						</td>
-						<td>
-							<a href="<?php echo $link; ?>" title="<?php echo JText::_('COM_LOGBOOK_EDIT_LOCATION'); ?>">
-							<?php echo $row->name; ?>
-						</td>
-						<td align="center">
-							<?php echo JHtml::_('jgrid.published', $row->state, $i, 'locations.', true, 'cb'); ?>
-						</td>
-						<td align="center">
-							<?php echo $row->id; ?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php endif; ?>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="5">
-					<?php echo $this->pagination->getListFooter(); ?>
-				</td>
-			</tr>
-		</tfoot>
-	</table> --> */?>
+                    <tr>
+                        <td>
+                            <?php echo $this->pagination->getRowOffset($i); ?>
+                        </td>
+                        <td>
+                            <?php echo JHtml::_('grid.id', $i, $row->id); ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $link; ?>" title="<?php echo JText::_('COM_LOGBOOK_EDIT_LOCATION'); ?>">
+                            <?php echo $row->name; ?>
+                        </td>
+                        <td align="center">
+                            <?php echo JHtml::_('jgrid.published', $row->state, $i, 'locations.', true, 'cb'); ?>
+                        </td>
+                        <td align="center">
+                            <?php echo $row->id; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">
+                    <?php echo $this->pagination->getListFooter(); ?>
+                </td>
+            </tr>
+        </tfoot>
+    </table> --> */?>
 </form>

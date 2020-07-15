@@ -19,7 +19,7 @@ class LogbookController extends JControllerLegacy
      *
      * @since  1.6
      */
-    protected $default_view = 'logs';
+    protected $default_view = 'watchdogs';
 
     /**
      * Method to display a view.
@@ -34,8 +34,8 @@ class LogbookController extends JControllerLegacy
      */
     public function display($cacheable = false, $urlparams = array())
     {
-        $view = $this->input->get('view', 'logs');
-        $layout = $this->input->get('layout', 'logs');
+        $view = $this->input->get('view', 'watchdogs');
+        $layout = $this->input->get('layout', 'watchdogs');
         $id = $this->input->getInt('id');
         // Check for edit form.
         if ($view == 'log' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.log', $id)) {
@@ -46,22 +46,15 @@ class LogbookController extends JControllerLegacy
 
             return false;
         }
-        if ($view == 'location' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.location', $id)) {
+        if ($view == 'watchdog' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.watchdog', $id)) {
             // Somehow the person just went to the form - we don't allow that.
             $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
             $this->setMessage($this->getError(), 'error');
-            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=locations', false));
+            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=watchdog', false));
 
             return false;
         }
-        if ($view == 'bluprint' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.blueprint', $id)) {
-            // Somehow the person just went to the form - we don't allow that.
-            $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
-            $this->setMessage($this->getError(), 'error');
-            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=blueprints', false));
 
-            return false;
-        }
         //Display the view.
         return parent::display();
     }

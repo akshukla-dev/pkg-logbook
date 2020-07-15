@@ -16,12 +16,10 @@ $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn = $this->escape($this->state->get('list.direction'));
 $saveOrder = $listOrder == 'l.ordering';
 
-if (strpos($listOrder, 'publish_up') !== false) {
-    $orderingColumn = 'publish_up';
-} elseif (strpos($listOrder, 'publish_down') !== false) {
-    $orderingColumn = 'publish_down';
-} elseif (strpos($listOrder, 'modified') !== false) {
+if (strpos($listOrder, 'modified') !== false) {
     $orderingColumn = 'modified';
+} elseif (strpos($listOrder, 'closed') !== false) {
+    $orderingColumn = 'closed';
 } else {
     $orderingColumn = 'created';
 }
@@ -54,9 +52,6 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
 <table class="table table-striped" id="logList">
   <thead>
     <tr>
-      <th width="1%" class="nowrap center hidden-phone"> <!-- Ordering Handle-->
-        <?php echo JHtml::_('searchtools.sort', '', 'l.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
-      </th>
       <th width="1%" class="center"><!-- Checkall Handle-->
         <?php echo JHtml::_('grid.checkall'); ?>
       </th>
@@ -70,20 +65,21 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
         <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'l.access', $listDirn, $listOrder); ?>
       </th>
       <th width="10%" class="nowrap hidden-phone"><!-- Created By-->
-        <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_UPLOADEDBY_LABEL', 'l.created.by', $listDirn, $listOrder); ?>
+        <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_UPLOADEDBY_LABEL', 'l.created_by', $listDirn, $listOrder); ?>
       </th>
-      <th width="10%" class="nowrap hidden-phone"><!-- Author-->
+			<th width="10%" class="nowrap hidden-phone"><!-- Closed By-->
+        <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_CLOSEDBY_LABEL', 'l.closed_by', $listDirn, $listOrder); ?>
+      </th>
+      <th width="10%" class="nowrap hidden-phone"><!-- Signatories-->
         <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_AUTHOR_LABEL', 'l.author', $listDirn, $listOrder); ?>
       </th>
       <th width="10%" class="nowrap hidden-phone"><!-- Date-->
         <?php echo JHtml::_('searchtools.sort', 'COM_CONTENT_HEADING_DATE_'.strtoupper($orderingColumn), 'l.'.$orderingColumn, $listDirn, $listOrder); ?>
       </th>
-      <th width="1%"><!-- DOwnloads-->
+      <th width="1%"><!-- Downloads-->
         <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_DOWNLOADS', 'l.downloads', $listDirn, $listOrder); ?>
       </th>
-      <th width="1%" class="nowrap hidden-phone"><!-- HIts -->
-        <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_HITS', 'l.hits', $listDirn, $listOrder); ?>
-      </th>
+
       <th width="1%" class="nowrap hidden-phone"><!-- ID -->
         <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ID', 'l.id', $listDirn, $listOrder); ?>
       </th>
@@ -98,15 +94,10 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
         <?php foreach ($this->items as $i => $item) :
             $item->max_ordering = 0;
             $ordering = ($listOrder == 'l.ordering');
-            $canCreate = $user->authorise('core.create', 'com_logbook.category.'.$item->catid);
             $canEdit = $user->authorise('core.edit', 'com_logbook.log.'.$item->id);
             $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
             $canEditOwn = $user->authorise('core.edit.own', 'com_logbook.log.'.$item->id) && $item->created_by == $userId;
             $canChange = $user->authorise('core.edit.state', 'com_logbook.log.'.$item->id) && $canCheckin;
-            $canEditCat = $user->authorise('core.edit', 'com_logbook.category.'.$item->catid);
-            $canEditOwnCat = $user->authorise('core.edit.own', 'com_logbook.category.'.$item->catid) && $item->category_uid == $userId;
-            $canEditParCat = $user->authorise('core.edit', 'com_logbook.category.'.$item->parent_category_id);
-            $canEditOwnParCat = $user->authorise('core.edit.own', 'com_logbook.category.'.$item->parent_category_id) && $item->parent_category_uid == $userId;
         ?>
           <tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
            <td class="order nowrap center hidden-phone">
@@ -158,60 +149,6 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
                       <?php echo JText::sprintf('JGLOBAL_LIST_ALIAS_NOTE', $this->escape($item->alias), $this->escape($item->note)); ?>
                     <?php endif; ?>
                 </span>
-                <div class="small">
-                    <?php
-                    $ParentCatUrl = JRoute::_('index.php?option=com_categories&task=category.edit&id='.$item->parent_category_id.'&extension=com_logbook');
-                    $CurrentCatUrl = JRoute::_('index.php?option=com_categories&task=category.edit&id='.$item->catid.'&extension=com_logbook');
-                    $EditCatTxt = JText::_('COM_CONTENT_EDIT_CATEGORY');
-
-                    echo JText::_('JCATEGORY').': ';
-
-                    if ($item->category_level != '1') :
-                        if ($item->parent_category_level != '1') :
-                            echo ' &#187; ';
-                        endif;
-                    endif;
-
-                    if (JFactory::getLanguage()->isRtl()) {
-                        if ($canEditCat || $canEditOwnCat) :
-                            echo '<a class="hasTooltip" href="'.$CurrentCatUrl.'" title="'.$EditCatTxt.'">';
-                        endif;
-                        echo $this->escape($item->category_title);
-                        if ($canEditCat || $canEditOwnCat) :
-                            echo '</a>';
-                        endif;
-
-                        if ($item->category_level != '1') :
-                            echo ' &#171; ';
-                        if ($canEditParCat || $canEditOwnParCat) :
-                                echo '<a class="hasTooltip" href="'.$ParentCatUrl.'" title="'.$EditCatTxt.'">';
-                        endif;
-                        echo $this->escape($item->parent_category_title);
-                        if ($canEditParCat || $canEditOwnParCat) :
-                                echo '</a>';
-                        endif;
-                        endif;
-                    } else {
-                        if ($item->category_level != '1') :
-                            if ($canEditParCat || $canEditOwnParCat) :
-                                echo '<a class="hasTooltip" href="'.$ParentCatUrl.'" title="'.$EditCatTxt.'">';
-                        endif;
-                        echo $this->escape($item->parent_category_title);
-                        if ($canEditParCat || $canEditOwnParCat) :
-                                echo '</a>';
-                        endif;
-                        echo ' &#187; ';
-                        endif;
-                        if ($canEditCat || $canEditOwnCat) :
-                            echo '<a class="hasTooltip" href="'.$CurrentCatUrl.'" title="'.$EditCatTxt.'">';
-                        endif;
-                        echo $this->escape($item->category_title);
-                        if ($canEditCat || $canEditOwnCat) :
-                            echo '</a>';
-                        endif;
-                    }
-                    ?>
-                </div>
               </div>
             </td>
             <td class="small hidden-phone">

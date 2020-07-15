@@ -63,7 +63,7 @@ class LogbookViewLogs extends JViewLegacy
     protected function addToolBar()
     {
         //Get the allowed actions list
-        $canDo = JHelperLogbook::getActions('com_logbook', 'category', $this->state->get('filter.category_id'));
+        $canDo = LogbookHelper::getActions('com_logbook', 'logs', $this->state->get($item->id));
         $user = JFactory::getUser();
 
         // Get the toolbar object instance
@@ -72,9 +72,8 @@ class LogbookViewLogs extends JViewLegacy
         //Display the view title and the icon.
         JToolBarHelper::title(JText::_('COM_LOGBOOK_MANAGER_LOGS_TITLE'), 'stack log');
 
-        //The user is allowed to create or is able to create in one of the component
-        //categories.
-        if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_logbook', 'core.create'))) > 0) {
+        //The user is allowed to create?
+        if ($canDo->get('core.create')) {
             JToolBarHelper::addNew('log.add', 'JTOOLBAR_NEW');
         }
 
@@ -89,12 +88,12 @@ class LogbookViewLogs extends JViewLegacy
             JToolBarHelper::publish('logs.publish', 'JTOOLBAR_PUBLISH', true);
             JToolBarHelper::unpublish('logs.unpublish', 'JTOOLBAR_UNPUBLISH', true);
             JToolBarHelper::archiveList('logs.archive', 'JTOOLBAR_ARCHIVE');
-            JToolBarHelper::chekin('logs.checkin', 'JTOOLBAR_CHECKIN', true);
+            JToolBarHelper::checkin('logs.checkin', 'JTOOLBAR_CHECKIN', true);
             JToolBarHelper::trash('logs.trash', 'JTOOLBAR_TRASH');
         }
 
         //Check for delete permission.
-        if ($canDo->get('core.delete') || count($user->getAuthorisedCategories('com_logbook', 'core.delete'))) {
+        if ($canDo->get('core.delete')) {
             JToolBarHelper::divider();
             JToolBarHelper::deleteList(JText::_('COM_LOGBOOK_CONFIRM_DELETE'), 'logs.delete', 'JTOOLBAR_DELETE');
         }
@@ -118,7 +117,6 @@ class LogbookViewLogs extends JViewLegacy
             'l.ordering' => JText::_('JGRID_HEADING_ORDERING'),
             'l.state' => JText::_('JSTATUS'),
             'l.title' => JText::_('JGLOBAL_TITLE'),
-            'category_title' => JText::_('JCATEGORY'),
             'access_level' => JText::_('JGRID_HEADING_ACCESS'),
             'l.created_by' => JText::_('JAUTHOR'),
             'l.created' => JText::_('JDATE'),

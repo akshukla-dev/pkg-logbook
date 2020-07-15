@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
  *
  * @since  1.6
  */
-class LogbookHelper extends JHelperlogbook
+class LogbookHelper extends JHelperContent
 {
     public static $extension = 'com_logbook';
 
@@ -29,7 +29,7 @@ class LogbookHelper extends JHelperlogbook
             $vName == 'logs'
         );
 
-        JHtmlSidebar::addEntry(
+        /*JHtmlSidebar::addEntry(
             JText::_('COM_LOGBOOK_SUBMENU_CATEGORIES'),
             'index.php?option=com_categories&extension=com_logbook',
             $vName == 'categories'
@@ -50,12 +50,12 @@ class LogbookHelper extends JHelperlogbook
             JText::_('COM_LOGBOOK_SUBMENU_FOLDERS'),
             'index.php?option=com_logbook&view=folders',
             $vName == 'folders'
-        );
+        );*/
 
         JHtmlSidebar::addEntry(
-            JText::_('COM_LOGBOOK_SUBMENU_FOLDERS'),
-            'index.php?option=com_logbook&view=logrefs',
-            $vName == 'logrefs'
+            JText::_('COM_LOGBOOK_SUBMENU_WATCHDOGS'),
+            'index.php?option=com_logbook&view=watchdogs',
+            $vName == 'watchdogs'
         );
     }
 
@@ -104,77 +104,13 @@ class LogbookHelper extends JHelperlogbook
     }
 
     /**
-     * Adds Count Items for Tag Manager.
-     *
-     * @param stdClass[] &$items    The Logbook objects
-     * @param string     $extension the name of the active view
-     *
-     * @return stdClass[]
-     *
-     * @since   3.7.0
-     */
-    public static function countTagItems(&$items, $extension)
-    {
-        $db = JFactory::getDbo();
-        $parts = explode('.', $extension);
-        $section = null;
-
-        if (count($parts) > 1) {
-            $section = $parts[1];
-        }
-
-        $join = $db->qn('#__logbook_logs').' AS c ON ct.logbook_item_id=c.id';
-        $state = 'state';
-
-        if ($section === 'category') {
-            $join = $db->qn('#__categories').' AS c ON ct.logbook_item_id=c.id';
-            $state = 'published as state';
-        }
-
-        foreach ($items as $item) {
-            $item->count_trashed = 0;
-            $item->count_archived = 0;
-            $item->count_unpublished = 0;
-            $item->count_published = 0;
-
-            $query = $db->getQuery(true);
-            $query->select($state.', count(*) AS count')
-                ->from($db->qn('#__logbookitem_tag_map').'AS ct ')
-                ->where('ct.tag_id = '.(int) $item->id)
-                ->where('ct.type_alias ='.$db->q($extension))
-                ->join('LEFT', $join)
-                ->group('state');
-
-            $db->setQuery($query);
-            $logs = $db->loadObjectList();
-
-            foreach ($logs as $log) {
-                if ($log->state == 1) {
-                    $item->count_published = $log->count;
-                }
-                if ($log->state == 0) {
-                    $item->count_unpublished = $log->count;
-                }
-                if ($log->state == 2) {
-                    $item->count_archived = $log->count;
-                }
-                if ($log->state == -2) {
-                    $item->count_trashed = $log->count;
-                }
-            }
-        }
-
-        return $items;
-    }
-
-    /**
      * Get the list of the allowed actions for the user.
      *
      * @return array
      *
      * @since   1.0.0
      */
-    public static function getActions($categoryId = 0)
+    /*public static function getActions($categoryId = 0)
     {
         $user = JFactory::getUser();
         $result = new JObject();
@@ -196,7 +132,7 @@ class LogbookHelper extends JHelperlogbook
         }
 
         return $result;
-    }
+    }*/
 
     /**
      * Return categories in which the user is allowed to do a given action. ("create" by default).
@@ -205,7 +141,7 @@ class LogbookHelper extends JHelperlogbook
      *
      * @since   1.0.0
      */
-    public static function getUserCategories($action = 'create', $logs = false)
+    /*public static function getUserCategories($action = 'create', $logs = false)
     {
         $subquery = '';
         if ($logs) {
@@ -238,7 +174,7 @@ class LogbookHelper extends JHelperlogbook
         }
 
         return $userCategories;
-    }
+    }*/
 
     /**
      * Load file on the server and return an array filled with the data file.
@@ -411,11 +347,11 @@ class LogbookHelper extends JHelperlogbook
 
         $contexts = array(
             'com_logbook.log' => JText::_('COM_LOGBOOK_LOG'),
-            'com_logbook.location' => JText::_('COM_LOGBOOK_LOCATION'),
-            'com_logbook.blueprint' => JText::_('COM_LOGBOOK_BLUEPRINT'),
-            'com_logbook.logrefs' => JText::_('COM_LOGBOOK_LOGREF'),
-            'com_logbook.folder' => JText::_('COM_LOGBOOK_fOLDER'),
-            'com_logbook.categories' => JText::_('JCATEGORY'),
+           // 'com_logbook.location' => JText::_('COM_LOGBOOK_LOCATION'),
+           // 'com_logbook.blueprint' => JText::_('COM_LOGBOOK_BLUEPRINT'),
+            'com_logbook.watchdog' => JText::_('COM_LOGBOOK_WATCHDOG'),
+           // 'com_logbook.folder' => JText::_('COM_LOGBOOK_fOLDER'),
+           // 'com_logbook.categories' => JText::_('JCATEGORY'),
         );
 
         return $contexts;

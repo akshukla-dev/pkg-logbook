@@ -7,16 +7,16 @@
 defined('_JEXEC') or die; //No direct access to this file.
 
 /**
- * Methods supporting a list of log records.
+ * Methods supporting a list of watchdog records.
  *
  * @since  1.6
  */
-class LogbookModelLogs extends JModelList
+class LogbookModelWatchdogs extends JModelList
 {
     /**
      * Constructor.
      *
-     * @param	array	an optional associative array of configuration settings
+     * @param array $config an optional associative array of configuration settings
      *
      * @see		JController
      * @since	1.6
@@ -25,27 +25,29 @@ class LogbookModelLogs extends JModelList
     {
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = array(
-                'id', 'l.id',
-                'file_name', 'l.file_name',
-                'file_type', 'l.file_type',
-                'file_size', 'l.file_size',
-                'checked_out', 'l.checked_out',
-                'checked_out_time', 'l.checked_out_time',
-                'wdid', 'l.wdid',
-                'signatories', 'l.signatories',
-                'access', 'l.access', 'access_level',
-                'created', 'l.created',
-                'modified', 'l.modified',
-                'closed', 'l.closed',
-                'created_by', 'l.created_by',
-                'created_by_alias', 'a.created_by_alias',
-                'downloads', 'l.downloads',
-                'inset_title',
-                'bprint_title',
-                'wcenter_title',
-                'tinterval_title',
-                'author_id',
-              );
+          'id', 'wd.id',
+          `isid`, 'wd.isid', 'inset_title',
+          `bpid`, 'wd.bpid', 'bprint_title',
+          `wcid`, 'wd.wcid', 'wcenter_title',
+          `tiid`, 'wd.tiid', 'tinterval_title',
+          'checked_out', 'wd.checked_out',
+          'checked_out_time', 'wd.checked_out_time',
+          'state', 'wd.state',
+          'access', 'wd.access', 'access_level',
+          'created', 'wd.created',
+          'modified', 'wd.modified',
+          'created_by', 'wd.created_by',
+          'created_by_alias', 'a.created_by_alias',
+          'ordering', 'wd.ordering',
+          'publish_up', 'wd.publish_up',
+          'publish_down', 'wd.publish_down',
+          'author_id',
+          'inset_id',
+          'bprint_id',
+          'wcenter_id',
+          'tinterval_id',
+          'level',
+          );
         }
 
         parent::__construct($config);
@@ -65,32 +67,25 @@ class LogbookModelLogs extends JModelList
      *
      * @since   1.6
      */
-    protected function populateState($ordering = 'l.id', $direction = 'desc')
+    protected function populateState($ordering = 'wd.id', $direction = 'desc')
     {
         // Initialise variables.
         $app = JFactory::getApplication();
         $session = JFactory::getSession();
-
-        //Adjust the context to support modal layouts.
-        if ($layout = JFactory::getApplication()->input->get('layout')) {
+        // Adjust the context to support modal layouts.
+        if ($layout = $app->input->get('layout')) {
             $this->context .= '.'.$layout;
         }
 
         //Get the state values set by the user.
-        $search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
-        $this->setState('filter.search', $search);
-
         $access = $this->getUserStateFromRequest($this->context.'.filter.access', 'filter_access');
         $this->setState('filter.access', $access);
 
-        $authorId = $app->getUserStateFromRequest($this->context.'.filter.author_id', 'filter_author_id');
-        $this->setState('filter.author_id', $userId);
+        $authorId = $this->getUserStateFromRequest($this->context.'.filter.author_id', 'filter_author_id');
+        $this->setState('filter.author_id', $authorId);
 
-        $closed = $this->getUserStateFromRequest($this->context.'.filter.closed', 'filter_closed');
-        $this->setState('filter.closed', $published);
-        //Filter for the log attributes.
-        $wdogId = $this->getUserStateFromRequest($this->context.'.filter.wdog_id', 'filter_wdog_id');
-        $this->setState('filter.wdog_id', $wdogId);
+        $published = $this->getUserStateFromRequest($this->context.'.filter.published', 'filter_published', '');
+        $this->setState('filter.published', $published);
 
         $insetId = $this->getUserStateFromRequest($this->context.'.filter.inset_id', 'filter_inset_id');
         $this->setState('filter.inset_id', $insetId);
@@ -126,7 +121,7 @@ class LogbookModelLogs extends JModelList
         // Compile the store id.
         $id .= ':'.$this->getState('filter.search');
         $id .= ':'.$this->getState('filter.access');
-        $id .= ':'.$this->getState('filter.wdog_id');
+        $id .= ':'.$this->getState('filter.published');
         $id .= ':'.$this->getState('filter.inset_id');
         $id .= ':'.$this->getState('filter.bprint_id');
         $id .= ':'.$this->getState('filter.wcenter_id');
@@ -154,41 +149,74 @@ class LogbookModelLogs extends JModelList
         $query->select(
             $this->getState(
                 'list.select',
-                'l.id, l.wdid, l.file_name, l.file_type, l.file_size, l.file_icon, l.downloads'.
-                ', l.signatories, l.access, l.created, l.modified, l.closed_by'.
-                ', l.created_by, l.created_by_alias, l.modified_by'
+                'wd.id, wd.alias, wd.isid, wd.bpid, wd.wcid, wd.tiid'.
+                     ', wd.logging_window, wd.first_log_date, wd.last_log_date'.
+                     ', wd.log_count, wd.access, wd.state, wd.ordering'.
+                     ', wd.next_due_date, wd.publish_up, wd.publish_down, wd.created'.
+                     ', wd.modified, wd.created_by, wd.created_by_alias, wd.modified_by'
             )
         );
+        $query->from('#__logbook_watchdogs AS wd');
 
-        $query->from('#__logbook_logs AS l');
-
-        //Join over the watchdogs
-        $query->select('wd.isid, wd.bpid, wd.wcid, wd.tiid')
-                ->join('LEFT', '`#__logbook_watchdogs` AS wd ON wd.id = l.wdid');
-        //Join over other tables
-        $query->select('inset.title AS inset_title')
-                ->join('LEFT', '`#__logbook_instructionsets` AS inset ON inset.id = wd.isid');
-        $query->select('bprint.title AS bprint_title')
-                ->join('LEFT', '`#__logbook_blueprints` AS bprint ON bprint.id = wd.bpid');
-        $query->select('wcenter.title AS wcenter_title')
-                ->join('LEFT', '`#__logbook_workcenters` AS wcenter ON wcenter.id = wd.wcid');
-        $query->select('tinterval.title AS tinterval_title')
-                ->join('LEFT', '`#__logbook_timeintervals` AS tinterval ON tinterval.id = wd.tiid');
+        // Join over the instruction sets
+        $query->select('i.title AS inset_title')
+            ->join('LEFT', '`#__logbook_instructionsets`AS i ON i.id = wd.isid');
+        //Get the bluprint title.
+        $query->select('bp.title AS bprint_title')
+            ->join('LEFT', '`#__logbook_blueprints`AS bp ON bp.id = wd.bpid');
+        //Get the work center.
+        $query->select('wc.title AS wcenter_title')
+            ->join('LEFT', '`#__logbook_workcenters`AS wc ON wc.id = wd.wcid');
+        //Get the Frequency.
+        $query->select('ti.title AS tinterval_title')
+            ->join('LEFT', '`#__logbook_timeintervals`AS ti ON ti.id = wd.tiid');
 
         // Join over the asset groups.
-        $query->select('ag.title AS access_level');
-        $query->join('LEFT', '#__viewlevels AS ag ON ag.id = l.access');
+        $query->select('ag.title AS access_level')
+            ->join('LEFT', '#__viewlevels AS ag ON ag.id = wd.access');
 
         // Join over the users for the checked out user.
         $query->select('uc.name AS editor');
-        $query->join('LEFT', '#__users AS uc ON uc.id=l.checked_out');
+        $query->join('LEFT', '#__users AS uc ON uc.id=wd.checked_out');
 
-        // Join over the users for the uploaded_by.
-        $query->select('ua.name AS uploaded_by')->join('LEFT', '#__users AS ua ON ua.id = l.created_by');
+        // Join over the users for the author.
+        $query->select('ua.name AS author_name')
+            ->join('LEFT', '#__users AS ua ON ua.id = wd.created_by');
 
         // Filter by access level.
         if ($access = $this->getState('filter.access')) {
-            $query->where('l.access = '.(int) $access);
+            $query->where('wd.access = '.(int) $access);
+        }
+        // Filter by instruction sets.
+        if ($insetId = $this->getState('filter.inset_id')) {
+            $query->where('wd.isid = '.(int) $insetId);
+        }
+        // Filter by blueprints.
+        if ($bprintId = $this->getState('filter.bprint_id')) {
+            $query->where('wd.bpid = '.(int) $bprintId);
+        }
+        // Filter by workcenter.
+        if ($wcenterId = $this->getState('filter.wcenter_id')) {
+            $query->where('wd.wcid = '.(int) $wcenterId);
+        }
+        // Filter by frequency.
+        if ($tinterval = $this->getState('filter.tinterval')) {
+            $query->where('wd.tiid = '.(int) $tinterval);
+        }
+
+        //Filter by publication state.
+        $published = $this->getState('filter.published');
+        if (is_numeric($published)) {
+            $query->where('wd.state = '.(int) $published);
+        } elseif ($published === '') {
+            $query->where('(wd.state IN (0, 1))');
+        }
+
+        //Filter by authur.
+        $authorId = $this->getState('filter.author_id');
+        if (is_numeric($userId)) {
+            $type = $this->getState('filter.user_id.include', true) ? '= ' : '<>';
+            $query->where('wd.created_by'.$type.(int) $authorId);
         }
 
         // Filter by search in title.
@@ -196,23 +224,15 @@ class LogbookModelLogs extends JModelList
 
         if (!empty($search)) {
             if (stripos($search, 'id:') === 0) {
-                $query->where('l.id = '.(int) substr($search, 3));
-            } elseif (stripos($search, 'Uploaded_by:') === 0) {
+                $query->where('wd.id = '.(int) substr($search, 3));
+            } elseif (stripos($search, 'author:') === 0) {
                 $search = $db->quote('%'.$db->escape(substr($search, 7), true).'%');
                 $query->where('(ua.name LIKE '.$search.' OR ua.username LIKE '.$search.')');
-            } else {
             }
         }
 
-        //Filter by user.
-        $userId = $this->getState('filter.user_id');
-        if (is_numeric($userId)) {
-            $type = $this->getState('filter.user_id.include', true) ? '= ' : '<>';
-            $query->where('l.created_by'.$type.(int) $userId);
-        }
-
         //Add the list to the sort.
-        $orderCol = $this->state->get('list.ordering', 'l.id');
+        $orderCol = $this->state->get('list.ordering', 'wd.id');
         $orderDirn = $this->state->get('list.direction', 'DESC'); //asc or desc
 
         $query->order($db->escape($orderCol).' '.$db->escape($orderDirn));
@@ -236,7 +256,7 @@ class LogbookModelLogs extends JModelList
         // Construct the query
         $query->select('u.id AS value, u.name AS text')
             ->from('#__users AS u')
-            ->join('INNER', '#__logbook_logs AS c ON c.created_by = u.id')
+            ->join('INNER', '#__logbook_watchdogs AS c ON c.created_by = u.id')
             ->group('u.id, u.name')
             ->order('u.name');
 
@@ -248,7 +268,7 @@ class LogbookModelLogs extends JModelList
     }
 
     /**
-     * Method to get a list of logs.
+     * Method to get a list of watchdogs.
      * Overridden to add a check for access levels.
      *
      * @return mixed an array of data items on success, false on failure
@@ -263,7 +283,7 @@ class LogbookModelLogs extends JModelList
             $groups = JFactory::getUser()->getAuthorisedViewLevels();
 
             foreach (array_keys($items) as $x) {
-                // Check the access level. Remove logs the user shouldn't see
+                // Check the access level. Remove watchdogs the user shouldn't see
                 if (!in_array($items[$x]->access, $groups)) {
                     unset($items[$x]);
                 }
