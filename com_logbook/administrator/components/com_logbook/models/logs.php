@@ -164,16 +164,16 @@ class LogbookModelLogs extends JModelList
 
         //Join over the watchdogs
         $query->select('wd.isid, wd.bpid, wd.wcid, wd.tiid')
-                ->join('LEFT', '`#__logbook_watchdogs` AS wd ON wd.id = l.wdid');
+            ->join('LEFT', '`#__logbook_watchdogs` AS wd ON wd.id = l.wdid');
         //Join over other tables
         $query->select('inset.title AS inset_title')
-                ->join('LEFT', '`#__logbook_instructionsets` AS inset ON inset.id = wd.isid');
+            ->join('LEFT', '`#__logbook_instructionsets` AS inset ON inset.id = wd.isid');
         $query->select('bprint.title AS bprint_title')
-                ->join('LEFT', '`#__logbook_blueprints` AS bprint ON bprint.id = wd.bpid');
+            ->join('LEFT', '`#__logbook_blueprints` AS bprint ON bprint.id = wd.bpid');
         $query->select('wcenter.title AS wcenter_title')
-                ->join('LEFT', '`#__logbook_workcenters` AS wcenter ON wcenter.id = wd.wcid');
+            ->join('LEFT', '`#__logbook_workcenters` AS wcenter ON wcenter.id = wd.wcid');
         $query->select('tinterval.title AS tinterval_title')
-                ->join('LEFT', '`#__logbook_timeintervals` AS tinterval ON tinterval.id = wd.tiid');
+            ->join('LEFT', '`#__logbook_timeintervals` AS tinterval ON tinterval.id = wd.tiid');
 
         // Join over the asset groups.
         $query->select('ag.title AS access_level');
@@ -191,7 +191,23 @@ class LogbookModelLogs extends JModelList
             $query->where('l.access = '.(int) $access);
         }
 
-        // Filter by search in title.
+        // Filter by instruction sets.
+        if ($insetId = $this->getState('filter.inset_id')) {
+            $query->where('wd.isid = '.(int) $insetId);
+        }
+        // Filter by blueprints.
+        if ($bprintId = $this->getState('filter.bprint_id')) {
+            $query->where('wd.bpid = '.(int) $bprintId);
+        }
+        // Filter by workcenter.
+        if ($wcenterId = $this->getState('filter.wcenter_id')) {
+            $query->where('wd.wcid = '.(int) $wcenterId);
+        }
+        // Filter by frequency.
+        if ($tinterval = $this->getState('filter.tinterval')) {
+            $query->where('wd.tiid = '.(int) $tinterval);
+        }
+        // Filter by search.
         $search = $this->getState('filter.search');
 
         if (!empty($search)) {
@@ -205,9 +221,9 @@ class LogbookModelLogs extends JModelList
         }
 
         //Filter by user.
-        $userId = $this->getState('filter.user_id');
+        $userId = $this->getState('filter.author_id');
         if (is_numeric($userId)) {
-            $type = $this->getState('filter.user_id.include', true) ? '= ' : '<>';
+            $type = $this->getState('filter.author_id.include', true) ? '= ' : '<>';
             $query->where('l.created_by'.$type.(int) $userId);
         }
 

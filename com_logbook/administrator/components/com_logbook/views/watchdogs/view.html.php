@@ -15,6 +15,7 @@ class LogbookViewWatchdogs extends JViewLegacy
     protected $items;
     protected $state;
     protected $pagination;
+    protected $canDo;
     public $filterForm;
     public $activeFilters;
     protected $sideBar;
@@ -66,13 +67,33 @@ class LogbookViewWatchdogs extends JViewLegacy
         //Display the view title and the icon.
         JToolBarHelper::title(JText::_('COM_LOGBOOK_MANAGER_WATCHDOGS_TITLE'), 'stack watchdogs');
 
-        if ($canDo->get('core.admin')) {
-            JToolBarHelper::addnew('watchdog.addnew', 'JTOOLBAR_NEW');
-            JToolBarHelper::archiveList('watchdog.archive', 'JTOOLBAR_ARCHIVE');
-            JToolBarHelper::checkin('watchdog.checkin', 'JTOOLBAR_CHECKIN', true);
-            JToolBarHelper::trash('watchdog.trash', 'JTOOLBAR_TRASH');
+        //The user is allowed to create?
+        if ($canDo->get('core.create')) {
+            JToolBarHelper::addNew('watchdog.add', 'JTOOLBAR_NEW');
+        }
+
+        //Notes: The Edit icon might not be displayed since it's not (yet ?) possible
+        //to edit several items at a time.
+        if ($canDo->get('core.edit') || $canDo->get('core.edit.own')) {
+            JToolBarHelper::editList('watchdog.edit', 'JTOOLBAR_EDIT');
+        }
+
+        //Check for state permission.
+        if ($canDo->get('core.edit.state')) {
+            JToolBarHelper::publish('watchdogs.publish', 'JTOOLBAR_PUBLISH', true);
+            JToolBarHelper::unpublish('watchdogs.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+            JToolBarHelper::archiveList('watchdogs.archive', 'JTOOLBAR_ARCHIVE');
+            JToolBarHelper::checkin('watchdogs.checkin', 'JTOOLBAR_CHECKIN', true);
+            JToolBarHelper::trash('watchdogs.trash', 'JTOOLBAR_TRASH');
+        }
+
+        //Check for delete permission.
+        if ($canDo->get('core.delete')) {
             JToolBarHelper::divider();
-            JToolBarHelper::deleteList(JText::_('COM_LOGBOOK_CONFIRM_DELETE'), 'watchdog.delete', 'JTOOLBAR_DELETE');
+            JToolBarHelper::deleteList(JText::_('COM_LOGBOOK_CONFIRM_DELETE'), 'watchdogs.delete', 'JTOOLBAR_DELETE');
+        }
+
+        if ($canDo->get('core.admin')) {
             JToolBarHelper::divider();
             JToolBarHelper::preferences('com_logbook', 550);
         }
@@ -92,6 +113,8 @@ class LogbookViewWatchdogs extends JViewLegacy
             'wd.state' => JText::_('JSTATUS'),
             'wd.created' => JText::_('JDATE'),
             'wd.id' => JText::_('JGRID_HEADING_ID'),
+            'wd.created_by' => JText::_('JAUTHOR'),
+            'access_level' => JText::_('JGRID_HEADING_ACCESS'),
         );
     }
 }

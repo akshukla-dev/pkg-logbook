@@ -13,9 +13,26 @@ JHtml::_('bootstrap.tooltip');
 $app = JFactory::getApplication();
 $user = JFactory::getUser();
 $userId = $user->get('id');
+$listOrder = $this->escape($this->state->get('list.ordering'));
+$listDirn = $this->escape($this->state->get('list.direction'));
+$saveOrder = $listOrder == 'l.ordering';
 $archived = $this->state->get('filter.published') == 2 ? true : false;
 $trashed = $this->state->get('filter.published') == -2 ? true : false;
 
+if (strpos($listOrder, 'publish_up') !== false) {
+    $orderingColumn = 'publish_up';
+} elseif (strpos($listOrder, 'publish_down') !== false) {
+    $orderingColumn = 'publish_down';
+} elseif (strpos($listOrder, 'modified') !== false) {
+    $orderingColumn = 'modified';
+} else {
+    $orderingColumn = 'created';
+}
+
+if ($saveOrder) {
+    $saveOrderingUrl = 'index.php?option=com_logbook&task=watchdogs.saveOrderAjax&tmpl=component';
+    JHtml::_('sortablelist.sortable', 'watchdogList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+}
 ?>
 <form action="index.php?option=com_logbook&view=watchdogs" method="post" id="adminForm" name="adminForm">
     <?php if (!empty($this->sidebar)) : ?>
@@ -29,6 +46,7 @@ $trashed = $this->state->get('filter.published') == -2 ? true : false;
     <?php // Search tools bar
         echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
     ?>
+	<div class="clr"> </div>
     <?php if (empty($this->items)) : ?>
       <div class="alert alert-no-items">
           <?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>

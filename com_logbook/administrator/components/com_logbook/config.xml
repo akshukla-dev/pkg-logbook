@@ -5,7 +5,7 @@
 		label="COM_LOGBOOK_COMPONENT_LABEL"
 		description="COM_LOGBOOK_COMPONENT_DESC"
 		>
-		
+
 		<field
 			name="captcha"
 			type="plugins"
@@ -31,10 +31,10 @@
 	      	label="COM_LOGBOOK_FIELD_EXTENSION_LIST_LABEL"
 	      	description="COM_LOGBOOK_FIELD_EXTENSION_LIST_DESC" size="30"
 		/>
-		
+
 		<field name="allowed_extensions" type="text" default="pdf;doc;txt"
 	      label="COM_LOGBOOK_FIELD_ALLOWED_EXTENSIONS_LABEL"
-	      description="COM_LOGBOOK_FIELD_ALLOWED_EXTENSIONS_DESC" size="30" 
+	      description="COM_LOGBOOK_FIELD_ALLOWED_EXTENSIONS_DESC" size="30"
 		/>
 
 		<field name="all_files" type="radio" default="0"
@@ -47,7 +47,7 @@
 
 		<field  name="max_file_size" type="maxfilesize" default="2"
 			label="COM_LOGBOOK_MAX_FILE_SIZE_LABEL"
-			description="COM_LOGBOOK_MAX_FILE_SIZE_DESC" 
+			description="COM_LOGBOOK_MAX_FILE_SIZE_DESC"
 		/>
 
 		<field
@@ -100,7 +100,7 @@
 			showon="save_history:1"
 		/>
 
-		
+
 	</fieldset>
 
 	<fieldset name="logs"
@@ -237,15 +237,6 @@
 		    <option value="0">JHIDE</option>
 	    </field>
 
-	    <field name="show_hits"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="COM_LOGBOOK_FIELD_SHOW_HITS_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_HITS_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
 
 	    <field name="show_downloads"
 		    type="radio"
@@ -263,17 +254,6 @@
 		    label="COM_LOGBOOK_FIELD_SHOW_COMPLETE_DETAILS_LABEL"
 		    description="COM_LOGBOOK_FIELD_SHOW_COMPLETE_DETAILS_DESC"
 		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field id="show_tags"
-		    name="show_tags"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    default="1"
-		    label="COM_LOGBOOK_FIELD_SHOW_TAGS_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_TAGS_DESC">
 		    <option value="1">JSHOW</option>
 		    <option value="0">JHIDE</option>
 	    </field>
@@ -506,7 +486,7 @@
 		    label="JGLOBAL_DATE_FORMAT_LABEL"
 		    description="COM_LOGBOOK_FIELD_DATE_FORMAT_DESC" />
 
-		<field name="list_show_downloads"
+		<field name="show_downloads"
 		    type="radio"
 		    class="btn-group btn-group-yesno"
 		    label="COM_LOGBOOK_FIELD_SHOW_DOWNLOADS_LABEL"
@@ -516,17 +496,6 @@
 		    <option value="0">JHIDE</option>
 	    </field>
 
-		<field
-			name="show_hits"
-			type="radio"
-			class="btn-group btn-group-yesno"
-			default="1"
-			description="COM_LOGBOOK_FIELD_CONFIG_HITS_DESC"
-			label="JGLOBAL_HITS"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
 
 		<field name="spacer1" type="spacer" hr="true" />
 

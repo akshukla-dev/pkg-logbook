@@ -72,12 +72,16 @@ class LogbookModelWatchdogs extends JModelList
         // Initialise variables.
         $app = JFactory::getApplication();
         $session = JFactory::getSession();
+
         // Adjust the context to support modal layouts.
         if ($layout = $app->input->get('layout')) {
             $this->context .= '.'.$layout;
         }
 
         //Get the state values set by the user.
+        $search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
+        $this->setState('filter.search', $search);
+
         $access = $this->getUserStateFromRequest($this->context.'.filter.access', 'filter_access');
         $this->setState('filter.access', $access);
 
@@ -150,10 +154,10 @@ class LogbookModelWatchdogs extends JModelList
             $this->getState(
                 'list.select',
                 'wd.id, wd.alias, wd.isid, wd.bpid, wd.wcid, wd.tiid'.
-                     ', wd.logging_window, wd.first_log_date, wd.last_log_date'.
-                     ', wd.log_count, wd.access, wd.state, wd.ordering'.
-                     ', wd.next_due_date, wd.publish_up, wd.publish_down, wd.created'.
-                     ', wd.modified, wd.created_by, wd.created_by_alias, wd.modified_by'
+                ', wd.logging_window, wd.first_log_date, wd.last_log_date'.
+                ', wd.log_count, wd.access, wd.state, wd.ordering'.
+                ', wd.next_due_date, wd.publish_up, wd.publish_down, wd.created'.
+                ', wd.modified, wd.created_by, wd.created_by_alias, wd.modified_by'
             )
         );
         $query->from('#__logbook_watchdogs AS wd');
@@ -215,7 +219,7 @@ class LogbookModelWatchdogs extends JModelList
         //Filter by authur.
         $authorId = $this->getState('filter.author_id');
         if (is_numeric($userId)) {
-            $type = $this->getState('filter.user_id.include', true) ? '= ' : '<>';
+            $type = $this->getState('filter.author_id.include', true) ? '= ' : '<>';
             $query->where('wd.created_by'.$type.(int) $authorId);
         }
 

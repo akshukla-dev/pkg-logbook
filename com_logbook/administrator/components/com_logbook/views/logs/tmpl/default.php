@@ -52,6 +52,9 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
 <table class="table table-striped" id="logList">
   <thead>
     <tr>
+      <th width="1%" class="nowrap center hidden-phone"> <!--Odering Handle -->
+                <?php echo JHtml::_('searchtools.sort', '', 'l.ordering', $listDirn, $listOrder, null, 'DESC', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+      </th>
       <th width="1%" class="center"><!-- Checkall Handle-->
         <?php echo JHtml::_('grid.checkall'); ?>
       </th>
@@ -87,7 +90,7 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
     </thead>
     <tfoot>
       <tr>
-        <td colspan="11"></td>
+        <td colspan="12"><?php echo $this->pagination->getListFooter(); ?></td>
       </tr>
     </tfoot>
     <tbody>
