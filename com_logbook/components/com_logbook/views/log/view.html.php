@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright   Copyright (C) 2020 AMit Kumar Shukla, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2020 Amit Kumar Shukla, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -12,108 +12,44 @@ defined('_JEXEC') or die;
  */
 class LogbookViewLog extends JViewLegacy
 {
+	protected $state;
+ 	protected $item;
     public function display($tpl = null)
     {
-        // Assign data to the view
-        $this->msg = $this->get('Msg');
+		// Initialise variables
+		$this->state = $this->get('State');
+		$this->item = $this->get('Item');
+		$user = JFactory::getUser();
 
-        // Check for errors.
-        if (count($errors = $this->get('Errors'))) {
-            JLog::add(implode('<br />', $errors), JLog::WARNING, 'jerror');
+		// Check for errors.
+		if(count($errors = $this->get('Errors'))) {
+			JFactory::getApplication()->enqueueMessage($errors, 'error');
+			return false;
+		}
 
-            return false;
-        }
+		//Get the possible extra class name.
+		$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
+		//Get the user object and the current url.
+		$user = JFactory::getUser();
+		$uri = JUri::getInstance();
+		//Variables needed in the document edit layout.
+		$this->item->user_id = $user->get('id');
+		$this->item->uri = $uri;
 
-        // Display the view
-        parent::display($tpl);
-    }
+		//Increment the hits for this document.
+		$model = $this->getModel();
+		$model->hit();
 
-    /*protected $state;
+		$this->setDocument();
 
-        protected $item;
+		parent::display($tpl);
 
-        protected $form;
+	}
 
-        /**
-         * Display the view.
-         *
-         * @param string $tpl the name of the template file to parse; automatically searches through the template paths
-         *
-         * @return mixed a string if successful, otherwise an Error object
-         */
-    /*public function display($tpl = null)
-    {
-        $this->state = $this->get('State');
-        $this->item = $this->get('Item');
-        $this->form = $this->get('Form');
-
-        // Check for errors.
-        if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode("\n", $errors));
-
-            return false;
-        }
-
-        // If we are forcing a language in modal (used for associations).
-        if ($this->getLayout() === 'modal' && $forcedLanguage = JFactory::getApplication()->input->get('forcedLanguage', '', 'cmd')) {
-            // Set the language field to the forcedLanguage and disable changing it.
-            $this->form->setValue('language', null, $forcedLanguage);
-            $this->form->setFieldAttribute('language', 'readonly', 'true');
-
-            // Only allow to select categories with All language or with the forced language.
-            $this->form->setFieldAttribute('catid', 'language', '*,'.$forcedLanguage);
-
-            // Only allow to select tags with All language or with the forced language.
-            $this->form->setFieldAttribute('tags', 'language', '*,'.$forcedLanguage);
-        }
-
-        $this->addToolbar();
-
-        parent::display($tpl);
-    }
-
-    /**
-     * Add the page title and toolbar.
-     *
-     *
-     * @since   1.6
-     */
-    /*protected function addToolbar()
-    {
-        JFactory::getApplication()->input->set('hidemainmenu', true);
-
-        $user = JFactory::getUser();
-        $isNew = ($this->item->id == 0);
-        $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-
-        // Since we don't track these assets at the item level, use the category id.
-        $canDo = JHelperContent::getActions('com_logbook', 'category', $this->item->catid);
-
-        JToolbarHelper::title($isNew ? JText::_('COM_LOGBOOK_MANAGER_LOG_NEW') : JText::_('COM_LOGBOOK_MANAGER_LOG_EDIT'), 'link logs');
-
-        // If not checked out, can save the item.
-        if (!$checkedOut && ($canDo->get('core.edit') || (count($user->getAuthorisedCategories('com_logbook', 'core.create'))))) {
-            JToolbarHelper::apply('log.apply');
-            JToolbarHelper::save('log.save');
-        }
-        if (!$checkedOut && (count($user->getAuthorisedCategories('com_logbook', 'core.create')))) {
-            JToolbarHelper::save2new('log.save2new');
-        }
-        // If an existing item, can save to a copy.
-        if (!$isNew && (count($user->getAuthorisedCategories('com_logbook', 'core.create')) > 0)) {
-            JToolbarHelper::save2copy('log.save2copy');
-        }
-        if (empty($this->item->id)) {
-            JToolbarHelper::cancel('log.cancel');
-        } else {
-            if ($this->state->params->get('save_history', 0) && $user->authorise('core.edit')) {
-                JToolbarHelper::versions('com_logbook.log', $this->item->id);
-            }
-
-            JToolbarHelper::cancel('log.cancel', 'JTOOLBAR_CLOSE');
-        }
-
-        JToolbarHelper::divider();
-        JToolbarHelper::help('JHELP_COMPONENTS_LOGBOOK_LOGS_EDIT');
-    }*/
+	protected function setDocument()
+	{
+	  //Include css files.
+	  $doc = JFactory::getDocument();
+	  //$doc->addStyleSheet(JURI::base().'components/com_lrm/css/lrm.css');
+	}
 }

@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
 	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
-	<version>2.0.6</version>
+	<version>4.0.0</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
@@ -28,17 +28,18 @@
 
 	<media folder="media/com_logbook" destination="com_logbook">
 		<folder>images</folder>
+		<folder>extensions</folder>
 	</media>
 
 	<files folder="components/com_logbook">
-		<file>controller.php</file>
-        <!--<file>metadata.xml</file>
+		<folder>controllers</folder>
+		<folder>download</folder>
+		<folder>helpers</folder>
         <folder>models</folder>
-        <file>router.php</file>
-        <folder>controllers</folder>
         <folder>views</folder>
-        <folder>helpers</folder>-->
+		<file>controller.php</file>
         <file>logbook.php</file>
+        <file>router.php</file>
 	</files>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.com_logbook.ini</language>
@@ -52,15 +53,15 @@
 			-->
 			<menu link="option=com_logbook" view="logs" img="class:book"
 				alt="Logbook/Logs">COM_LOGBOOK_LOGS</menu>
-			<menu link="option=com_categories&amp;extension=com_logbook"
+			<!--<menu link="option=com_categories&amp;extension=com_logbook"
 				view="categories" img="class:logbook-cat" alt="Logbook/Categories">COM_LOGBOOK_CATEGORIES</menu>
             <menu link="option=com_logbook" view="locations" img="class:location"
 				alt="Logbook/Locations">COM_LOGBOOK_LOCATIONS</menu>
             <menu link="option=com_logbook" view="blueprints" img="class:paste"
 				alt="Logbook/Blueprint">COM_LOGBOOK_BLUEPRINTS</menu>
 			<menu link="option=com_logbook" view="folders" img="class:folder-2"
-				alt="Logbook/Locations">COM_LOGBOOK_FOLDERS</menu>
-            <menu link="option=com_logbook" view="logrefs" img="class:alarm"
+				alt="Logbook/Locations">COM_LOGBOOK_FOLDERS</menu>-->
+            <menu link="option=com_logbook" view="watchdogs" img="class:alarm"
 				alt="Logbook/Schedule">COM_LOGBOOK_LOGREFS</menu>
 		</submenu>
 		<files folder="administrator/components/com_logbook">

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<form addrulepath="/administrator/components/com_logbook/models/rules">
+
+	<fieldset addfieldpath="/administrator/components/com_logbook/models/fields" name="details">
+		<field name="wcid" type="wcenterlist"
+			label="COM_LOGBOOK_FIELD_WCEDNTER_LABEL"
+			size = "20" class="inputbox" validate="componentwcenters" required="true" >
+		</field>
+		<field name="isid" type="bprintlist"
+			label="COM_LOGBOOK_FIELD_BRINTP_LABEL"
+			size = "40" class="inputbox" validate="componentbprints" required="true" >
+		</field>
+		<field name="wdid" type="hidden"
+			label="COM_LOGBOOK_FIELD_WATCHDOG_LABEL"
+			size = "10" class="inputbox" required="true" >
+		</field>
+
+		<!-- layout: title_alias -->
+		<field name="title" type="text"
+			label="COM_LOGBOOK_FIELD_TITLE_LABEL"
+			description="COM_LOGBOOK_FIELD_TITLE_DESC"
+			class="input-xxlarge input-large-text"
+			size="40" required="true" />
+
+		<field name="alias" type="text" label="JFIELD_ALIAS_LABEL"
+			description="JFIELD_ALIAS_DESC"
+			hint="JFIELD_ALIAS_PLACEHOLDER"
+			class="inputbox" size="40" />
+
+		<field name="uploaded_file" type="file"
+			label="COM_LOGBOOK_FIELD_METHOD_SERVER_LABEL"
+			description="COM_LOGBOOK_FIELD_METHOD_SERVER_DESC"
+			size="40" required="false" >
+		</field>
+
+		<field name="signatories" type="text"
+			label="COM_LOGBOOK_FIELD_SIGNATORIES_LABEL"
+			description="COM_LOGBOOK_FIELD_SIGNATORIES_DESC"
+			size="40" required="true" >
+		</field>
+
+
+		<field name="remarks" type="textarea"
+			label="COM_LOGBOOK_FIELD_DESCRIPTION_LABEL"
+			description="COM_LOGBOOK_FIELD_DESCRIPTION_DESC"
+			rows="3" cols="30">
+		</field>
+
+		<field name="file_name" type="text"
+			label="COM_LOGBOOK_FIELD_FILE_NAME_LABEL"
+			description="COM_LOGBOOK_FIELD_FILE_NAME_DESC"
+			filter="unset"
+			readonly="true" class="readonly"
+			size="40" >
+		</field>
+
+		<field name="downloads" type="text"
+			class="readonly"
+			size="6" label="COM_LOGBOOK_FIELD_DOWNLOADS_LABEL"
+			description="COM_LOGBOOK_FIELD_DOWNLOADS_DESC"
+			readonly="true" filter="unset" />
+
+
+
+		<!-- layout: global -->
+
+
+		<field name="published" type="list"
+			label="COM_LOGBOOK_FIELD_PUBLISHED_LABEL"
+			description="COM_LOGBOOK_FIELD_PUBLISHED_DESC"
+			class="inputbox"
+			size="1" default="1">
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+		</field>
+
+		<field name="access" type="accesslevel" label="COM_LOGBOOK_FIELD_ACCESS_LABEL"
+			description="COM_LOGBOOK_FIELD_ACCESS_DESC" class="inputbox" size="1" />
+
+		<!-- layout: publishingdata -->
+
+		<!-- IMPORTANT: A input field called "id" must exists to set if the element
+			is new (id = 0) or in edition. -->
+		<field id="id" name="id" type="hidden"
+			class="inputbox" label="COM_LOGBOOK_ID_LABEL"
+			size="10" default="0" readonly="true" />
+
+		<field name="created_by" type="user"
+			label="COM_LOGBOOK_FIELD_PUT_ONLINE_BY_LABEL" description="COM_LOGBOOK_FIELD_PUT_ONLINE_BY_DESC" />
+
+		<field name="created" type="calendar"
+			label="COM_LOGBOOK_FIELD_ONLINE_DATE_LABEL" description="COM_LOGBOOK_FIELD_ONLINE_DATE_DESC"
+			class="inputbox" size="22" format="%Y-%m-%d %H:%M:%S"
+			filter="user_utc" />
+
+		<field name="publish_up" type="calendar"
+			label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
+			description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			filter="user_utc" />
+
+		<field name="publish_down" type="calendar"
+			label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
+			description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+			class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			filter="user_utc" />
+
+		<field name="checked_out" type="hidden" filter="unset" />
+		<field name="checked_out_time" type="hidden" filter="unset" />
+		<field name="replace_file" type="hidden" default="0" filter="unset" />
+	</fieldset>
+
+</form>
+
+
+
+
