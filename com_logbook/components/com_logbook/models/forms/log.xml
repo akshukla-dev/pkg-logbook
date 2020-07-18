@@ -5,15 +5,19 @@
 	<fieldset addfieldpath="/administrator/components/com_logbook/models/fields" name="details">
 		<field name="wcid" type="wcenterlist"
 			label="COM_LOGBOOK_FIELD_WCEDNTER_LABEL"
-			size = "20" class="inputbox" validate="componentwcenters" required="true" >
+			size = "40" class="inputbox" validate="componentwcenters" required="true" >
+		</field>
+		<field name="wcid" type="insetlist"
+			label="COM_LOGBOOK_FIELD_INSET_LABEL"
+			size = "100" class="inputbox" validate="componentwcenters" required="true" >
 		</field>
 		<field name="isid" type="bprintlist"
 			label="COM_LOGBOOK_FIELD_BRINTP_LABEL"
-			size = "40" class="inputbox" validate="componentbprints" required="true" >
+			size = "100" class="inputbox" validate="componentbprints" required="true" >
 		</field>
-		<field name="wdid" type="hidden"
+		<field name="wdid" type="wdoglist"
 			label="COM_LOGBOOK_FIELD_WATCHDOG_LABEL"
-			size = "10" class="inputbox" required="true" >
+			size = "40" class="inputbox" required="true" >
 		</field>
 
 		<!-- layout: title_alias -->

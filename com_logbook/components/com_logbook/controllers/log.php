@@ -1,343 +1,334 @@
 <?php
 /**
- * @package Joomla.site
- * @subpackage com_logbook
  * @copyright Copyright (c)2020 Amit Kumar Shukla
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
  */
-
 
 //Note: Override some parent form methods (libraries/legacy/controllers/form.php).
 //      See the file for more details.
 
 defined('_JEXEC') or die;
 
-/**
- * @package     Joomla.Site
- * @subpackage  com_lrm
- */
 class LogbookControllerLog extends JControllerForm
 {
-  /**
-   * The URL view item variable.
-   *
-   * @var    string
-   * @since  1.6
-   */
-  protected $view_item = 'form';
+    /**
+     * The URL view item variable.
+     *
+     * @var string
+     *
+     * @since  1.6
+     */
+    protected $view_item = 'form';
 
-  /**
-   * The URL view list variable.
-   *
-   * @var    string
-   * @since  1.6
-   */
-  protected $view_list = 'logs';
+    /**
+     * The URL view list variable.
+     *
+     * @var string
+     *
+     * @since  1.6
+     */
+    protected $view_list = 'logs';
 
-  /**
-   * The URL edit variable.
-   *
-   * @var    string
-   * @since  3.2
-   */
-  protected $urlVar = 'l.id';
+    /**
+     * The URL edit variable.
+     *
+     * @var string
+     *
+     * @since  3.2
+     */
+    protected $urlVar = 'l.id';
 
-  /**
-   * Method to add a new record.
-   *
-   * @return  mixed  True if the record can be added, a error object if not.
-   *
-   * @since   1.6
-   */
-  public function add()
-  {
-    if(!parent::add()) {
-      // Redirect to the return page.
-      $this->setRedirect($this->getReturnPage());
-    }
-  }
-
-  /**
-   * Method override to check if you can add a new record.
-   *
-   * @param   array  $data  An array of input data.
-   *
-   * @return  boolean
-   *
-   * @since   1.6
-   */
-  protected function allowAdd($data = array())
-  {
-    //Note: If a watchdog id is found, check whether the user is allowed to create an item into this category.
-
-    $user = JFactory::getUser();
-    //Get a possible category id passed in the data or URL.
-    $watchdogId = JArrayHelper::getValue($data, 'wdid', $this->input->getInt('wdid'), 'int');
-    $allow = null;
-
-    if($watchdogId) {
-      // If the category has been passed in the data or URL check it.
-      $allow = $user->authorise('core.create', 'com_logbook.watchdog.'.$watchdogId);
+    /**
+     * Method to add a new record.
+     *
+     * @return mixed true if the record can be added, a error object if not
+     *
+     * @since   1.6
+     */
+    public function add()
+    {
+        if (!parent::add()) {
+            // Redirect to the return page.
+            $this->setRedirect($this->getReturnPage());
+        }
     }
 
-    if($allow === null) {
-      // In the absense of better information, revert to the component permissions.
-      return parent::allowAdd();
-    }
-    else {
-      return $allow;
-    }
-  }
+    /**
+     * Method override to check if you can add a new record.
+     *
+     * @param array $data an array of input data
+     *
+     * @return bool
+     *
+     * @since   1.6
+     */
+    protected function allowAdd($data = array())
+    {
+        //Note: If a watchdog id is found, check whether the user is allowed to create an item into this category.
 
-  /**
-   * Method override to check if you can edit an existing record.
-   *
-   * @param   array   $data  An array of input data.
-   * @param   string  $key   The name of the key for the primary key; default is id.
-   *
-   * @return  boolean
-   *
-   * @since   1.6
-   *
-   */
-  protected function allowEdit($data = array(), $key = 'id')
-  {
-    $recordId = (int) isset($data[$key]) ? $data[$key] : 0;
-    $user = JFactory::getUser();
-    $userId = $user->get('id');
-    $asset = 'com_logbook.log.'.$recordId;
+        $user = JFactory::getUser();
+        //Get a possible watchdog id passed in the data or URL.
+        $watchdogId = JArrayHelper::getValue($data, 'wdid', $this->input->getInt('wdid'), 'int');
+        $allow = null;
 
-    // Check general edit permission first.
-    if($user->authorise('core.edit', $asset)) {
-      return true;
-    }
+        if ($watchdogId) {
+            // If the category has been passed in the data or URL check it.
+            $allow = $user->authorise('core.create', 'com_logbook.watchdog.'.$watchdogId);
+        }
 
-    // Fallback on edit.own.
-    // First test if the permission is available.
-    if($user->authorise('core.edit.own', $asset)) {
-      // Now test the owner is the user.
-      $ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
-      if(empty($ownerId) && $recordId) {
-	      // Need to do a lookup from the model.
-	      $record = $this->getModel()->getItem($recordId);
-
-	      if(empty($record)) {
-	        return false;
-      	}
-
-	      $ownerId = $record->created_by;
-      }
-
-      // If the owner matches 'me' then do the test.
-      if($ownerId == $userId) {
-	      return true;
-      }
+        if ($allow === null) {
+            // In the absense of better information, revert to the component permissions.
+            return parent::allowAdd();
+        } else {
+            return $allow;
+        }
     }
 
-    // Since there is no asset tracking, revert to the component permissions.
-    return parent::allowEdit($data, $key);
-  }
+    /**
+     * Method override to check if you can edit an existing record.
+     *
+     * @param array  $data an array of input data
+     * @param string $key  the name of the key for the primary key; default is id
+     *
+     * @return bool
+     *
+     * @since   1.6
+     */
+    protected function allowEdit($data = array(), $key = 'id')
+    {
+        $recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+        $user = JFactory::getUser();
+        $userId = $user->get('id');
+        $asset = 'com_logbook.log.'.$recordId;
 
-  /**
-   * Method to cancel an edit.
-   *
-   * @param   string  $key  The name of the primary key of the URL variable.
-   *
-   * @return  boolean  True if access level checks pass, false otherwise.
-   *
-   * @since   1.6
-   */
-  public function cancel($key = 'd_id')
-  {
-    parent::cancel($key);
+        // Check general edit permission first.
+        if ($user->authorise('core.edit', $asset)) {
+            return true;
+        }
 
-    // Redirect to the return page.
-    $this->setRedirect($this->getReturnPage());
-  }
+        // Fallback on edit.own.
+        // First test if the permission is available.
+        if ($user->authorise('core.edit.own', $asset)) {
+            // Now test the owner is the user.
+            $ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
+            if (empty($ownerId) && $recordId) {
+                // Need to do a lookup from the model.
+                $record = $this->getModel()->getItem($recordId);
 
-  /**
-   * Method to edit an existing record.
-   *
-   * @param   string  $key     The name of the primary key of the URL variable.
-   * @param   string  $urlVar  The name of the URL variable if different from the primary key
-   * (sometimes required to avoid router collisions).
-   *
-   * @return  boolean  True if access level check and checkout passes, false otherwise.
-   *
-   * @since   1.6
-   */
-  public function edit($key = null, $urlVar = 'l_id')
-  {
-    $result = parent::edit($key, $urlVar);
+                if (empty($record)) {
+                    return false;
+                }
 
-    return $result;
-  }
+                $ownerId = $record->created_by;
+            }
 
-  /**
-   * Method to get a model object, loading it if required.
-   *
-   * @param   string  $name    The model name. Optional.
-   * @param   string  $prefix  The class prefix. Optional.
-   * @param   array   $config  Configuration array for model. Optional.
-   *
-   * @return  object  The model.
-   *
-   * @since   1.5
-   */
-  public function getModel($name = 'form', $prefix = '', $config = array('ignore_request' => true))
-  {
-    $model = parent::getModel($name, $prefix, $config);
+            // If the owner matches 'me' then do the test.
+            if ($ownerId == $userId) {
+                return true;
+            }
+        }
 
-    return $model;
-  }
-
-  /**
-   * Gets the URL arguments to append to an item redirect.
-   *
-   * @param   integer  $recordId  The primary key id for the item.
-   * @param   string   $urlVar    The name of the URL variable for the id.
-   *
-   * @return  string	The arguments to append to the redirect URL.
-   *
-   * @since   1.6
-   */
-  protected function getRedirectToItemAppend($recordId = null, $urlVar = 'l_id')
-  {
-    // Need to override the parent method completely.
-    $tmpl   = $this->input->get('tmpl');
-    // $layout = $this->input->get('layout', 'edit');
-    $append = '';
-
-    // Setup redirect info.
-    if($tmpl) {
-      $append .= '&tmpl='.$tmpl;
+        // Since there is no asset tracking, revert to the component permissions.
+        return parent::allowEdit($data, $key);
     }
 
-    // TODO This is a bandaid, not a long term solution.
-    // if ($layout)
-    // {
-    //   $append .= '&layout=' . $layout;
-    // }
-    $append .= '&layout=edit';
+    /**
+     * Method to cancel an edit.
+     *
+     * @param string $key the name of the primary key of the URL variable
+     *
+     * @return bool true if access level checks pass, false otherwise
+     *
+     * @since   1.6
+     */
+    public function cancel($key = 'l_id')
+    {
+        parent::cancel($key);
 
-    if($recordId) {
-      $append .= '&'.$urlVar.'='.$recordId;
+        // Redirect to the return page.
+        $this->setRedirect($this->getReturnPage());
     }
 
-    $itemId = $this->input->getInt('Itemid');
-    $return = $this->getReturnPage();
-    $wdId = $this->input->getInt('wdid', null, 'get');
+    /**
+     * Method to edit an existing record.
+     *
+     * @param string $key    the name of the primary key of the URL variable
+     * @param string $urlVar the name of the URL variable if different from the primary key
+     *                       (sometimes required to avoid router collisions)
+     *
+     * @return bool true if access level check and checkout passes, false otherwise
+     *
+     * @since   1.6
+     */
+    public function edit($key = null, $urlVar = 'l_id')
+    {
+        $result = parent::edit($key, $urlVar);
 
-    if($itemId) {
-      $append .= '&Itemid='.$itemId;
+        return $result;
     }
 
-    if($wdId) {
-      $append .= '&wdid='.$wdId;
+    /**
+     * Method to get a model object, loading it if required.
+     *
+     * @param string $name   The model name. Optional.
+     * @param string $prefix The class prefix. Optional.
+     * @param array  $config Configuration array for model. Optional.
+     *
+     * @return object the model
+     *
+     * @since   1.5
+     */
+    public function getModel($name = 'form', $prefix = '', $config = array('ignore_request' => true))
+    {
+        $model = parent::getModel($name, $prefix, $config);
+
+        return $model;
     }
 
-    if($return) {
-      $append .= '&return='.base64_encode($return);
+    /**
+     * Gets the URL arguments to append to an item redirect.
+     *
+     * @param int    $recordId the primary key id for the item
+     * @param string $urlVar   the name of the URL variable for the id
+     *
+     * @return string the arguments to append to the redirect URL
+     *
+     * @since   1.6
+     */
+    protected function getRedirectToItemAppend($recordId = null, $urlVar = 'l_id')
+    {
+        // Need to override the parent method completely.
+        $tmpl = $this->input->get('tmpl');
+        // $layout = $this->input->get('layout', 'edit');
+        $append = '';
+
+        // Setup redirect info.
+        if ($tmpl) {
+            $append .= '&tmpl='.$tmpl;
+        }
+
+        // TODO This is a bandaid, not a long term solution.
+        // if ($layout)
+        // {
+        //   $append .= '&layout=' . $layout;
+        // }
+        $append .= '&layout=edit';
+
+        if ($recordId) {
+            $append .= '&'.$urlVar.'='.$recordId;
+        }
+
+        $itemId = $this->input->getInt('Itemid');
+        $return = $this->getReturnPage();
+        $watchdogId = $this->input->getInt('wdid', null, 'get');
+
+        if ($itemId) {
+            $append .= '&Itemid='.$itemId;
+        }
+
+        if ($watchdogId) {
+            $append .= '&wdid='.$watchdogId;
+        }
+
+        if ($return) {
+            $append .= '&return='.base64_encode($return);
+        }
+
+        return $append;
     }
 
-    return $append;
-  }
+    /**
+     * Get the return URL.
+     *
+     * If a "return" variable has been passed in the request
+     *
+     * @return string the return URL
+     *
+     * @since   1.6
+     */
+    protected function getReturnPage()
+    {
+        $return = $this->input->get('return', null, 'base64');
 
-  /**
-   * Get the return URL.
-   *
-   * If a "return" variable has been passed in the request
-   *
-   * @return  string	The return URL.
-   *
-   * @since   1.6
-   */
-  protected function getReturnPage()
-  {
-    $return = $this->input->get('return', null, 'base64');
-
-    if(empty($return) || !JUri::isInternal(base64_decode($return))) {
-      return JUri::base();
-    }
-    else {
-      return base64_decode($return);
-    }
-  }
-
-  /**
-   * Function that allows child controller access to model data after the data has been saved.
-   *
-   * @param   JModelLegacy  $model  The data model object.
-   * @param   array         $validData   The validated data.
-   *
-   * @return  void
-   *
-   * @since   1.6
-   */
-  protected function postSaveHook(JModelLegacy $model, $validData = array())
-  {
-    return;
-  }
-
-  /**
-   * Method to save a record.
-   *
-   * @param   string  $key     The name of the primary key of the URL variable.
-   * @param   string  $urlVar  The name of the URL variable if different from the primary key (sometimes required to avoid router collisions).
-   *
-   * @return  boolean  True if successful, false otherwise.
-   *
-   * @since   1.6
-   */
-  public function save($key = null, $urlVar = 'l_id')
-  {
-    $app = JFactory::getApplication();
-    $recordId = $this->input->getInt($urlVar);
-    //Get the jform data.
-    $data = $this->input->post->get('jform', array(), 'array');
-
-    //Set the alias of the document.
-
-    //Remove possible spaces.
-    $data['alias'] = trim($data['alias']);
-    if(empty($data['alias'])) {
-      //Created a sanitized alias from the title field, (see stringURLSafe function for details).
-      $data['alias'] = JFilterOutput::stringURLSafe($data['title']);
+        if (empty($return) || !JUri::isInternal(base64_decode($return))) {
+            return JUri::base();
+        } else {
+            return base64_decode($return);
+        }
     }
 
-    // Verify that the alias is unique
-
-    //Note: Usually this code goes into the overrided store JTable function but the file
-    //would already be uploaded on the server if any duplicate alias is found.
-    //To avoid this situation we check the alias unicity here as the file uploading
-    //is not still triggered.
-
-    $model = $this->getModel();
-    $table = $model->getTable();
-
-    if($table->load(array('alias' => $data['alias'], 'wdid' => $data['wdid'])) && ($table->id != $recordId || $recordId == 0)) {
-      JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_DATABASE_ERROR_LOG_UNIQUE_ALIAS'), 'error');
-
-      // Save the data in the session.
-      //Note: It allows to preserve the data previously set by the user after the redirection.
-      $app->setUserState($this->option.'.edit.'.$this->context.'.data', $data);
-
-      $this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_item.$this->getRedirectToItemAppend($recordId, $urlVar), false));
-      return false;
+    /**
+     * Function that allows child controller access to model data after the data has been saved.
+     *
+     * @param JModelLegacy $model     the data model object
+     * @param array        $validData the validated data
+     *
+     * @since   1.6
+     */
+    protected function postSaveHook(JModelLegacy $model, $validData = array())
+    {
+        return;
     }
 
-    //Update jform with the modified data.
-    $this->input->post->set('jform', $data);
+    /**
+     * Method to save a record.
+     *
+     * @param string $key    the name of the primary key of the URL variable
+     * @param string $urlVar the name of the URL variable if different from the primary key (sometimes required to avoid router collisions)
+     *
+     * @return bool true if successful, false otherwise
+     *
+     * @since   1.6
+     */
+    public function save($key = null, $urlVar = 'l_id')
+    {
+        $app = JFactory::getApplication();
+        $recordId = $this->input->getInt($urlVar);
+        //Get the jform data.
+        $data = $this->input->post->get('jform', array(), 'array');
 
-    $result = parent::save($key, $urlVar);
+        //Set the alias of the document.
 
-    // If ok, redirect to the return page.
-    if($result) {
-      $this->setRedirect($this->getReturnPage());
+        //Remove possible spaces.
+        $data['alias'] = trim($data['alias']);
+        if (empty($data['alias'])) {
+            //Created a sanitized alias from the title field, (see stringURLSafe function for details).
+            $data['alias'] = JFilterOutput::stringURLSafe($data['title']);
+        }
+
+        // Verify that the alias is unique
+
+        //Note: Usually this code goes into the overrided store JTable function but the file
+        //would already be uploaded on the server if any duplicate alias is found.
+        //To avoid this situation we check the alias unicity here as the file uploading
+        //is not still triggered.
+
+        $model = $this->getModel();
+        $table = $model->getTable();
+
+        if ($table->load(array('alias' => $data['alias'], 'wdid' => $data['wdid'])) && ($table->id != $recordId || $recordId == 0)) {
+            JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_DATABASE_ERROR_LOG_UNIQUE_ALIAS'), 'error');
+
+            // Save the data in the session.
+            //Note: It allows to preserve the data previously set by the user after the redirection.
+            $app->setUserState($this->option.'.edit.'.$this->context.'.data', $data);
+
+            $this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_item.$this->getRedirectToItemAppend($recordId, $urlVar), false));
+
+            return false;
+        }
+
+        //Update jform with the modified data.
+        $this->input->post->set('jform', $data);
+
+        $result = parent::save($key, $urlVar);
+
+        // If ok, redirect to the return page.
+        if ($result) {
+            $this->setRedirect($this->getReturnPage());
+        }
+
+        return $result;
     }
-
-    return $result;
-  }
 }
-

@@ -9,22 +9,41 @@
 		</message>
 	</layout>
 	<fields name="params">
-		<fieldset name="basic">
+		<fieldset name="basic"
+			addfieldpath="/administrator/components/com_logbook/models/fields"
+		>
 			<field name="wcid"
-				type="wcenter"
+				type="workcenter"
 				label="COM_LOGBOOK_CHOOSE_WCENTER_LABEL"
-				extension="com_logbook"
-				description="COM_LOGBOOK_CHOOSE_WCENTER_DESC" />
+				description="COM_LOGBOOK_CHOOSE_WCENTER_DESC"
+				select="true"
+				readonly="true"/>
 			<field name="isid"
 				type="inset"
 				label="COM_LOGBOOK_CHOOSE_INSET_LABEL"
-				extension="com_logbook"
-				description="COM_LOGBOOK_CHOOSE_INSET_DESC" />
+				description="COM_LOGBOOK_CHOOSE_INSET_DESC"
+				select="true"
+				readonly="true"/>
 			<field name="bpid"
-				type="bprint"
-				label="COM_LOGBOOK_CHOOSE_BPRINT_LABEL"
-				extension="com_logbook"
-				description="COM_LOGBOOK_CHOOSE_BPRINT_DESC" />
+				type="blueprint"
+				label="COM_LOGBOOK_CHOOSE_BLUEPRINT_LABEL"
+				description="COM_LOGBOOK_CHOOSE_BLUEPRINT_DESC"
+				select="true"
+				readonly="true"/>
+
+			<field name="spacer" type="spacer" hr="true" />
+
+			<field name="tiid"
+				type="timeinterval"
+				label="COM_LOGBOOK_CHOOSEN_TINTERVAL_LABEL"
+				description="COM_LOGBOOK_CHOOSEN_TINTERVAL_DESC"
+				readonly="true"/>
+			<field name="wdid"
+				type="watchdog"
+				label="COM_LOGBOOK_CHOOSEN_WATCHDOG_LABEL"
+				description="COM_LOGBOOK_CHOOSEN_WATCHDOG_DESC"
+				readonly="true" />
+
 		</fieldset>
 	</fields>
 </metadata>

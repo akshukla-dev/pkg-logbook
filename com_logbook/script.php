@@ -23,8 +23,8 @@ class com_logbookInstallerScript
         $this->release = $parent->get('manifest')->version;
 
         // Show the essential information at the install/update back-end
-        echo '<p>'.JText::_('COM_LRM_INSTALLING_COMPONENT_VERSION').$this->release;
-        echo '<br />'.JText::_('COM_LRM_CURRENT_JOOMLA_VERSION').$jversion->getShortVersion().'</p>';
+        echo '<p>'.JText::_('COM_LOGBOOK_INSTALLING_COMPONENT_VERSION').$this->release;
+        echo '<br />'.JText::_('COM_LOGBOOK_CURRENT_JOOMLA_VERSION').$jversion->getShortVersion().'</p>';
 
         //Abort if the component being installed is not newer than the
         //currently installed version.
@@ -32,14 +32,14 @@ class com_logbookInstallerScript
             $oldRelease = $this->getParam('version');
             $rel = ' v-'.$oldRelease.' -> v-'.$this->release;
             if(version_compare($this->release, $oldRelease, 'le')) {
-              JFactory::getApplication()->enqueueMessage(JText::_('COM_LRM_UPDATE_INCORRECT_VERSION').$rel, 'error');
+              JFactory::getApplication()->enqueueMessage(JText::_('COM_Logbook_UPDATE_INCORRECT_VERSION').$rel, 'error');
               return false;
             }
         }*/
 
         if ($type == 'install') {
             //Create a "logbook_logs" folder in the root directory of the site.
-            if (JFolder::create(JPATH_ROOT.'/logbook_logs')) {
+            if (JFolder::create(JPATH_ROOT.'/logbookfiles')) {
                 echo '<p style="color:green;">'.JText::_('COM_LOGBOOK_FOLDER_CREATION_SUCCESS').'</p>';
             } else { //Stop the installation if the folder cannot be created.
                 JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_FOLDER_CREATION_ERROR'), 'error');
@@ -49,7 +49,7 @@ class com_logbookInstallerScript
 
             //Create a .htaccess file in the "logbook_logs" directory.
             $buffer = 'Options -Indexes';
-            if (JFile::write(JPATH_ROOT.'/logbook_logs/.htaccess', $buffer)) {
+            if (JFile::write(JPATH_ROOT.'/logbookfiles/.htaccess', $buffer)) {
                 echo '<p style="color:green;">'.JText::_('COM_LOGBOOK_HTACCESS_CREATION_SUCCESS').'</p>';
             } else { //Stop the installation if the .htaccess file cannot be created.
                 JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_HTACCESS_CREATION_ERROR'), 'error');
@@ -75,11 +75,11 @@ class com_logbookInstallerScript
         //Note: Uninstall function cannot cause an abort of the Joomla uninstall action, so returning
         //false would be a waste of time.
         if (JComponentHelper::getParams('com_logbook')->get('uninstall_remove_all')) {
-            JFolder::delete(JPATH_ROOT.'/logbook_logs'); //Remove file root directory and all its content.
+            JFolder::delete(JPATH_ROOT.'/logbookfiles'); //Remove file root directory and all its content.
         } else { //Keep the file root directory untouched.
-      //Before the component is uninstalled we gather any relevant data about files then
-      //put it into a csv file.
-      $db = JFactory::getDbo();
+        //Before the component is uninstalled we gather any relevant data about files then
+        //put it into a csv file.
+        $db = JFactory::getDbo();
             $query = $db->getQuery(true);
             $query->select('d.file, d.file_name, d.file_size, d.file_path, d.created, d.wdid');
             $query->from('#__logbook_logs AS d');
@@ -89,15 +89,15 @@ class com_logbookInstallerScript
 
             $cR = "\r\n"; //Carriage return.
             //Create the csv header.
-            $buffer = 'file,file_name,file_size,folder_name,created,catid,cat_level,cat_parent_id,category_alias'.$cR;
+            $buffer = 'file,file_name,file_size,folder_name,created,wdid,wdog_title'.$cR;
             foreach ($logs as $log) {
                 $buffer .= $log->file.','.$log->file_name.','.$log->file_size.','.
-        //Remove "logbook_logs/" from the beginning of the path.
-        substr($log->file_path, 13).','.$log->created.','.$log->catid.','.
-        $log->cat_level.','.$log->cat_parent_id.','.$log->category_alias.$cR;
+                //Remove "logbookfiles/" from the beginning of the path.
+                substr($log->file_path, 13).','.$log->created.','.$log->catid.','.
+                $log->cat_level.','.$log->cat_parent_id.','.$log->category_alias.$cR;
             }
             //Create the csv file.
-            JFile::write(JPATH_ROOT.'/logbook_logs/file_info.csv', $buffer);
+            JFile::write(JPATH_ROOT.'/logbookfiles/logs_info.csv', $buffer);
         }
 
         //Remove tagging informations from the Joomla table.

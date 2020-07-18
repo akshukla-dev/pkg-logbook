@@ -1,12 +1,9 @@
 <?php
 /**
- * @package Joomla.site
- * @subpackage com_logbook
  * @copyright Copyright (c) 2020 Amit Kumar Shukla
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
  */
-
 
 //Since this file is called directly and it doesn't belong to any component,
 //module or plugin, we need first to initialize the Joomla framework in order to use
@@ -24,18 +21,18 @@ $length = $length - ($length * 2);
 define('JPATH_BASE', substr(dirname(__DIR__), 0, $length));
 
 //Get the required files
-require_once (JPATH_BASE.'/includes/defines.php');
-require_once (JPATH_BASE.'/includes/framework.php');
+require_once JPATH_BASE.'/includes/defines.php';
+require_once JPATH_BASE.'/includes/framework.php';
 //Path to the factory.php file before the 3.8.0 Joomla's version.
 $factoryFilePath = '/libraries/joomla/factory.php';
 $jversion = new JVersion();
 //Check Joomla's version.
-if($jversion->getShortVersion() >= '3.8.0') {
-  //Set to the file new location.
-  $factoryFilePath = '/libraries/src/Factory.php';
+if ($jversion->getShortVersion() >= '3.8.0') {
+    //Set to the file new location.
+    $factoryFilePath = '/libraries/src/Factory.php';
 }
 //We need to use Joomla's database class
-require_once (JPATH_BASE.$factoryFilePath);
+require_once JPATH_BASE.$factoryFilePath;
 //Create the application
 $mainframe = JFactory::getApplication('site');
 
@@ -43,103 +40,76 @@ $mainframe = JFactory::getApplication('site');
 $jinput = JFactory::getApplication()->input;
 $id = $jinput->get('id', 0, 'uint');
 
-if($id) {
-  //Retrieve some data from the document.
-  $db = JFactory::getDbo();
-  $query = $db->getQuery(true);
-  $query->select('state,closed, access,file,file_path,file_name,file_type,file_size')
-	->from('#__logbook_logs')
-	->where('id='.$id);
-  $db->setQuery($query);
-  $log = $db->loadObject();
+if ($id) {
+    //Retrieve some data from the log.
+    $db = JFactory::getDbo();
+    $query = $db->getQuery(true);
+    $query->select('state, access,file,file_path,file_name,file_type,file_size')
+    ->from('#__logbook_logs')
+    ->where('id='.$id);
+    $db->setQuery($query);
+    $log = $db->loadObject();
 
-  //The document is unpublished.
-  if($log->state != 1) {
-    echo 'This log is currently not available yet.';
-    return;
-  }
+    //The log is unpublished/not colsed.
+    if ($log->state != 1) {
+        echo 'This log is not closed (published) yet.';
 
-  //Check the publication date (start and stop) of the document.
-
-  /*Get current date and time (equal to NOW() in SQL).
-  jimport('joomla.utilities.date');
-  $date = new JDate();
-  $now = $date->toSQL();
-
-  //A date to stop publishing is set.
-  if($log->closed != '0000-00-00 00:00:00') {
-    //Publication date has expired.
-    if(strcmp($now, $log->closed) > 0) {
-      echo 'The publication date of this document has expired.';
-      return;
+        return;
     }
-  }
 
-  //A date to start publishing is set.
-  if($log->publish_up != '0000-00-00 00:00:00') {
-    if(strcmp($now, $log->publish_up) < 0) {
-      //Publication date doesn't have started yet.
-      echo 'The publication date of this document hasn\'t started yet.';
-      return;
+    //Check the permissions of the user for this log.
+
+    //Get the user's access view.
+    $user = JFactory::getUser();
+
+    $accessView = false;
+    if (in_array($log->access, $user->getAuthorisedViewLevels())) {
+        $accessView = true;
     }
-  }*/
 
-  //Check the permissions of the user for this document.
+    //The user has the required permission.
+    if ($accessView) {
+        if ($log->file_path) {
+            //Increment the download counter for this log.
+            $query->clear();
+            $query->update('#__logbook_logs')
+                  ->set('downloads=downloads+1')
+                  ->where('id='.$id);
+            $db->setQuery($query);
+            $result = $db->query();
 
-  //Get the user's access view.
-  $user = JFactory::getUser();
+            //$component = JComponentHelper::getComponent('com_lrm');
+            //Build the path to the file.
+            $download = JPATH_BASE.'/'.$log->file_path.'/'.$log->file;
 
-  $accessView = false;
-  if(in_array($log->access, $user->getAuthorisedViewLevels())) {
-    $accessView = true;
-  }
+            if (file_exists($download) === false) {
+                echo 'The log file cannot be found.';
 
-  //The user has the required permission.
-  if($accessView) {
-    if($log->file_path) {
-      //Increment the download counter for this document.
-      $query->clear();
-      $query->update('#__logbook_logs')
-	    ->set('downloads=downloads+1')
-	    ->where('id='.$id);
-      $db->setQuery($query);
-      $result = $db->query();
+                return;
+            }
 
-      //$component = JComponentHelper::getComponent('com_lrm');
-      //Build the path to the file.
-      $download = JPATH_BASE.'/'.$log->file_path.'/'.$log->file;
+            header('Content-Description: File Transfer');
+            header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
+            header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');   // Date in the past
+            header('Content-type: '.$log->file_type);
+            header('Content-Transfer-Encoding: binary');
+            header('Content-length: '.$log->file_size);
+            header('Content-Disposition: attachment; filename="'.$log->file_name.'"');
+            ob_clean();
+            flush();
+            readfile($download);
 
-      if(file_exists($download) === false) {
-	      echo 'The log file cannot be found.';
-	      return;
-      }
+            exit;
+        } else { //The log url is empty.
+            echo 'Wrong log url.';
 
-      header('Content-Description: File Transfer');
-      header('Cache-Control: no-cache, must-revalidate'); // HTTP/1.1
-      header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');   // Date in the past
-      header('Content-type: '.$log->file_type);
-      header('Content-Transfer-Encoding: binary');
-      header('Content-length: '.$log->file_size);
-      header("Content-Disposition: attachment; filename=\"".$log->file_name."\"");
-      ob_clean();
-      flush();
-      readfile($download);
+            return;
+        }
+    } else { //The user doesn't have the required permission.
+        echo 'You are not allowed to download this log.';
 
-      exit;
+        return;
     }
-    else { //The document url is empty.
-      echo 'Wrong document url.';
-      return;
-    }
-  }
-  else { //The user doesn't have the required permission.
-    echo 'You are not allowed to download this document.';
-    return;
-  }
+} else { //The log id is unset.
+    echo 'The log doesn\'t exist.';
 }
-else { //The document id is unset.
-  echo 'The document doesn\'t exist.';
-}
-
-
-?>
