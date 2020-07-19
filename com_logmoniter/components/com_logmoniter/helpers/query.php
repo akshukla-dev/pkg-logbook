@@ -62,34 +62,42 @@ class LogbookHelperQuery
         $queryDate = self::getQueryDate($orderDate);
 
         switch ($orderby) {
-        case 'date':
-            $orderby = $queryDate;
-            break;
+      case 'date':
+          $orderby = $queryDate;
+          break;
 
-        case 'rdate':
-            $orderby = $queryDate.' DESC ';
-            break;
+      case 'rdate':
+          $orderby = $queryDate.' DESC ';
+          break;
 
-        case 'alpha':
-            $orderby = 'w.title';
-            break;
+      case 'alpha':
+          $orderby = 'l.title';
+          break;
 
-        case 'ralpha':
-            $orderby = 'w.title DESC';
-        break;
+      case 'ralpha':
+          $orderby = 'l.title DESC';
+          break;
 
-        case 'order':
-            $orderby = 'w.ordering';
-            break;
+      case 'downloads':
+          $orderby = 'l.downloads';
+          break;
 
-        case 'rorder':
-            $orderby = 'w.ordering DESC';
-            break;
+      case 'rdownloads':
+          $orderby = 'l.downloads DESC';
+          break;
 
-        default:
-            $orderby = 'w.ordering DESC';
-            break;
-        }
+      case 'signatories':
+          $orderby = 'l.signatories';
+          break;
+
+      case 'rsignatories':
+          $orderby = 'l.signatories DESC';
+          break;
+
+      default:
+          $orderby = 'l.created DESC';
+          break;
+    }
 
         return $orderby;
     }
@@ -108,20 +116,20 @@ class LogbookHelperQuery
         $db = JFactory::getDbo();
 
         switch ($orderDate) {
-        case 'modified':
-            $queryDate = ' CASE WHEN w.modified = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.modified END';
-            break;
+      case 'modified':
+          $queryDate = ' CASE WHEN l.modified = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.modified END';
+          break;
 
-        // use created if publish_up is not set
-        case 'published':
-            $queryDate = ' CASE WHEN w.publish_up = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.publish_up END ';
-            break;
+      // use created if closed is not set
+      case 'closed':
+          $queryDate = ' CASE WHEN l.closed = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.closed END ';
+          break;
 
-        case 'created':
-        default:
-            $queryDate = ' w.created ';
-            break;
-        }
+      case 'created':
+      default:
+          $queryDate = ' l.created ';
+          break;
+    }
 
         return $queryDate;
     }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.3" method="upgrade">
+
+    <name>COM_LOGMONITER</name>
+    <!-- The following elements are optional and free of formatting conttraints -->
+    <creationDate>2020-07-19</creationDate>
+    <author>AMit Kumar Shukla</author>
+    <authorEmail>akshukla.dev@gmail.com</authorEmail>
+    <authorUrl>https://github.com/akshukla-dev/pkg-logbook</authorUrl>
+    <license>GPL 3.0</license>
+    <!--  The version string is recorded in the components table -->
+    <version>1.0.0</version>
+    <!-- The description is optional and defaults to the name -->
+    <description>COM_LOGMONITER_INSTALLATION_DESC</description>
+
+    <!-- Runs on install/uninstall/update; New in 1.6 -->
+    <scriptfile>script.php</scriptfile>
+
+    <install> <!-- Runs on install -->
+	    <sql>
+		    <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+	    </sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+	    <sql>
+		    <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+	    </sql>
+    </uninstall>
+    <update> <!-- Runs on update; New in 1.6 -->
+	    <schemas>
+		    <schemapath type="mysql">sql/updates/mysql</schemapath>
+	    </schemas>
+    </update>
+
+    <files folder="components/com_logmoniter">
+	    <filename>controller.php</filename>
+	    <filename>logmoniter.php</filename>
+	    <filename>router.php</filename>
+	    <!-- Folders  Section -->
+	    <folder>controllers</folder>
+	    <folder>helpers</folder>
+	    <folder>models</folder>
+	    <folder>views</folder>
+    </files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.com_logmoniter.ini</language>
+	</languages>
+
+    <administration>
+	    <!-- Administration Menu Section -->
+	    <menu>COM_LOGMONITER_MENU</menu>
+	    <submenu>
+
+	      <menu link="option=com_logmoniter" view="watchdogs"
+	      alt="Okeydoc/Documents">COM_LOGMONITER_SUBMENU_WATCHDOGS</menu>
+
+	      <menu link="option=com_categories&amp;extension=com_logmoniter" view="categories"
+		    alt="Okeydoc/Categories">COM_LOGMONITER_SUBMENU_CATEGORIES</menu>
+
+	    </submenu>
+	    <!-- Administration Main File Copy Section -->
+	    <!-- Note the folder attribute: This attribute describes the folder
+		    to copy FROM in the package to install therefore files copied
+		    in this section are copied from /admin/ in the package -->
+	    <files folder="administrator/components/com_logmoniter">
+		    <!-- Admin Main File Copy Section -->
+		    <filename>access.xml</filename>
+		    <filename>config.xml</filename>
+		    <filename>controller.php</filename>
+		    <filename>logmoniter.php</filename>
+		    <!-- Folders  Section -->
+		    <folder>controllers</folder>
+		    <folder>helpers</folder>
+		    <folder>js</folder>
+		    <folder>models</folder>
+		    <folder>sql</folder>
+		    <folder>tables</folder>
+		    <folder>views</folder>
+	    </files>
+		<languages folder="administrator/language">
+			<language tag="en-GB">en-GB/en-GB.com_logmoniter.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_logmoniter.sys.ini</language>
+		</languages>
+    </administration>
+
+</extension>

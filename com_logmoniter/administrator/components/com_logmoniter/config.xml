@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fieldset name="component" addfieldpath="/administrator/components/com_logmoniter/models/fields"
+	    label="COM_LOGMONITER_FIELDSET_CONFIG_SETTINGS_LABEL"
+	    description="COM_LOGMONITER_FIELDSET_CONFIG_SETTINGS_DESC">
+
+
+
+      </fieldset>
+
+    <fieldset name="documents"
+	    label="COM_LOGMONITER_FIELDSET_CONFIG_DOCUMENTS_LABEL"
+	    description="COM_LOGMONITER_FIELDSET_CONFIG_DOCUMENTS_DES">
+
+	    <field name="show_title"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="COM_LOGMONITER_FIELD_SHOW_TITLE_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_TITLE_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="link_title"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="JGLOBAL_LINKED_TITLES_LABEL"
+		    description="COM_LOGMONITER_FIELD_LINK_TITLE_DESC">
+		    <option value="1">JYES</option>
+		    <option value="0">JNO</option>
+	    </field>
+
+	    <field name="show_introtext"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="COM_LOGMONITER_FIELD_SHOW_INTROTEXT_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_INTROTEXT_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_category"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="JGLOBAL_SHOW_CATEGORY_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_CATEGORY_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="link_category"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="JGLOBAL_LINK_CATEGORY_LABEL"
+		    description="COM_LOGMONITER_FIELD_LINK_CATEGORY_DESC"
+		    default="1">
+		    <option value="1">JYES</option>
+		    <option value="0">JNO</option>
+	    </field>
+
+	    <field name="show_put_online_by"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="COM_LOGMONITER_FIELD_SHOW_PUT_ONLINE_BY_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_PUT_ONLINE_BY_DESC">
+		    <option value="1">JYES</option>
+		    <option value="0">JNO</option>
+	    </field>
+
+	    <field name="show_author"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_AUTHOR_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_AUTHOR_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_file_name"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_FILE_NAME_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_FILE_NAME_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_file_size"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_FILE_SIZE_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_FILE_SIZE_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_file_type"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_FILE_TYPE_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_FILE_TYPE_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_extension_icon"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_EXTENSION_ICON_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_EXTENSION_ICON_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_create_date"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="JGLOBAL_SHOW_CREATE_DATE_LABEL"
+		    description="COM_LOGMONITER_SHOW_CREATE_DATE_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_modify_date"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="JGLOBAL_SHOW_MODIFY_DATE_LABEL"
+		    description="COM_LOGMONITER_SHOW_MODIFY_DATE_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_publish_date"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="JGLOBAL_SHOW_PUBLISH_DATE_LABEL"
+		    description="COM_LOGMONITER_SHOW_PUBLISH_DATE_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_hits"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_HITS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_HITS_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_downloads"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_DOWNLOADS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_DOWNLOADS_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_complete_details"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_COMPLETE_DETAILS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_COMPLETE_DETAILS_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field id="show_tags"
+		    name="show_tags"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="COM_LOGMONITER_FIELD_SHOW_TAGS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_TAGS_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_hits"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_HITS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_HITS_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_noauth"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="0"
+		    label="JGLOBAL_SHOW_UNAUTH_LINKS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_UNAUTH_LINK_DESC">
+		    <option value="1">JYES</option>
+		    <option value="0">JNO</option>
+	    </field>
+    </fieldset>
+
+    <fieldset name="category" label="JCATEGORY"
+	      description="COM_LOGMONITER_CONFIG_CATEGORY_SETTINGS_DESC">
+
+	    <field name="category_layout" type="componentlayout"
+		   label="JGLOBAL_FIELD_LAYOUT_LABEL"
+		   description="JGLOBAL_FIELD_LAYOUT_DESC"
+		   menuitems="true"
+		   extension="com_okeydoc"
+		   view="category" />
+
+		<field name="show_category_title" type="radio"
+		       class="btn-group btn-group-yesno"
+		       label="JGLOBAL_SHOW_CATEGORY_TITLE"
+		       description="JGLOBAL_SHOW_CATEGORY_TITLE_DESC"
+		       default="1">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_description"
+		       type="radio"
+		       class="btn-group btn-group-yesno"
+		       default="1"
+		       label="JGLOBAL_SHOW_CATEGORY_DESCRIPTION_LABEL"
+		       description="JGLOBAL_SHOW_CATEGORY_DESCRIPTION_DESC">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_description_image"
+		       type="radio"
+		       class="btn-group btn-group-yesno"
+		       default="1"
+		       label="JGLOBAL_SHOW_CATEGORY_IMAGE_LABEL"
+		       description="JGLOBAL_SHOW_CATEGORY_IMAGE_DESC">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+
+		<field name="maxLevel" type="list"
+		       description="JGLOBAL_MAXIMUM_CATEGORY_LEVELS_DESC"
+		       label="JGLOBAL_MAXIMUM_CATEGORY_LEVELS_LABEL"
+		       default="-1">
+		       <option value="0">JNONE</option>
+		       <option value="-1">JALL</option>
+		       <option value="1">J1</option>
+		       <option value="2">J2</option>
+		       <option value="3">J3</option>
+		       <option value="4">J4</option>
+		       <option value="5">J5</option>
+		</field>
+
+		<field name="show_category_heading_title_text"
+			type="radio"
+			class="btn-group btn-group-yesno"
+ 			label="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_LABEL"
+			description="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_DESC"
+			default="1">
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_empty_categories" type="radio"
+		       class="btn-group btn-group-yesno"
+		       label="JGLOBAL_SHOW_EMPTY_CATEGORIES_LABEL"
+		       description="COM_LOGMONITER_SHOW_EMPTY_CATEGORIES_DESC"
+		       default="0">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_no_documents"
+			type="radio"
+			class="btn-group btn-group-yesno"
+			label="COM_LOGMONITER_NO_DOCUMENTS_LABEL"
+			description="COM_LOGMONITER_NO_DOCUMENTS_DESC"
+			default="1" >
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_subcat_desc" type="radio"
+		       class="btn-group btn-group-yesno"
+		       default="1"
+		       description="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_DESC"
+		       label="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_LABEL">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_cat_num_documents" type="radio"
+		       class="btn-group btn-group-yesno"
+		       default="1"
+		       description="COM_LOGMONITER_FIELD_CONFIG_CAT_SHOWNUMBERS_DESC"
+		       label="COM_LOGMONITER_FIELD_CONFIG_CAT_SHOWNUMBERS_LABEL">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+
+		<field name="show_cat_tags" type="radio"
+		       label="COM_LOGMONITER_FIELD_SHOW_CAT_TAGS_LABEL"
+		       description="COM_LOGMONITER_FIELD_SHOW_CAT_TAGS_DESC"
+		       class="btn-group btn-group-yesno"
+		       default="1">
+		       <option value="1">JSHOW</option>
+		       <option value="0">JHIDE</option>
+		</field>
+    </fieldset>
+
+    <fieldset name="categories"
+	    label="JCATEGORIES"
+	    description="COM_LOGMONITER_CONFIG_CATEGORIES_SETTINGS_DESC">
+
+	    <field name="show_base_description" type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="JGLOBAL_FIELD_SHOW_BASE_DESCRIPTION_LABEL"
+		    description="JGLOBAL_FIELD_SHOW_BASE_DESCRIPTION_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="maxLevelcat" type="list"
+		   default="-1"
+		   description="JGLOBAL_MAXIMUM_CATEGORY_LEVELS_DESC"
+		   label="JGLOBAL_MAXIMUM_CATEGORY_LEVELS_LABEL">
+		    <option value="-1">JALL</option>
+		    <option value="1">J1</option>
+		    <option value="2">J2</option>
+		    <option value="3">J3</option>
+		    <option value="4">J4</option>
+		    <option value="5">J5</option>
+		    </field>
+	    <field name="show_empty_categories_cat" type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="0"
+		    label="JGLOBAL_SHOW_EMPTY_CATEGORIES_LABEL"
+		    description="COM_LOGMONITER_SHOW_EMPTY_CATEGORIES_DESC">
+		      <option value="1">JSHOW</option>
+		      <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_subcat_desc_cat" type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    description="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_DESC"
+		    label="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_LABEL">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_cat_num_documents_cat" type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    description="COM_LOGMONITER_FIELD_CONFIG_CAT_SHOWNUMBERS_DESC"
+		    label="COM_LOGMONITER_FIELD_CONFIG_CAT_SHOWNUMBERS_LABEL">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+    </fieldset>
+
+    <fieldset name="info_default_parameters"
+	    label="COM_LOGMONITER_CONFIG_BLOG_SETTINGS_LABEL"
+	    description="COM_LOGMONITER_CONFIG_BLOG_SETTINGS_DESC" >
+
+	    <field name="show_details" type="radio" default="1"
+		   class="btn-group btn-group-yesno"
+		   label="COM_LOGMONITER_SHOW_DETAILS_LABEL"
+		   description="COM_LOGMONITER_SHOW_DETAILS_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_download_button" type="radio" default="1"
+		   class="btn-group btn-group-yesno"
+		   label="COM_LOGMONITER_SHOW_DOWNLOAD_BUTTON_LABEL"
+		   description="COM_LOGMONITER_SHOW_DOWNLOAD_BUTTON_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_edit_button" type="radio" default="1"
+		   class="btn-group btn-group-yesno"
+		   label="COM_LOGMONITER_SHOW_EDIT_BUTTON_LABEL"
+		   description="COM_LOGMONITER_SHOW_EDIT_BUTTON_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="show_document_page_button" type="radio" default="1"
+		   class="btn-group btn-group-yesno"
+		   label="COM_LOGMONITER_SHOW_DOCUMENT_PAGE_BUTTON_LABEL"
+		   description="COM_LOGMONITER_SHOW_DOCUMENT_PAGE_BUTTON_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	</field>
+
+    </fieldset>
+
+    <fieldset name="list_default_parameters"
+	    label="COM_LOGMONITER_CONFIG_LIST_SETTINGS_LABEL"
+	    description="COM_LOGMONITER_CONFIG_LIST_SETTINGS_DESC" >
+
+	    <field name="list_show_downloads"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_DOWNLOADS_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_DOWNLOADS_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="list_show_author"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="COM_LOGMONITER_FIELD_SHOW_AUTHOR_LABEL"
+		    description="COM_LOGMONITER_FIELD_SHOW_AUTHOR_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="list_show_date"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    label="JGLOBAL_SHOW_DATE_LABEL"
+		    description="JGLOBAL_SHOW_DATE_DESC"
+		    default="1">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+	    <field name="date_format"
+		    type="text" size="15"
+		    label="JGLOBAL_DATE_FORMAT_LABEL"
+		    description="COM_LOGMONITER_FIELD_DATE_FORMAT_DESC" />
+
+    </fieldset>
+
+    <fieldset name="shared" label="COM_LOGMONITER_SHARED_LABEL"
+	      description="COM_LOGMONITER_SHARED_DESC" >
+
+	      <field name="filter_field" type="list"
+		      description="COM_LOGMONITER_SHOW_FILTER_FIELD_DESC"
+		       default="title"
+		      label="JGLOBAL_FILTER_FIELD_LABEL">
+		      <option value="hide">JHIDE</option>
+		      <option value="title">JGLOBAL_TITLE</option>
+		      <option value="author">JAUTHOR</option>
+	      </field>
+
+	      <field name="filter_ordering" type="radio"
+		     class="btn-group btn-group-yesno"
+		     default="1"
+		      label="COM_LOGMONITER_SHOW_SORTING_FILTER_LABEL"
+		      description="COM_LOGMONITER_SHOW_SORTING_FILTER_DESC">
+		      <option value="1">JSHOW</option>
+		      <option value="0">JHIDE</option>
+	      </field>
+
+	      <field name="show_pagination_limit" type="radio"
+		     class="btn-group btn-group-yesno"
+		     default="1"
+		      label="JGLOBAL_DISPLAY_SELECT_LABEL"
+		      description="JGLOBAL_DISPLAY_SELECT_DESC">
+		      <option value="1">JSHOW</option>
+		      <option value="0">JHIDE</option>
+	      </field>
+
+		<field name="spacer1" type="spacer" hr="true" />
+
+	    <field name="orderby_pri"
+		    type="list"
+		    default="none"
+		    label="JGLOBAL_CATEGORY_ORDER_LABEL"
+		    description="JGLOBAL_CATEGORY_ORDER_DESC">
+		    <option value="none">JGLOBAL_NO_ORDER</option>
+		    <option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
+		    <option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
+		    <option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
+	    </field>
+
+	    <field name="orderby_sec" type="list"
+		    default="rdate"
+		    description="COM_LOGMONITER_DOCUMENT_ORDER_DESC"
+		    label="COM_LOGMONITER_DOCUMENT_ORDER_LABEL" >
+		    <option value="date">COM_LOGMONITER_ORDERING_DATE_ASC</option>
+		    <option value="rdate">COM_LOGMONITER_ORDERING_DATE_DESC</option>
+		    <option value="alpha">COM_LOGMONITER_ORDERING_TITLE_ASC</option>
+		    <option value="ralpha">COM_LOGMONITER_ORDERING_TITLE_DESC</option>
+		    <option value="author">COM_LOGMONITER_ORDERING_AUTHOR_ASC</option>
+		    <option value="rauthor">COM_LOGMONITER_ORDERING_AUTHOR_DESC</option>
+		    <option value="downloads">COM_LOGMONITER_ORDERING_DOWNLOADS_ASC</option>
+		    <option value="rdownloads">COM_LOGMONITER_ORDERING_DOWNLOADS_DESC</option>
+		    <option value="order">COM_LOGMONITER_ORDERING_ORDERING_ASC</option>
+		    <option value="rorder">COM_LOGMONITER_ORDERING_ORDERING_DESC</option>
+	    </field>
+
+	    <field name="order_date" type="list"
+		    default="published"
+		    description="COM_LOGMONITER_DOCUMENT_ORDER_DATE_DESC"
+		    label="JGLOBAL_ORDERING_DATE_LABEL" >
+		    <option value="created">JGLOBAL_CREATED</option>
+		    <option value="modified">JGLOBAL_MODIFIED</option>
+		    <option value="published">JPUBLISHED</option>
+	    </field>
+
+	    <field name="show_pagination"
+		    type="list"
+		    default="2"
+		    label="JGLOBAL_Pagination_Label"
+		    description="JGLOBAL_Pagination_Desc">
+		    <option value="0">JHIDE</option>
+		    <option value="1">JSHOW</option>
+		    <option value="2">JGLOBAL_AUTO</option>
+	    </field>
+
+	    <field name="show_pagination_results"
+		    type="radio"
+		    class="btn-group btn-group-yesno"
+		    default="1"
+		    label="JGLOBAL_PAGINATION_RESULTS_LABEL"
+		    description="JGLOBAL_PAGINATION_RESULTS_DESC">
+		    <option value="1">JSHOW</option>
+		    <option value="0">JHIDE</option>
+	    </field>
+
+    </fieldset>
+
+    <fieldset
+	    name="permissions"
+	    label="JCONFIG_PERMISSIONS_LABEL"
+	    description="JCONFIG_PERMISSIONS_DESC" >
+
+	    <field name="rules"
+		    type="rules"
+		    label="JCONFIG_PERMISSIONS_LABEL"
+		    class="inputbox"
+		    validate="rules"
+		    filter="rules"
+		    component="com_okeydoc"
+		    section="component" />
+    </fieldset>
+</config>

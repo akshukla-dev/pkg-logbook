@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<form addrulepath="/administrator/components/com_logmoniter/models/rules">
+
+  <fieldset addfieldpath="/administrator/components/com_logmoniter/models/fields" name="details">
+
+	<!--<field name="articleids" type="articles" multiple="multiple"
+		label="COM_LOGMONITER_FIELD_ARTICLES_LABEL"
+		description="COM_LOGMONITER_FIELD_ARTICLES_DESC"
+		class="inputbox" >
+	</field>-->
+
+	<!-- layout: title_alias -->
+	<field name="title" type="text"
+		label="COM_LOGMONITER_FIELD_TITLE_LABEL"
+		description="COM_LOGMONITER_FIELD_TITLE_DESC"
+		class="input-xxlarge input-large-text"
+		size="40" required="true" />
+
+	<field name="alias" type="text" label="JFIELD_ALIAS_LABEL"
+		description="JFIELD_ALIAS_DESC"
+		hint="JFIELD_ALIAS_PLACEHOLDER"
+		class="inputbox" size="40" />
+
+	<field name="spacer" type="spacer" hr="true" />
+
+	<field name="wcid" type="wcenterlist"
+			label="COM_LOGBOOK_FIELD_WCEDNTER_LABEL"
+			size = "40" class="inputbox" validate="componentwcenters" required="true" >
+	</field>
+
+	<field name="wcid" type="insetlist"
+			label="COM_LOGBOOK_FIELD_INSET_LABEL"
+			size = "100" class="inputbox" validate="componentwcenters" required="true" >
+	</field>
+
+	<field name="isid" type="bprintlist"
+			label="COM_LOGBOOK_FIELD_BRINTP_LABEL"
+			size = "100" class="inputbox" validate="componentbprints" required="true" >
+	</field>
+
+	<field name="spacer1" type="spacer" hr="true" />
+
+	<field name="tiid" type="tintervallist"
+			label="COM_LOGBOOK_FIELD_BRINTP_LABEL"
+			size = "100" class="inputbox" validate="componenttintervals" required="true" >
+	</field>
+
+	<field name="published" type="list"
+		label="COM_LOGMONITER_FIELD_PUBLISHED_LABEL"
+		description="COM_LOGMONITER_FIELD_PUBLISHED_DESC"
+		class="inputbox"
+		size="1" default="1">
+		<option value="1">JPUBLISHED</option>
+		<option value="0">JUNPUBLISHED</option>
+	</field>
+
+	<field name="publish_up" type="calendar"
+		label="JGLOBAL_FIELD_PUBLISH_UP_LABEL"
+		description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+		class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+		filter="user_utc" />
+
+	<field name="publish_down" type="calendar"
+		label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL"
+		description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+		class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+		filter="user_utc" />
+
+	<field name="lwid" type="tintervallist"
+			label="COM_LOGBOOK_FIELD_BRINTP_LABEL"
+			size = "100" class="inputbox" validate="componenttintervals" required="true" >
+	</field>
+
+	<field name="access" type="accesslevel" label="COM_LOGMONITER_FIELD_ACCESS_LABEL"
+		description="COM_LOGMONITER_FIELD_ACCESS_DESC" class="inputbox" size="1" />
+
+	<field name="spacer2" type="spacer" hr="true" />
+	<!-- layout: global -->
+	<field name="catid" type="componentcategories"
+		label="COM_LOGMONITER_FIELD_CATEGORY_LABEL" description="COM_LOGMONITER_FIELD_CATEGORY_DESC"
+		class="inputbox" validate="componentcategories">
+	</field>
+
+	<field name="language" type="contentlanguage" label="COM_LOGMONITER_FIELD_LANGUAGE_LABEL"
+		description="COM_LOGMONITER_FIELD_LANGUAGE_DESC" class="inputbox">
+		<option value="*">JALL</option>
+	</field>
+
+	<field name="tags" type="tag" label="JTAG" description="JTAG_DESC"
+	       class="inputbox span12" multiple="true">
+	</field>
+
+	<!-- layout: publishingdata -->
+
+	<!-- IMPORTANT: A input field called "id" must exists to set if the element
+	     is new (id = 0) or in edition. -->
+	<field id="id" name="id" type="hidden"
+		class="inputbox" label="COM_LOGMONITER_ID_LABEL"
+		size="10" default="0" readonly="true" />
+
+	<field name="created_by" type="user"
+		label="COM_LOGMONITER_FIELD_PUT_ONLINE_BY_LABEL" description="COM_LOGMONITER_FIELD_PUT_ONLINE_BY_DESC" />
+
+	<field name="created" type="calendar"
+		label="COM_LOGMONITER_FIELD_ONLINE_DATE_LABEL" description="COM_LOGMONITER_FIELD_ONLINE_DATE_DESC"
+		class="inputbox" size="22" format="%Y-%m-%d %H:%M:%S"
+		filter="user_utc" />
+
+	<field name="checked_out" type="hidden" filter="unset" />
+	<field name="checked_out_time" type="hidden" filter="unset" />
+  </fieldset>
+
+	<fields name="metadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">
+	  <fieldset name="jmetadata" label="JGLOBAL_FIELDSET_METADATA_OPTIONS">
+		<field name="metakey" type="textarea"
+			label="JFIELD_META_KEYWORDS_LABEL" description="JFIELD_META_KEYWORDS_DESC"
+			rows="3" cols="30" />
+
+		<field name="metadesc" type="textarea"
+			label="JFIELD_META_DESCRIPTION_LABEL" description="JFIELD_META_DESCRIPTION_DESC"
+			rows="3" cols="30" />
+
+	    <field name="robots"
+		    type="list"
+		    label="JFIELD_METADATA_ROBOTS_LABEL"
+		    description="JFIELD_METADATA_ROBOTS_DESC" >
+		    <option value="">JGLOBAL_USE_GLOBAL</option>
+		    <option value="index, follow">JGLOBAL_INDEX_FOLLOW</option>
+		    <option value="noindex, follow">JGLOBAL_NOINDEX_FOLLOW</option>
+		    <option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>
+		    <option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>
+	    </field>
+
+	    <field name="rights" type="text"
+		    label="JFIELD_META_RIGHTS_LABEL" description="JFIELD_META_RIGHTS_DESC"
+		    required="false" filter="string" cols="30" rows="2" />
+	  </fieldset>
+	</fields>
+</form>
+
+
+
+

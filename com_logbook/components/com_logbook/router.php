@@ -36,6 +36,7 @@ function logbookBuildRoute(&$query)
     }
 
     if (isset($query['layout'])) {
+        $segments[] = $query['layout'];
         unset($query['layout']);
     }
 
