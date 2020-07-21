@@ -13,7 +13,7 @@ JHtml::_('behavior.keepalive');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.calendar');
 JHtml::_('formbehavior.chosen', 'select');
-$this->tab_name = "com-logmoniter-form";
+$this->tab_name = 'com-logmoniter-form';
 
 // Create shortcut to parameters.
 $params = $this->state->get('params');
@@ -46,7 +46,7 @@ $params = $this->state->get('params');
           <?php if (is_null($this->item->id)) : ?>
             <?php echo $this->form->renderField('alias'); ?>
           <?php endif; ?>
-          <?php echo $this->form->renderField('wcids'); ?>
+          <?php echo $this->form->renderField('wcid'); ?>
           <?php echo $this->form->renderField('isid'); ?>
           <?php echo $this->form->renderField('bpid'); ?>
           <?php echo $this->form->renderField('tiid'); ?>

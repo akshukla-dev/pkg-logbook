@@ -14,11 +14,12 @@ class LogmoniterViewForm extends JViewLegacy
     protected $state = null;
     protected $item = null;
     protected $return_page = null;
+    protected $isNew = 0;
 
     public function display($tpl = null)
     {
-		$user = JFactory::getUser();
-		$app  = JFactory::getApplication();
+        $user = JFactory::getUser();
+        $app = JFactory::getApplication();
 
         //Redirect unregistered users to the login page.
         if ($user->guest) {
@@ -28,7 +29,7 @@ class LogmoniterViewForm extends JViewLegacy
             return true;
         }
 
-		// Get model data.
+        // Get model data.
         $this->form = $this->get('Form');
         $this->state = $this->get('State');
         $this->item = $this->get('Item');
@@ -37,6 +38,7 @@ class LogmoniterViewForm extends JViewLegacy
         //Check if the user is allowed to create a new watchdog.
         if (empty($this->item->id)) {
             $authorised = $user->authorise('core.create', 'com_logmoniter') || count($user->getAuthorisedCategories('com_logmoniter', 'core.create'));
+            $this->isNew = 1;
         } else { //Check if the user is allowed to edit this log.
             $authorised = $this->item->params->get('access-edit');
         }
@@ -48,47 +50,44 @@ class LogmoniterViewForm extends JViewLegacy
             return false;
         }
 
-		$this->item->tags = new JHelperTags;
+        $this->item->tags = new JHelperTags();
 
-		if (!empty($this->item->id))
-		{
-			$this->item->tags->getItemTags('com_logmoniter.watchdog', $this->item->id);
-		}
+        if (!empty($this->item->id)) {
+            $this->item->tags->getItemTags('com_logmoniter.watchdog', $this->item->id);
+        }
 
-		if (!empty($this->item) && isset($this->item->id))
-		{
-			$this->item->images = json_decode($this->item->images);
-			$this->item->urls = json_decode($this->item->urls);
+        if (!empty($this->item) && isset($this->item->id)) {
+            $this->item->images = json_decode($this->item->images);
+            $this->item->urls = json_decode($this->item->urls);
 
-			$tmp = new stdClass;
-			$tmp->images = $this->item->images;
-			$tmp->urls = $this->item->urls;
-			$this->form->bind($tmp);
-		}
+            $tmp = new stdClass();
+            $tmp->images = $this->item->images;
+            $tmp->urls = $this->item->urls;
+            $this->form->bind($tmp);
+        }
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
             JError::raiseWarning(500, implode("\n", $errors));
 
-			return false;
+            return false;
         }
         // Create a shortcut to the parameters.
-		$params = &$this->state->params;
+        $params = &$this->state->params;
 
-		// Escape strings for HTML output
-		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+        // Escape strings for HTML output
+        $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
 
         $this->params = $params;
         // Override global params with document specific params
         $this->params->merge($this->item->params);
         $this->user = $user;
 
-		// Propose current language as default when creating new article
-		if (empty($this->item->id) && JLanguageMultilang::isEnabled())
-		{
-			$lang = JFactory::getLanguage()->getTag();
-			$this->form->setFieldAttribute('language', 'default', $lang);
-		}
+        // Propose current language as default when creating new article
+        if (empty($this->item->id) && JLanguageMultilang::isEnabled()) {
+            $lang = JFactory::getLanguage()->getTag();
+            $this->form->setFieldAttribute('language', 'default', $lang);
+        }
 
         $this->_prepareDocument();
 

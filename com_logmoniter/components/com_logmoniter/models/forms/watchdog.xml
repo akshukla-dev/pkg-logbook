@@ -151,13 +151,13 @@
   	</fieldset>
 	<fieldset addfieldpath="/administrator/components/com_logmoniter/models/fields" name="details">
 		<field
-			name="wcids"
+			name="wcid"
 			type="logworkcenters"
-			multiple="multiple"
 			label="COM_LOGMONITER_FIELD_WCENTER_LIST_LABEL"
 			description="COM_LOGMONITER_FIELD_WCENTER_LIST_DESC"
-			id="wcids"
+			id="wcid"
 			class="inputbox"
+			validate="logworkcenters"
 			required="true"
 		/>
 
