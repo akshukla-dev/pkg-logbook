@@ -2,14 +2,16 @@
 <metadata>
 	<layout title="COM_LOGMONITER_FORM_VIEW_DEFAULT_TITLE" option="COM_LOGMONITER_FORM_VIEW_DEFAULT_OPTION">
 		<help
-			key = "JHELP_MENUS_MENU_ITEM_DOCUMENT_CREATE"
+			key = "JHELP_MENUS_MENU_ITEM_WATCHDOG_CREATE"
 		/>
 		<message>
 			<![CDATA[COM_LOGMONITER_FORM_VIEW_DEFAULT_DESC]]>
 		</message>
 	</layout>
 	<fields name="params">
-		<fieldset name="basic">
+		<fieldset name="basic"
+			addfieldpath="/administrator/components/com_categories/models/fields"
+		>
 			<field name="enable_category"
 				type="radio"
 				class="btn-group btn-group-yesno"
@@ -19,11 +21,26 @@
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 			</field>
-			<field name="catid"
-				type="category"
+			<field
+				name="catid"
+				type="modal_category"
 				label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
-				extension="com_okeydoc"
-				description="JGLOBAL_CHOOSE_CATEGORY_DESC" />
+				description="JGLOBAL_CHOOSE_CATEGORY_DESC"
+				extension="com_logmoniter"
+				select="true"
+				new="true"
+				edit="true"
+				clear="true"
+				showon="enable_category:1"
+			/>
+			<field
+				name="redirect_menuitem"
+				type="modal_menu"
+				label="COM_LOGMONITER_CREATE_WATCHDOG_REDIRECTMENU_LABEL"
+				description="COM_LOGMONITER_CREATE_WATCHDOG_REDIRECTMENU_DESC"
+				>
+				<option value="">JDEFAULT</option>
+			</field>
 		</fieldset>
 	</fields>
 </metadata>

@@ -8,9 +8,11 @@
 
 defined('_JEXEC') or die;
 
-// Base this model on the backend version.
-require_once JPATH_ADMINISTRATOR.'/components/com_logmoniter/models/watchdog.php';
+use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 
+// Base this model on the backend version.
+JLoader::register('LogmoniterModelWatchdog', JPATH_COMPONENT_ADMINISTRATOR . '/models/watchdog.php');
 
 //Inherit the backend version.
 class LogmoniterModelForm extends LogmoniterModelWatchdog
@@ -38,7 +40,10 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
 
     // Load state from the request.
     $pk = $app->input->getInt('w_id');
-    $this->setState('watchdog.id', $pk);
+		$this->setState('watchdog.id', $pk);
+
+		// Add compatibility variable for default naming conventions.
+		$this->setState('form.id', $pk);
 
     //Retrieve a possible category id from the url query.
     $this->setState('watchdog.catid', $app->input->getInt('catid'));
@@ -82,7 +87,7 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
     //Get the fields of the table as an array
     $properties = $table->getProperties(1);
     //then convert the array into an object.
-    $item = JArrayHelper::toObject($properties, 'JObject');
+    $item = ArrayHelper::toObject($properties, 'JObject');
 
     //Note: params fields are missing on purpose in the xml form as
     //params cannot be set on frontend.
@@ -90,8 +95,7 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
     //params value.
 
     // Convert params field to Registry.
-    $item->params = new JRegistry;
-    $item->params->loadString($item->params);
+    $item->params = new Registry($item->attribs);
 
     // Compute selected asset permissions.
     $user = JFactory::getUser();
@@ -110,8 +114,8 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
       }
     }
 
-    // Existing item
-    if($itemId) {
+		// Check edit state permission.
+    if($itemId) { //existing item
       // Check edit state permission.
       $item->params->set('access-change', $user->authorise('core.edit.state', $asset));
     }
@@ -120,9 +124,9 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
       $catId = (int) $this->getState('watchdog.catid');
 
       if($catId) {
-			//Check the change access in this specific category.
-			$item->params->set('access-change', $user->authorise('core.edit.state', 'com_logmoniter.category.'.$catId));
-			$item->catid = $catId;
+				//Check the change access in this specific category.
+				$item->params->set('access-change', $user->authorise('core.edit.state', 'com_logmoniter.category.'.$catId));
+				$item->catid = $catId;
       }
       else { //Check the general change access.
 			$item->params->set('access-change', $user->authorise('core.edit.state', 'com_logmoniter'));
@@ -130,15 +134,16 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
     }
 
     // Convert the metadata field to an array.
-    $registry = new JRegistry;
-    $registry->loadString($item->metadata);
+    $registry = new Registry($item->metadata);
     $item->metadata = $registry->toArray();
 
-    //Get the watchdog tags.
-    $item->tags = new JHelperTags;
-    $item->tags->getTagIds($item->id, 'com_logmoniter.watchdog');
-    $item->metadata['tags'] = $item->tags;
-
+		if ($itemId)
+		{
+			//Get the watchdog tags.
+			$item->tags = new JHelperTags;
+			$item->tags->getTagIds($item->id, 'com_logmoniter.watchdog');
+			$item->metadata['tags'] = $item->tags;
+		}
     return $item;
   }
 
@@ -166,6 +171,42 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
    */
   public function save($data)
   {
+		// Associations are not edited in frontend ATM so we have to inherit them
+		if (JLanguageAssociations::isEnabled() && !empty($data['id'])
+			&& $associations = JLanguageAssociations::getAssociations('com_logmoniter', '#__logbook_watchdogs', 'com_logmoniter.item', $data['id']))
+		{
+			foreach ($associations as $tag => $associated)
+			{
+				$associations[$tag] = (int) $associated->id;
+			}
+
+			$data['associations'] = $associations;
+		}
+
     return parent::save($data);
-  }
+	}
+
+	/**
+	 * Allows preprocessing of the JForm object.
+	 *
+	 * @param   JForm   $form   The form object
+	 * @param   array   $data   The data to be merged into the form object
+	 * @param   string  $group  The plugin group to be executed
+	 *
+	 * @return  void
+	 *
+	 * @since   3.7.0
+	 */
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	{
+		$params = $this->getState()->get('params');
+
+		if ($params && $params->get('enable_category') == 1)
+		{
+			$form->setFieldAttribute('catid', 'default', $params->get('catid', 1));
+			$form->setFieldAttribute('catid', 'readonly', 'true');
+		}
+
+		return parent::preprocessForm($form, $data, $group);
+	}
 }

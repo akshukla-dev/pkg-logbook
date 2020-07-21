@@ -9,83 +9,245 @@
 
 defined('_JEXEC') or die; //No direct access to this file.
 
+/**
+ * Logmoniter helper.
+ *
+ * @since  1.6
+ */
 
-
-class LogmoniterHelper
+class LogmoniterHelper extends JHelperContent
 {
-  //Create the sidebar items ($viewName = name of the active view).
+  public static $extension = 'com_logmoniter';
+
+  /**
+   * Configure the Linkbar.
+   *
+   * @param   string  $vName  The name of the active view.
+   *
+   * @return  void
+   *
+   * @since   1.6
+   */
   public static function addSubmenu($viewName)
   {
-    JHtmlSidebar::addEntry(JText::_('COM_LOGMONITER_SUBMENU_DOCUMENTS'),
-				    'index.php?option=com_logmoniter&view=watchdogs', $viewName == 'watchdogs');
-
-    JHtmlSidebar::addEntry(JText::_('COM_LOGMONITER_SUBMENU_CATEGORIES'),
-				    'index.php?option=com_categories&extension=com_logmoniter', $viewName == 'categories');
+    JHtmlSidebar::addEntry(
+        JText::_('COM_LOGMONITER_SUBMENU_WATCHDOGS'),
+        'index.php?option=com_logmoniter&view=watchdogs',
+        $viewName == 'watchdogs'
+    );
+    JHtmlSidebar::addEntry(
+        JText::_('COM_LOGMONITER_SUBMENU_CATEGORIES'),
+        'index.php?option=com_categories&extension=com_logmoniter',
+        $viewName == 'categories'
+    );
   }
 
-
-  //Get the list of the allowed actions for the user.
-  public static function getActions($categoryId = 0)
+  /**
+   * Applies the content tag filters to arbitrary text as per settings for current user group
+   *
+   * @param   text  $text  The string to filter
+   *
+   * @return  string  The filtered string
+   *
+   * @deprecated  4.0  Use JComponentHelper::filterText() instead.
+   */
+  public static function filterText($text)
   {
-    $user = JFactory::getUser();
-    $result = new JObject;
-
-    if(empty($categoryId)) {
-      //Check permissions against the component.
-      $assetName = 'com_logmoniter';
+    try
+    {
+      JLog::add(
+        sprintf('%s() is deprecated. Use JComponentHelper::filterText() instead', __METHOD__),
+        JLog::WARNING,
+        'deprecated'
+      );
     }
-    else {
-      //Check permissions against the component category.
-      $assetName = 'com_logmoniter.category.'.(int) $categoryId;
-    }
-
-    $actions = array('core.admin', 'core.manage', 'core.create', 'core.edit',
-		     'core.edit.own', 'core.edit.state', 'core.delete');
-
-    //Get from the core the user's permission for each action.
-    foreach($actions as $action) {
-      $result->set($action, $user->authorise($action, $assetName));
+    catch (RuntimeException $exception)
+    {
+      // Informational log only
     }
 
-    return $result;
+    return JComponentHelper::filterText($text);
   }
 
-
-
-  //Return categories in which the user is allowed to do a given action. ("create" by default).
-  public static function getUserCategories($action = 'create', $watchdogs = false)
+  /**
+   * Adds Count Items for Category Manager.
+   *
+   * @param   stdClass[]  &$items  The banner category objects
+   *
+   * @return  stdClass[]
+   *
+   * @since   3.5
+   */
+  public static function countItems(&$items)
   {
-    $subquery = '';
-    if($watchdogs) {
-      //Get the number of document items linked to each category.
-      $subquery = ',(SELECT COUNT(*) FROM #__logbook_watchdogs WHERE catid=c.id) AS watchdogs';
-    }
-
-    //Get the component categories.
     $db = JFactory::getDbo();
-    $query = $db->getQuery(true);
-    $query->select('c.id, c.level, c.parent_id, c.title'.$subquery);
-    $query->from('#__categories AS c');
-    $query->where('extension="com_logmoniter"');
-    $query->order('c.lft ASC');
-    $db->setQuery($query);
-    $categories = $db->loadObjectList();
 
-    $userCategories = array();
+    foreach ($items as $item)
+    {
+      $item->count_trashed = 0;
+      $item->count_archived = 0;
+      $item->count_unpublished = 0;
+      $item->count_published = 0;
+      $query = $db->getQuery(true);
+      $query->select('state, count(*) AS count')
+        ->from($db->qn('#__logbook_watchdogs'))
+        ->where('catid = ' . (int) $item->id)
+        ->group('state');
+      $db->setQuery($query);
+      $records = $db->loadObjectList();
 
-    if($categories) {
-      foreach($categories as $category) {
-				//Get the list of the actions allowed for the user on this category.
-				$canDo = OkeydocHelper::getActions($category->id);
+      foreach ($records as $record)
+      {
+        if ($record->state == 1)
+        {
+          $item->count_published = $record->count;
+        }
 
-				if($canDo->get('core.'.$action)) {
-					$userCategories[] = $category;
-					//$userCategories[] = array('id' => $category->id, 'title' => $category->title);
-				}
+        if ($record->state == 0)
+        {
+          $item->count_unpublished = $record->count;
+        }
+
+        if ($record->state == 2)
+        {
+          $item->count_archived = $record->count;
+        }
+
+        if ($record->state == -2)
+        {
+          $item->count_trashed = $record->count;
+        }
       }
     }
 
-    return $userCategories;
+    return $items;
+  }
+
+  /**
+   * Adds Count Items for Tag Manager.
+   *
+   * @param   stdClass[]  &$items     The content objects
+   * @param   string      $extension  The name of the active view.
+   *
+   * @return  stdClass[]
+   *
+   * @since   3.6
+   */
+  public static function countTagItems(&$items, $extension)
+  {
+    $db = JFactory::getDbo();
+    $parts     = explode('.', $extension);
+    $section   = null;
+
+    if (count($parts) > 1)
+    {
+      $section = $parts[1];
+    }
+
+    $join  = $db->qn('#__logbook_watchdogs') . ' AS c ON ct.content_item_id=c.id';
+    $state = 'state';
+
+    if ($section === 'category')
+    {
+      $join = $db->qn('#__categories') . ' AS c ON ct.content_item_id=c.id';
+      $state = 'published as state';
+    }
+
+    foreach ($items as $item)
+    {
+      $item->count_trashed = 0;
+      $item->count_archived = 0;
+      $item->count_unpublished = 0;
+      $item->count_published = 0;
+      $query = $db->getQuery(true);
+      $query->select($state . ', count(*) AS count')
+        ->from($db->qn('#__contentitem_tag_map') . 'AS ct ')
+        ->where('ct.tag_id = ' . (int) $item->id)
+        ->where('ct.type_alias =' . $db->q($extension))
+        ->join('LEFT', $join)
+        ->group('state');
+      $db->setQuery($query);
+      $contents = $db->loadObjectList();
+
+      foreach ($contents as $content)
+      {
+        if ($content->state == 1)
+        {
+          $item->count_published = $content->count;
+        }
+
+        if ($content->state == 0)
+        {
+          $item->count_unpublished = $content->count;
+        }
+
+        if ($content->state == 2)
+        {
+          $item->count_archived = $content->count;
+        }
+
+        if ($content->state == -2)
+        {
+          $item->count_trashed = $content->count;
+        }
+      }
+    }
+
+    return $items;
+  }
+
+  /**
+   * Returns a valid section for articles. If it is not valid then null
+   * is returned.
+   *
+   * @param   string  $section  The section to get the mapping for
+   *
+   * @return  string|null  The new section
+   *
+   * @since   3.7.0
+   */
+  public static function validateSection($section)
+  {
+    if (JFactory::getApplication()->isClient('site'))
+    {
+      // On the front end we need to map some sections
+      switch ($section)
+      {
+        // Editing a watchdog.
+        case 'form':
+
+        // Category list view
+        case 'category':
+          $section = 'watchdog';
+      }
+    }
+
+    if ($section != 'watchdog')
+    {
+      // We don't know other sections
+      return null;
+    }
+
+    return $section;
+  }
+
+  /**
+   * Returns valid contexts
+   *
+   * @return  array
+   *
+   * @since   3.7.0
+   */
+  public static function getContexts()
+  {
+    JFactory::getLanguage()->load('com_logmoniter', JPATH_ADMINISTRATOR);
+
+    $contexts = array(
+      'com_logmoniter.watchdog'    => JText::_('COM_LOGMONITER'),
+      'com_logmoniter.categories' => JText::_('JCATEGORY')
+    );
+
+    return $contexts;
   }
 }
 

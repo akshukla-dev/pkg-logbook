@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  *
  * @since       1.5
  */
-class LogbookHelperQuery
+class LogmoniterHelperQuery
 {
     /**
      * Translate an order code to a field for primary category ordering.
@@ -71,31 +71,31 @@ class LogbookHelperQuery
           break;
 
       case 'alpha':
-          $orderby = 'l.title';
+          $orderby = 'w.title';
           break;
 
       case 'ralpha':
-          $orderby = 'l.title DESC';
+          $orderby = 'w.title DESC';
           break;
 
-      case 'downloads':
-          $orderby = 'l.downloads';
+      case 'hits':
+          $orderby = 'w.hits';
           break;
 
-      case 'rdownloads':
-          $orderby = 'l.downloads DESC';
+      case 'rhits':
+          $orderby = 'w.hits DESC';
           break;
 
-      case 'signatories':
-          $orderby = 'l.signatories';
+      case 'logs':
+          $orderby = 'w.logs';
           break;
 
-      case 'rsignatories':
-          $orderby = 'l.signatories DESC';
+      case 'rlogs':
+          $orderby = 'w.logs DESC';
           break;
 
       default:
-          $orderby = 'l.created DESC';
+          $orderby = 'w.ordering';
           break;
     }
 
@@ -117,17 +117,19 @@ class LogbookHelperQuery
 
         switch ($orderDate) {
       case 'modified':
-          $queryDate = ' CASE WHEN l.modified = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.modified END';
+          $queryDate = ' CASE WHEN w.modified = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.modified END';
           break;
 
-      // use created if closed is not set
-      case 'closed':
-          $queryDate = ' CASE WHEN l.closed = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.closed END ';
+      // use created if publish_up is not set
+      case 'published':
+          $queryDate = ' CASE WHEN w.publish_up = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.publish_up END ';
           break;
-
+	  case 'unpublished' :
+		  $queryDate = ' CASE WHEN w.publish_down = ' . $db->quote($db->getNullDate()) . ' THEN w.created ELSE w.publish_down END ';
+		  break;
       case 'created':
       default:
-          $queryDate = ' l.created ';
+          $queryDate = ' w.created ';
           break;
     }
 

@@ -14,11 +14,11 @@ class LogmoniterViewForm extends JViewLegacy
     protected $state = null;
     protected $item = null;
     protected $return_page = null;
-    protected $isNew = 0;
 
     public function display($tpl = null)
     {
-        $user = JFactory::getUser();
+		$user = JFactory::getUser();
+		$app  = JFactory::getApplication();
 
         //Redirect unregistered users to the login page.
         if ($user->guest) {
@@ -28,38 +28,67 @@ class LogmoniterViewForm extends JViewLegacy
             return true;
         }
 
-        // Initialise variables
+		// Get model data.
         $this->form = $this->get('Form');
         $this->state = $this->get('State');
         $this->item = $this->get('Item');
         $this->return_page = $this->get('ReturnPage');
 
-        //Check if the user is allowed to create a new log.
+        //Check if the user is allowed to create a new watchdog.
         if (empty($this->item->id)) {
-            $authorised = $user->authorise('core.create', 'com_logmoniter');
-            $this->isNew = 1;
+            $authorised = $user->authorise('core.create', 'com_logmoniter') || count($user->getAuthorisedCategories('com_logmoniter', 'core.create'));
         } else { //Check if the user is allowed to edit this log.
             $authorised = $this->item->params->get('access-edit');
         }
 
         if ($authorised !== true) {
-            JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+            $app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+            $app->setHeader('status', 403, true);
 
             return false;
         }
+
+		$this->item->tags = new JHelperTags;
+
+		if (!empty($this->item->id))
+		{
+			$this->item->tags->getItemTags('com_logmoniter.watchdog', $this->item->id);
+		}
+
+		if (!empty($this->item) && isset($this->item->id))
+		{
+			$this->item->images = json_decode($this->item->images);
+			$this->item->urls = json_decode($this->item->urls);
+
+			$tmp = new stdClass;
+			$tmp->images = $this->item->images;
+			$tmp->urls = $this->item->urls;
+			$this->form->bind($tmp);
+		}
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            JFactory::getApplication()->enqueueMessage($errors, 'error');
+            JError::raiseWarning(500, implode("\n", $errors));
 
-            return false;
+			return false;
         }
         // Create a shortcut to the parameters.
-        $params = &$this->state->params;
+		$params = &$this->state->params;
+
+		// Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
         $this->params = $params;
         // Override global params with document specific params
         $this->params->merge($this->item->params);
         $this->user = $user;
+
+		// Propose current language as default when creating new article
+		if (empty($this->item->id) && JLanguageMultilang::isEnabled())
+		{
+			$lang = JFactory::getLanguage()->getTag();
+			$this->form->setFieldAttribute('language', 'default', $lang);
+		}
 
         $this->_prepareDocument();
 
@@ -110,11 +139,4 @@ class LogmoniterViewForm extends JViewLegacy
             $this->document->setMetadata('robots', $this->params->get('robots'));
         }
     }
-
-    /*protected function setDocument()
-    {
-        //Include css file.
-        $doc = JFactory::getDocument();
-        $doc->addStyleSheet(JURI::base().'components/com_logbook/css/logbook.css');
-    }*/
 }

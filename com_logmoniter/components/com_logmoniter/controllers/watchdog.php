@@ -10,6 +10,14 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
+/**
+ * Logmoniter Watchdog class.
+ *
+ * @since  1.6.0
+ */
+
 class LogmoniterControllerWatchdog extends JControllerForm
 {
     /**
@@ -52,6 +60,16 @@ class LogmoniterControllerWatchdog extends JControllerForm
             // Redirect to the return page.
             $this->setRedirect($this->getReturnPage());
         }
+
+        // Redirect to the edit screen.
+        $this->setRedirect(
+            JRoute::_(
+                'index.php?option=' . $this->option . '&view=' . $this->view_item . '&w_id=0'
+                . $this->getRedirectToItemAppend(), false
+            )
+        );
+
+        return true;
     }
 
     /**
@@ -65,8 +83,9 @@ class LogmoniterControllerWatchdog extends JControllerForm
      */
     protected function allowAdd($data = array())
     {
+        $user       = JFactory::getUser();
         //Get a possible category id passed in the data or URL.
-        $catId = JArrayHelper::getValue($data, 'catid', $this->input->getInt('id'), 'int');
+        $catId = ArrayHelper::getValue($data, 'catid', $this->input->getInt('id'), 'int');
         $allow = null;
 
         if ($catId) {
@@ -98,6 +117,13 @@ class LogmoniterControllerWatchdog extends JControllerForm
         $userId = $user->get('id');
         $asset = 'com_logmoniter.watchdog.'.$recordId;
 
+        // Zero record (id:0), return component edit permission by calling parent controller method
+        if (!$recordId)
+        {
+            return parent::allowEdit($data, $key);
+        }
+
+
         // Check general edit permission first.
         if ($user->authorise('core.edit', $asset)) {
             return true;
@@ -106,27 +132,18 @@ class LogmoniterControllerWatchdog extends JControllerForm
         // Fallback on edit.own.
         // First test if the permission is available.
         if ($user->authorise('core.edit.own', $asset)) {
-            // Now test the owner is the user.
-            $ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
-            if (empty($ownerId) && $recordId) {
-                // Need to do a lookup from the model.
-                $record = $this->getModel()->getItem($recordId);
+            // Existing record already has an owner, get it
+            $record = $this->getModel()->getItem($recordId);
 
-                if (empty($record)) {
-                    return false;
-                }
-
-                $ownerId = $record->created_by;
+            if (empty($record))
+            {
+                return false;
             }
 
-            // If the owner matches 'me' then do the test.
-            if ($ownerId == $userId) {
-                return true;
-            }
+            // Grant if current user is owner of the record
+            return $user->get('id') == $record->created_by;
         }
-
-        // Since there is no asset tracking, revert to the component permissions.
-        return parent::allowEdit($data, $key);
+        return false;
     }
 
     /**
@@ -140,10 +157,9 @@ class LogmoniterControllerWatchdog extends JControllerForm
      */
     public function cancel($key = 'w_id')
     {
-        parent::cancel($key);
-
         // Redirect to the return page.
-        $this->setRedirect($this->getReturnPage());
+		$this->setRedirect(JRoute::_($this->getReturnPage()));
+		return parent::cancel($key);
     }
 
     /**
@@ -281,6 +297,38 @@ class LogmoniterControllerWatchdog extends JControllerForm
     {
         $app = JFactory::getApplication();
         $recordId = $this->input->getInt($urlVar);
+
+        // Load the parameters.
+        $params   = $app->getParams();
+        $menuitem = (int) $params->get('redirect_menuitem');
+
+        // Check for redirection after submission when creating a new article only
+        if ($menuitem > 0 && $recordId == 0)
+        {
+            $lang = '';
+
+            if (JLanguageMultilang::isEnabled())
+            {
+                $item = $app->getMenu()->getItem($menuitem);
+                $lang =  !is_null($item) && $item->language != '*' ? '&lang=' . $item->language : '';
+            }
+
+            // If ok, redirect to the return page.
+            if ($result)
+            {
+                $this->setRedirect(JRoute::_('index.php?Itemid=' . $menuitem . $lang));
+            }
+        }
+        else
+        {
+            // If ok, redirect to the return page.
+            if ($result)
+            {
+                $this->setRedirect(JRoute::_($this->getReturnPage()));
+            }
+        }
+
+
         //Get the jform data.
         $data = $this->input->post->get('jform', array(), 'array');
 
