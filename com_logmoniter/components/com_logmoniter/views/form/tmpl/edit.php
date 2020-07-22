@@ -19,6 +19,7 @@ $this->tab_name = 'com-logmoniter-form';
 $params = $this->state->get('params');
 ?>
 
+
 <script type="text/javascript">
   Joomla.submitbutton = function(task)
   {
@@ -85,3 +86,8 @@ $params = $this->state->get('params');
   </form>
 </div>
 
+<?php
+
+$doc = JFactory::getDocument();
+//Load the jQuery script(s).
+$doc->addScript(JURI::base().'administrator/components/com_logmoniter/js/watchdog.js');

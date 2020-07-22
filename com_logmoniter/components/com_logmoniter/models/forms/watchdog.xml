@@ -25,7 +25,7 @@
 				description="JFIELD_TITLE_DESC"
 				id="title"
 				class="inputbox"
-				size="60"
+				size="80"
 				required="true"
 			/>
 
@@ -37,7 +37,7 @@
 				id="alias"
 				hint="JFIELD_ALIAS_PLACEHOLDER"
 				class="inputbox"
-				size="45"
+				size="80"
 			/>
 
 		<field
@@ -46,7 +46,7 @@
 				label="JCATEGORY"
 				description="JFIELD_CATEGORY_DESC"
 				id="catid"
-				size="60"
+				size="80"
 				extension="com_logmoniter"
 				class="inputbox"
 				required="true"
@@ -159,6 +159,7 @@
 			class="inputbox"
 			validate="logworkcenters"
 			required="true"
+			size="80"
 		/>
 
 		<field
@@ -170,6 +171,8 @@
 			class="inputbox"
 			validate="loginstructionsets"
 			required="true"
+			size="80"
+
 		/>
 
 		<field
@@ -181,6 +184,7 @@
 			class="inputbox"
 			validate="logblueprints"
 			required="true"
+			size="80"
 		/>
 
 		<field
@@ -192,6 +196,7 @@
 			class="inputbox"
 			validate="logtimeintervals"
 			required="true"
+			size="80"
 		/>
 
 		<field
@@ -203,6 +208,7 @@
 			class="inputbox"
 			validate="logtimeintervals"
 			required="true"
+			size="80"
 		/>
 	</fieldset>
 

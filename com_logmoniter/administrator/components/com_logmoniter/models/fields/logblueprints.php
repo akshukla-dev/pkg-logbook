@@ -1,11 +1,8 @@
 <?php
 /**
- *
  * @copyright Copyright (c)2020 Amit Kumar Shukla
  * @license GNU General Public License version 3, or later
- *
  */
-
 defined('_JEXEC') or die;
 
 jimport('joomla.html.html');
@@ -13,7 +10,6 @@ jimport('joomla.form.formfield');
 // import the list field type
 jimport('joomla.form.helper');
 JFormHelper::loadFieldClass('list');
-
 
 //Script which build the select html tag containing the name and the id of the
 //workcenters.
@@ -25,39 +21,40 @@ class JFormFieldLogBlueprints extends JFormFieldList
 
     protected function getInput()
     {
-      //Get the item id directly from the form loaded with data.
-      $itemId = $this->form->getValue('id');
+        //Get the item id directly from the form loaded with data.
+        $itemId = $this->form->getValue('isid');
 
-      if($itemId) {
+        if ($itemId) {
+            //Get the inset ids previously selected.
+            $db = JFactory::getDbo();
+            $query = $db->getQuery(true);
+            $query->select('id');
+            $query->from('#__logbook_blueprints');
+            $query->where('isid='.$itemId);
+            $db->setQuery($query);
+            $selected = $db->loadValue();
 
-        //Get the article ids previously selected.
-        $db = JFactory::getDbo();
-        $query = $db->getQuery(true);
-        $query->select('id');
-        $query->from('#__logbook_blueprints');
-        $query->where('id='.$itemId);
-        $db->setQuery($query);
-        $selected = $db->loadColumn();
+            //Assign the id array to the value attribute to get the selected items
+            //displayed in the input field.
+            //$this->value = $selected;
+        }
 
-        //Assign the id array to the value attribute to get the selected items
-        //displayed in the input field.
-        $this->value = $selected;
-      }
+        $input = parent::getInput();
 
-      $input = parent::getInput();
-
-      return $input;
+        return $input;
     }
-
 
     protected function getOptions()
     {
+        //$app = JFactory::getApplication();
+        //$inset = $app->input->get('isid');
         $options = array();
         //Retrieve all data from the mapping table.
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
         $query->select('id AS value, title AS text');
         $query->from('#__logbook_blueprints');
+        //$query->where('isid="'.$inset.'"');
         $db->setQuery($query);
         $items = $db->loadObjectList();
 
@@ -66,5 +63,25 @@ class JFormFieldLogBlueprints extends JFormFieldList
 
         return $options;
     }
-}
 
+    /*protected function getOptions()
+    {
+        $app = JFactory::getApplication();
+        $inset = $app->input->get('isid'); //isid is the dynamic value which is being used in the view
+        if (empty($inset)) {
+            JFactory::getApplication()->enqueueMessage('Please Select a LMI', 'warning');
+        } else {
+            $db = JFactory::getDbo();
+            $query = $db->getQuery(true);
+            $query->select('bp.title')->from('`#__logbook_blueprints` AS bp')->where('bp.isid = "'.$inset.'" ');
+            $rows = $db->setQuery($query)->loadObjectlist();
+            foreach ($rows as $row) {
+                $bprints[] = $row->title;
+            }
+            // Merge any additional options in the XML definition.
+            $options = array_merge(parent::getOptions(), $bprints);
+
+            return $options;
+        }
+    }*/
+}
