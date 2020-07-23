@@ -38,21 +38,11 @@ class com_logbookInstallerScript
         }*/
 
         if ($type == 'install') {
-            //Create a "logbook_logs" folder in the root directory of the site.
-            if (JFolder::create(JPATH_ROOT.'/logbookfiles')) {
-                echo '<p style="color:green;">'.JText::_('COM_LOGBOOK_FOLDER_CREATION_SUCCESS').'</p>';
+            //Create a "logbookfiles" folder in the root directory of the site.
+            if (JFolder::exists(JPATH_ROOT.'/logbookfiles')) {
+                echo '<p style="color:green;">'.JText::_('COM_LOGBOOK_FOLDER_AVAILABLE').'</p>';
             } else { //Stop the installation if the folder cannot be created.
-                JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_FOLDER_CREATION_ERROR'), 'error');
-
-                return false;
-            }
-
-            //Create a .htaccess file in the "logbook_logs" directory.
-            $buffer = 'Options -Indexes';
-            if (JFile::write(JPATH_ROOT.'/logbookfiles/.htaccess', $buffer)) {
-                echo '<p style="color:green;">'.JText::_('COM_LOGBOOK_HTACCESS_CREATION_SUCCESS').'</p>';
-            } else { //Stop the installation if the .htaccess file cannot be created.
-                JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_HTACCESS_CREATION_ERROR'), 'error');
+                JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_FOLDER_ERROR'), 'error');
 
                 return false;
             }
@@ -81,7 +71,7 @@ class com_logbookInstallerScript
         //put it into a csv file.
         $db = JFactory::getDbo();
             $query = $db->getQuery(true);
-            $query->select('d.file, d.file_name, d.file_size, d.file_path, d.created, d.wdid');
+            $query->select('d.file, d.file_name, d.file_size, d.file_path, d.created');
             $query->from('#__logbook_logs AS d');
             $query->join('LEFT', '#__logbook_watchdogs AS wd ON wd.id=d.wdid');
             $db->setQuery($query);
@@ -147,7 +137,7 @@ class com_logbookInstallerScript
             $query->where('element='.$db->Quote('com_logbook').' AND type='.$db->Quote('component'));
             $db->setQuery($query);
             $db->query();
-            /*
+
             //In order to use the Joomla's tagging system we have to give to Joomla some
             //informations about the component items we want to tag.
             //Those informations should be inserted into the #__content_types table.
@@ -158,9 +148,9 @@ class com_logbookInstallerScript
             $query->insert('#__content_types');
             $query->columns($columns);
             $query->values($db->Quote('Logbook').','.$db->Quote('com_logbook.log').','.
-      $db->Quote('{"special"{"dbtable":"#__logbook_logs","key":"id","type":"Log","prefix":"LogbookTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}').','.
-      $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"state","core_alias":"alias","core_created_time":"created","core_modified_time":"modified","core_body":"null","core_hits":"hits","core_publish_up":"publish_up","core_publish_down":"publish_down","core_access":"access","core_params":"params","core_featured":"null","core_metadata":"null","core_language":"language","core_images":"null","core_urls":"null","core_version":"null","core_ordering":"ordering","core_metakey":"null","core_metadesc":"null","core_catid":"catid","core_xreference":"null","asset_id":"null"},"special": {}}').','.
-      $db->Quote('LogbookHelperRoute::getLogRoute'));
+            $db->Quote('{"special"{"dbtable":"#__logbook_logs","key":"id","type":"Log","prefix":"LogbookTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}').','.
+            $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"state","core_alias":"alias","core_created_time":"created","core_modified_time":"modified","core_body":"null","core_hits":"hits","core_publish_up":"publish_up","core_publish_down":"publish_down","core_access":"access","core_params":"params","core_featured":"null","core_metadata":"null","core_language":"language","core_images":"null","core_urls":"null","core_version":"null","core_ordering":"ordering","core_metakey":"null","core_metadesc":"null","core_catid":"catid","core_xreference":"null","asset_id":"null"},"special": {}}').','.
+            $db->Quote('LogbookHelperRoute::getLogRoute'));
             $db->setQuery($query);
             $db->query();
 
@@ -169,12 +159,11 @@ class com_logbookInstallerScript
             $query->insert('#__content_types');
             $query->columns($columns);
             $query->values($db->Quote('Logbook Category').','.$db->Quote('com_logbook.category').','.
-      $db->Quote('{"special"{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common"{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}').','.
-      $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"state","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"introtext","core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access","core_params":"params","core_featured":"null","core_metadata":"metadata","core_language":"language","core_images":"null","core_urls":"null","core_version":"version","core_ordering":"null","core_metakey":"metakey","core_metadesc":"metadesc","core_catid":"parent_id","core_xreference":"null","asset_id":"asset_id"},"special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}').','.
-      $db->Quote('LogbookHelperRoute::getCategoryRoute'));
+            $db->Quote('{"special"{"dbtable":"#__categories","key":"id","type":"Category","prefix":"JTable","config":"array()"},"common"{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}').','.
+            $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"state","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"introtext","core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access","core_params":"params","core_featured":"null","core_metadata":"metadata","core_language":"language","core_images":"null","core_urls":"null","core_version":"version","core_ordering":"null","core_metakey":"metakey","core_metadesc":"metadesc","core_catid":"parent_id","core_xreference":"null","asset_id":"asset_id"},"special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}').','.
+            $db->Quote('LogbookHelperRoute::getCategoryRoute'));
             $db->setQuery($query);
             $db->query();
-            */
         }
     }
 

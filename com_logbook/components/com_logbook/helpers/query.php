@@ -71,23 +71,30 @@ class LogbookHelperQuery
             break;
 
         case 'alpha':
-            $orderby = 'w.title';
+            $orderby = 'l.title';
             break;
 
         case 'ralpha':
-            $orderby = 'w.title DESC';
+            $orderby = 'l.title DESC';
         break;
 
         case 'order':
-            $orderby = 'w.ordering';
+            $orderby = 'l.ordering';
             break;
 
         case 'rorder':
-            $orderby = 'w.ordering DESC';
+            $orderby = 'l.ordering DESC';
+            break;
+        case 'hits':
+            $orderby = 'l.hits DESC';
+            break;
+
+        case 'rhits':
+            $orderby = 'l.hits';
             break;
 
         default:
-            $orderby = 'w.ordering DESC';
+            $orderby = 'l.ordering';
             break;
         }
 
@@ -109,17 +116,17 @@ class LogbookHelperQuery
 
         switch ($orderDate) {
         case 'modified':
-            $queryDate = ' CASE WHEN w.modified = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.modified END';
+            $queryDate = ' CASE WHEN l.modified = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.modified END';
             break;
 
         // use created if publish_up is not set
         case 'published':
-            $queryDate = ' CASE WHEN w.publish_up = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.publish_up END ';
+            $queryDate = ' CASE WHEN l.publish_up = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.publish_up END ';
             break;
 
         case 'created':
         default:
-            $queryDate = ' w.created ';
+            $queryDate = ' l.created ';
             break;
         }
 

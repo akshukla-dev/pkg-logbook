@@ -7,19 +7,6 @@
 		>
 
 		<field
-			name="captcha"
-			type="plugins"
-			label="COM_LOGBOOK_FIELD_CAPTCHA_LABEL"
-			description="COM_LOGBOOK_FIELD_CAPTCHA_DESC"
-			default=""
-			folder="captcha"
-			filter="cmd"
-			>
-			<option value="">JOPTION_USE_DEFAULT</option>
-			<option value="0">JOPTION_DO_NOT_USE</option>
-		</field>
-
-		<field
 			name="spacer"
 			type="spacer"
 			hr="true"
@@ -56,14 +43,6 @@
 			hr="true"
 		/>
 
-		<field name="superadmin_only" type="radio" default="1"
-			class="btn-group btn-group-yesno"
-			label="COM_LOGBOOK_SUPERADMIN_ONLY_LABEL"
-			description="COM_LOGBOOK_SUPERADMIN_ONLY_DESC">
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-
 		<field name="uninstall_remove_all" type="radio" default="0"
 			class="btn-group btn-group-yesno"
 			label="COM_LOGBOOK_FIELD_REMOVE_FILE_DIRECTORY_LABEL"
@@ -71,12 +50,6 @@
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
-
-		<field
-			name="spacer3"
-			type="spacer"
-			hr="true"
-		/>
 
 		<field
 			name="save_history"

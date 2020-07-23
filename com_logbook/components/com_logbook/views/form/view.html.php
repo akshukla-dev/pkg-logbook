@@ -8,6 +8,11 @@
 // No direct access
 defined('_JEXEC') or die;
 
+/**
+ * HTML Article View class for the Content component.
+ *
+ * @since  1.5
+ */
 class LogbookViewForm extends JViewLegacy
 {
     protected $form = null;
@@ -16,6 +21,13 @@ class LogbookViewForm extends JViewLegacy
     protected $return_page = null;
     protected $isNew = 0;
 
+    /**
+     * Execute and display a template script.
+     *
+     * @param string $tpl the name of the template file to parse; automatically searches through the template paths
+     *
+     * @return mixed a string if successful, otherwise an Error object
+     */
     public function display($tpl = null)
     {
         $user = JFactory::getUser();
@@ -44,25 +56,43 @@ class LogbookViewForm extends JViewLegacy
 
         if ($authorised !== true) {
             JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+            $app->setHeader('status', 403, true);
 
             return false;
+        }
+
+        $this->item->tags = new JHelperTags();
+
+        if (!empty($this->item->id)) {
+            $this->item->tags->getItemTags('com_logbook.log', $this->item->id);
         }
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            JFactory::getApplication()->enqueueMessage($errors, 'error');
+            JError::raiseWarning(500, implode("\n", $errors));
 
             return false;
         }
+
         // Create a shortcut to the parameters.
         $params = &$this->state->params;
+
+        // Escape strings for HTML output
+        $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
+
         $this->params = $params;
+
         // Override global params with document specific params
         $this->params->merge($this->item->params);
         $this->user = $user;
 
-        $this->_prepareDocument();
+        // Propose current language as default when creating new article
+        if (empty($this->item->id) && JLanguageMultilang::isEnabled()) {
+            $lang = JFactory::getLanguage()->getTag();
+            $this->form->setFieldAttribute('language', 'default', $lang);
+        }
 
+        $this->_prepareDocument();
         parent::display($tpl);
     }
 
@@ -110,11 +140,4 @@ class LogbookViewForm extends JViewLegacy
             $this->document->setMetadata('robots', $this->params->get('robots'));
         }
     }
-
-    /*protected function setDocument()
-    {
-        //Include css file.
-        $doc = JFactory::getDocument();
-        $doc->addStyleSheet(JURI::base().'components/com_logbook/css/logbook.css');
-    }*/
 }

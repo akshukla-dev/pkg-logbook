@@ -12,44 +12,45 @@ defined('_JEXEC') or die;
  */
 class LogbookViewLog extends JViewLegacy
 {
-	protected $state;
- 	protected $item;
+    protected $state;
+    protected $item;
+
     public function display($tpl = null)
     {
-		// Initialise variables
-		$this->state = $this->get('State');
-		$this->item = $this->get('Item');
-		$user = JFactory::getUser();
+        // Initialise variables
+        $this->state = $this->get('State');
+        $this->item = $this->get('Item');
+        $user = JFactory::getUser();
 
-		// Check for errors.
-		if(count($errors = $this->get('Errors'))) {
-			JFactory::getApplication()->enqueueMessage($errors, 'error');
-			return false;
-		}
+        // Check for errors.
+        if (count($errors = $this->get('Errors'))) {
+            JFactory::getApplication()->enqueueMessage($errors, 'error');
 
-		//Get the possible extra class name.
-		$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
-		//Get the user object and the current url.
-		$user = JFactory::getUser();
-		$uri = JUri::getInstance();
-		//Variables needed in the document edit layout.
-		$this->item->user_id = $user->get('id');
-		$this->item->uri = $uri;
+            return false;
+        }
 
-		//Increment the hits for this document.
-		$model = $this->getModel();
-		$model->hit();
+        //Get the possible extra class name.
+        //$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
+        //Get the user object and the current url.
+        $user = JFactory::getUser();
+        $uri = JUri::getInstance();
+        //Variables needed in the document edit layout.
+        $this->item->user_id = $user->get('id');
+        $this->item->uri = $uri;
 
-		$this->setDocument();
+        //Increment the hits for this document.
+        $model = $this->getModel();
+        $model->hit();
 
-		parent::display($tpl);
+        $this->setDocument();
 
-	}
+        parent::display($tpl);
+    }
 
-	protected function setDocument()
-	{
-	  //Include css files.
-	  $doc = JFactory::getDocument();
-	  //$doc->addStyleSheet(JURI::base().'components/com_lrm/css/lrm.css');
-	}
+    protected function setDocument()
+    {
+        //Include css files.
+        $doc = JFactory::getDocument();
+        //$doc->addStyleSheet(JURI::base().'components/com_lrm/css/lrm.css');
+    }
 }

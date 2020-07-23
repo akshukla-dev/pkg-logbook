@@ -1,58 +1,49 @@
 <?php
 /**
- *
  * @copyright Copyright (c)
  * @license GNU General Public License version 3, or later
- *
  */
-
-
 defined('_JEXEC') or die; // No direct access.
-
-
 
 class LogmoniterController extends JControllerLegacy
 {
-  /**
-   * Constructor.
-   *
-   * @param   array  $config  An optional associative array of configuration settings.
-   * Recognized key values include 'name', 'default_task', 'model_path', and
-   * 'view_path' (this list is not meant to be comprehensive).
-   *
-   * @since   12.2
-   */
-  public function __construct($config = array())
-  {
-    $this->input = JFactory::getApplication()->input;
-
-    // Article frontpage Editor article proxying:
-
-    if ($this->input->get('view') === 'watchdogs' && $this->input->get('layout') === 'modal')
+    /**
+     * Constructor.
+     *
+     * @param array $config An optional associative array of configuration settings.
+     *                      Recognized key values include 'name', 'default_task', 'model_path', and
+     *                      'view_path' (this list is not meant to be comprehensive).
+     *
+     * @since   12.2
+     */
+    public function __construct($config = array())
     {
-      JHtml::_('stylesheet', 'system/adminlist.css', array('version' => 'auto', 'relative' => true));
-      $config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
+        $this->input = JFactory::getApplication()->input;
+
+        // Article frontpage Editor article proxying:
+
+        if ($this->input->get('view') === 'watchdogs' && $this->input->get('layout') === 'modal') {
+            JHtml::_('stylesheet', 'system/adminlist.css', array('version' => 'auto', 'relative' => true));
+            $config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
+        }
+
+        parent::__construct($config);
     }
 
-    parent::__construct($config);
-  }
+    public function display($cachable = false, $urlparams = false)
+    {
+        /**
+         * Set the default view name and format from the Request.
+         * Note we are using w_id to avoid collisions with the router and the return page.
+         * Frontend is a bit messier than the backend.
+         */
+        $id = $this->input->getInt('w_id');
+        //Set the view, (categories by default).
+        $vName = $this->input->getCmd('view', 'categories');
+        $this->input->set('view', $vName);
 
-
-  public function display($cachable = false, $urlparams = false)
-  {
-
-    /**
-     * Set the default view name and format from the Request.
-     * Note we are using a_id to avoid collisions with the router and the return page.
-     * Frontend is a bit messier than the backend.
-     */
-    $id = $this->input->getInt('w_id');
-    //Set the view, (categories by default).
-    $vName = $this->input->getCmd('view', 'categories');
-    $this->input->set('view', $vName);
-
-    //Make sure the parameters passed in the input by the component are safe.
-    $safeurlparams = array(
+        //Make sure the parameters passed in the input by the component are safe.
+        $safeurlparams = array(
         'catid' => 'INT',
         'id' => 'INT',
         'cid' => 'ARRAY',
@@ -68,30 +59,25 @@ class LogmoniterController extends JControllerLegacy
         'filter_order_Dir' => 'CMD',
         'lang' => 'CMD',
         'print' => 'BOOLEAN',
-        'Itemid' => 'INT'
+        'Itemid' => 'INT',
     );
 
-    // Check for edit form.
-    if($vName == 'form' && !$this->checkEditId('com_logmoniter.edit.watchdog', $id)) {
-      // Somehow the person just went to the form - we don't allow that.
-      return JError::raiseError(403, JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+        // Check for edit form.
+        if ($vName == 'form' && !$this->checkEditId('com_logmoniter.edit.watchdog', $id)) {
+            // Somehow the person just went to the form - we don't allow that.
+            return JError::raiseError(403, JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+        }
+
+        if ($vName === 'watchdog') {
+            // Get/Create the model
+            if ($model = $this->getModel($vName)) {
+                $model->hit();
+            }
+        }
+
+        //Display the view.
+        parent::display($cachable, $safeurlparams);
+
+        return $this;
     }
-
-    if ($vName === 'watchdog')
-    {
-      // Get/Create the model
-      if ($model = $this->getModel($vName))
-      {
-        $model->hit();
-      }
-    }
-
-    //Display the view.
-    parent::display($cachable, $safeurlparams);
-
-    return $this;
-  }
-
 }
-
-

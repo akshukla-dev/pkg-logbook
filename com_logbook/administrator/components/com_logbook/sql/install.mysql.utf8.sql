@@ -1,11 +1,4 @@
 --
--- Insert data into table `#__content_types` for UCM functions
---
-
-INSERT INTO `#__content_types` (`type_title`, `type_alias`, `table`, `rules`, `field_mappings`, `router`, `content_history_options`) VALUES
-('Logbook Log', 'com_logbook.log', '{"special":{"dbtable":"#__logbook_logs","key":"id","type":"Log","prefix":"LogbookTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}', '', '{"common":{"core_content_item_id":"id","core_title":"title","core_state":"state","core_alias":"alias","core_created_time":"created","core_modified_time":"modified","core_body":"null", "core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access", "core_params":"null", "core_featured":"null", "core_metadata":"null", "core_language":"null", "core_images":"null", "core_urls":"null", "core_version":"null", "core_ordering":"null", "core_metakey":"null", "core_metadesc":"null", "core_catid":"null", "core_xreference":"null", "asset_id":"asset_id"}, "special":{}}', 'LogbookHelperRoute::getLogRoute', '{"formFile":"administrator\\/components\\/com_logbook\\/models\\/forms\\/log.xml", "hideFields":["asset_id","checked_out","checked_out_time"], "ignoreChanges":["modified_by", "modified", "checked_out", "checked_out_time", "version", "downloads"], "convertToInt":["closed"], "displayLookup":[{"sourceColumn":"wdid","targetTable":"#__logbook_watchdogs","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"created_by","targetTable":"#__users","targetColumn":"id","displayColumn":"name"},{"sourceColumn":"access","targetTable":"#__viewlevels","targetColumn":"id","displayColumn":"title"},{"sourceColumn":"modified_by","targetTable":"#__users","targetColumn":"id","displayColumn":"name"} ]}'),
-
---
 -- Table structure for table `#__logbook_logs`
 --
 CREATE TABLE IF NOT EXISTS `#__logbook_logs`(

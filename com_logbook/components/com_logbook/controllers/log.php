@@ -10,6 +10,11 @@
 
 defined('_JEXEC') or die;
 
+/**
+ * Content log class.
+ *
+ * @since  1.6.0
+ */
 class LogbookControllerLog extends JControllerForm
 {
     /**
@@ -28,7 +33,7 @@ class LogbookControllerLog extends JControllerForm
      *
      * @since  1.6
      */
-    protected $view_list = 'logs';
+    protected $view_list = 'categories';
 
     /**
      * The URL edit variable.
@@ -52,6 +57,16 @@ class LogbookControllerLog extends JControllerForm
             // Redirect to the return page.
             $this->setRedirect($this->getReturnPage());
         }
+
+        // Redirect to the edit screen.
+        $this->setRedirect(
+            JRoute::_(
+                'index.php?option='.$this->option.'&view='.$this->view_item.'&l_id=0'
+                .$this->getRedirectToItemAppend(), false
+            )
+        );
+
+        return true;
     }
 
     /**
@@ -65,16 +80,13 @@ class LogbookControllerLog extends JControllerForm
      */
     protected function allowAdd($data = array())
     {
-        //Note: If a watchdog id is found, check whether the user is allowed to create an item into this category.
-
         $user = JFactory::getUser();
-        //Get a possible watchdog id passed in the data or URL.
-        $watchdogId = JArrayHelper::getValue($data, 'wdid', $this->input->getInt('wdid'), 'int');
+        $categoryId = ArrayHelper::getValue($data, 'catid', $this->input->getInt('catid'), 'int');
         $allow = null;
 
-        if ($watchdogId) {
+        if ($categoryId) {
             // If the category has been passed in the data or URL check it.
-            $allow = $user->authorise('core.create', 'com_logbook.watchdog.'.$watchdogId);
+            $allow = $user->authorise('core.create', 'com_logbook.category.'.$categoryId);
         }
 
         if ($allow === null) {
@@ -99,38 +111,31 @@ class LogbookControllerLog extends JControllerForm
     {
         $recordId = (int) isset($data[$key]) ? $data[$key] : 0;
         $user = JFactory::getUser();
-        $userId = $user->get('id');
-        $asset = 'com_logbook.log.'.$recordId;
 
-        // Check general edit permission first.
-        if ($user->authorise('core.edit', $asset)) {
+        // Zero record (id:0), return component edit permission by calling parent controller method
+        if (!$recordId) {
+            return parent::allowEdit($data, $key);
+        }
+
+        // Check edit on the record asset (explicit or inherited)
+        if ($user->authorise('core.edit', 'com_logbook.log.'.$recordId)) {
             return true;
         }
 
-        // Fallback on edit.own.
-        // First test if the permission is available.
-        if ($user->authorise('core.edit.own', $asset)) {
-            // Now test the owner is the user.
-            $ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
-            if (empty($ownerId) && $recordId) {
-                // Need to do a lookup from the model.
-                $record = $this->getModel()->getItem($recordId);
+        // Check edit own on the record asset (explicit or inherited)
+        if ($user->authorise('core.edit.own', 'com_logbook.log.'.$recordId)) {
+            // Existing record already has an owner, get it
+            $record = $this->getModel()->getItem($recordId);
 
-                if (empty($record)) {
-                    return false;
-                }
-
-                $ownerId = $record->created_by;
+            if (empty($record)) {
+                return false;
             }
 
-            // If the owner matches 'me' then do the test.
-            if ($ownerId == $userId) {
-                return true;
-            }
+            // Grant if current user is owner of the record
+            return $user->get('id') == $record->created_by;
         }
 
-        // Since there is no asset tracking, revert to the component permissions.
-        return parent::allowEdit($data, $key);
+        return false;
     }
 
     /**
@@ -165,6 +170,10 @@ class LogbookControllerLog extends JControllerForm
     {
         $result = parent::edit($key, $urlVar);
 
+        if (!$result) {
+            $this->setRedirect(JRoute::_($this->getReturnPage()));
+        }
+
         return $result;
     }
 
@@ -181,9 +190,7 @@ class LogbookControllerLog extends JControllerForm
      */
     public function getModel($name = 'form', $prefix = '', $config = array('ignore_request' => true))
     {
-        $model = parent::getModel($name, $prefix, $config);
-
-        return $model;
+        return parent::getModel($name, $prefix, $config);
     }
 
     /**
@@ -200,7 +207,7 @@ class LogbookControllerLog extends JControllerForm
     {
         // Need to override the parent method completely.
         $tmpl = $this->input->get('tmpl');
-        // $layout = $this->input->get('layout', 'edit');
+
         $append = '';
 
         // Setup redirect info.
@@ -209,10 +216,13 @@ class LogbookControllerLog extends JControllerForm
         }
 
         // TODO This is a bandaid, not a long term solution.
-        // if ($layout)
-        // {
-        //   $append .= '&layout=' . $layout;
-        // }
+        /*
+         * if ($layout)
+         * {
+         *	$append .= '&layout=' . $layout;
+         * }
+         */
+
         $append .= '&layout=edit';
 
         if ($recordId) {
@@ -221,14 +231,14 @@ class LogbookControllerLog extends JControllerForm
 
         $itemId = $this->input->getInt('Itemid');
         $return = $this->getReturnPage();
-        $watchdogId = $this->input->getInt('wdid', null, 'get');
+        $catId = $this->input->getInt('catid', null, 'get');
 
         if ($itemId) {
             $append .= '&Itemid='.$itemId;
         }
 
-        if ($watchdogId) {
-            $append .= '&wdid='.$watchdogId;
+        if ($catId) {
+            $append .= '&catid='.$catId;
         }
 
         if ($return) {
@@ -259,19 +269,6 @@ class LogbookControllerLog extends JControllerForm
     }
 
     /**
-     * Function that allows child controller access to model data after the data has been saved.
-     *
-     * @param JModelLegacy $model     the data model object
-     * @param array        $validData the validated data
-     *
-     * @since   1.6
-     */
-    protected function postSaveHook(JModelLegacy $model, $validData = array())
-    {
-        return;
-    }
-
-    /**
      * Method to save a record.
      *
      * @param string $key    the name of the primary key of the URL variable
@@ -283,52 +280,47 @@ class LogbookControllerLog extends JControllerForm
      */
     public function save($key = null, $urlVar = 'l_id')
     {
-        $app = JFactory::getApplication();
-        $recordId = $this->input->getInt($urlVar);
-        //Get the jform data.
-        $data = $this->input->post->get('jform', array(), 'array');
-
-        //Set the alias of the document.
-
-        //Remove possible spaces.
-        $data['alias'] = trim($data['alias']);
-        if (empty($data['alias'])) {
-            //Created a sanitized alias from the title field, (see stringURLSafe function for details).
-            $data['alias'] = JFilterOutput::stringURLSafe($data['title']);
-        }
-
-        // Verify that the alias is unique
-
-        //Note: Usually this code goes into the overrided store JTable function but the file
-        //would already be uploaded on the server if any duplicate alias is found.
-        //To avoid this situation we check the alias unicity here as the file uploading
-        //is not still triggered.
-
-        $model = $this->getModel();
-        $table = $model->getTable();
-
-        if ($table->load(array('alias' => $data['alias'], 'wdid' => $data['wdid'])) && ($table->id != $recordId || $recordId == 0)) {
-            JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_DATABASE_ERROR_LOG_UNIQUE_ALIAS'), 'error');
-
-            // Save the data in the session.
-            //Note: It allows to preserve the data previously set by the user after the redirection.
-            $app->setUserState($this->option.'.edit.'.$this->context.'.data', $data);
-
-            $this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_item.$this->getRedirectToItemAppend($recordId, $urlVar), false));
-
-            return false;
-        }
-
-        //Update jform with the modified data.
-        $this->input->post->set('jform', $data);
-
         $result = parent::save($key, $urlVar);
+        $app = JFactory::getApplication();
+        $logId = $app->input->getInt('l_id');
 
-        // If ok, redirect to the return page.
-        if ($result) {
-            $this->setRedirect($this->getReturnPage());
+        // Load the parameters.
+        $params = $app->getParams();
+        $menuitem = (int) $params->get('redirect_menuitem');
+
+        // Check for redirection after submission when creating a new log only
+        if ($menuitem > 0 && $logId == 0) {
+            $lang = '';
+
+            if (JLanguageMultilang::isEnabled()) {
+                $item = $app->getMenu()->getItem($menuitem);
+                $lang = !is_null($item) && $item->language != '*' ? '&lang='.$item->language : '';
+            }
+
+            // If ok, redirect to the return page.
+            if ($result) {
+                $this->setRedirect(JRoute::_('index.php?Itemid='.$menuitem.$lang));
+            }
+        } else {
+            // If ok, redirect to the return page.
+            if ($result) {
+                $this->setRedirect(JRoute::_($this->getReturnPage()));
+            }
         }
 
         return $result;
+    }
+
+    /**
+     * Function that allows child controller access to model data after the data has been saved.
+     *
+     * @param JModelLegacy $model     the data model object
+     * @param array        $validData the validated data
+     *
+     * @since   1.6
+     */
+    protected function postSaveHook(JModelLegacy $model, $validData = array())
+    {
+        return;
     }
 }

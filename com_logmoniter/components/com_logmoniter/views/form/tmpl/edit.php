@@ -53,7 +53,7 @@ $params = $this->state->get('params');
           <?php echo $this->form->renderField('tiid'); ?>
           <?php echo $this->form->renderField('lwid'); ?>
           <?php if ($this->user->authorise('core.edit.state', 'com_logmoniter.watchdog')) : ?>
-            <?php echo $this->form->renderField('published'); ?>
+            <?php echo $this->form->renderField('state'); ?>
           <?php endif; ?>
           <?php echo $this->form->renderField('publish_up'); ?>
           <?php echo $this->form->renderField('publish_down'); ?>
