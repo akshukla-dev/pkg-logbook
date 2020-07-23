@@ -28,7 +28,7 @@ class plgContentLogmanager extends JPlugin
             }
             $foldername = $data->wcid.'-'.$data->isid.'-'.$data->bpid;
             $logRootDir = 'logbookfiles';
-            $data->log_folder = $foldername;
+            $data->log_path = $logRootDir.'/'.$foldername;
             $folderTree = JFolder::ListFolderTree(JPATH_ROOT.'/'.$logRootDir, '.', 1);
             //Existing folder.
             if (!$isNew) {
@@ -36,7 +36,7 @@ class plgContentLogmanager extends JPlugin
                 $query = $db->getQuery(true);
 
                 // Change is allowed only when the log_count is zero
-                $query->select('log_count, log_folder');
+                $query->select('log_count, log_path');
                 $query->from('#__logbook_watchdogs');
                 $query->where('id='.(int) $data->id);
                 $db->setQuery($query);
@@ -50,10 +50,10 @@ class plgContentLogmanager extends JPlugin
 
                 $renamed = false;
                 //The 2 names are different (the folder  has been renamed).
-                if ($prevSetting->log_count == 0 && strcmp($prevSetting->log_folder, $data->log_folder) !== 0) {
+                if ($prevSetting->log_count == 0 && strcmp($prevSetting->log_path, $data->log_path) !== 0) {
                     //Check first if the new folder  name doesn't already exist.
                     foreach ($folderTree as $dir) {
-                        if ($data->log_folder == $dir['name']) {
+                        if ($data->log_path == $logRootDir.'/'.$dir['name']) {
                             $data->setError(JText::_('COM_LOGBOOK_FOLDER_NAME_ALREADY_EXISTS'));
 
                             return false;
@@ -65,7 +65,7 @@ class plgContentLogmanager extends JPlugin
 
                 if ($renamed) {
                     //Rename the folder.
-                    if (JFolder::move(JPATH_ROOT.'/'.$logRootDir.'/'.$prevSetting->log_folder, JPATH_ROOT.'/'.$logRootDir.'/'.$data->log_folder) !== true) {
+                    if (JFolder::move(JPATH_ROOT.'/'.$prevSetting->log_path, JPATH_ROOT.'/'.$data->log_path) !== true) {
                         $data->setError(JText::_('COM_LOGMANAGER_FOLDER_COULD_NOT_BE_RENAMED'));
 
                         return false;
@@ -74,7 +74,7 @@ class plgContentLogmanager extends JPlugin
             } else { //Create a new folder
                 //Check first if the new folder name doesn't already exist.
                 foreach ($folderTree as $dir) {
-                    if ($data->title == $dir['name']) {
+                    if ($data->log_path == $logRootDir.'/'.$dir['name']) {
                         $data->setError(JText::_('COM_LOGMONITER_FOLDER_NAME_ALREADY_EXISTS'));
 
                         return false;
@@ -82,8 +82,8 @@ class plgContentLogmanager extends JPlugin
                 }
 
                 //Create the new folder in the log root directory.
-                if (!JFolder::create(JPATH_ROOT.'/'.$logRootDir.'/'.$data->log_folder)) {
-                    $data->setError(JText::sprintf('COM_LOGMONITER_FOLDER_COULD_NOT_BE_CREATED', $data->log_folder));
+                if (!JFolder::create(JPATH_ROOT.'/'.$data->log_path)) {
+                    $data->setError(JText::sprintf('COM_LOGMONITER_FOLDER_COULD_NOT_BE_CREATED', $data->log_path));
 
                     return false;
                 }
@@ -289,8 +289,7 @@ class plgContentLogmanager extends JPlugin
             $logRootDir = 'logbookfiles';
 
             //Set as regular folder.
-            $folderPath = JPATH_ROOT.'/'.$logRootDir.'/'.$data->log_folder;
-            $folderName = $data->log_folder;
+            $folderPath = JPATH_ROOT.'/'.$data->log_path;
 
             //Check if the folder exists on the server.
             if (JFolder::exists($folderPath)) {
@@ -305,7 +304,7 @@ class plgContentLogmanager extends JPlugin
 
                 //If it's the case an error message is displayed.
                 if ($count) {
-                    $data->setError(JText::plural('COM_LOGBOOK_DELETE_FOLDER_NOT_POSSIBLE', $count, $folderName));
+                    $data->setError(JText::plural('COM_LOGBOOK_DELETE_FOLDER_NOT_POSSIBLE', $count, $folderPath));
 
                     return false;
                 }
@@ -314,12 +313,12 @@ class plgContentLogmanager extends JPlugin
                 if (JFolder::delete($folderPath)) {
                     return true;
                 } else {
-                    $data->setError(JText::sprintf('COM_LOGBOOK_FOLDER_COULD_NOT_BE_DELETED', $data->log_folder));
+                    $data->setError(JText::sprintf('COM_LOGBOOK_FOLDER_COULD_NOT_BE_DELETED', $data->log_path));
 
                     return false;
                 }
             } else {
-                $data->setError(JText::sprintf('COM_LOGBOOK_FOLDER_DOES_NOT_EXIST', $data->log_folder));
+                $data->setError(JText::sprintf('COM_LOGBOOK_FOLDER_DOES_NOT_EXIST', $data->log_path));
 
                 return false;
             }
