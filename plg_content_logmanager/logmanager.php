@@ -12,17 +12,16 @@ jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
 
-class plgContentLogmoniter extends JPlugin
+class plgContentLogmanager extends JPlugin
 {
     public function onContentBeforeSave($context, $data, $isNew)
     {
         //When an item is created or edited we must first ensure that everything went
         //fine on the server (files uploading, folders creating etc...) before continuing
         //the saving process
-
         //Filter the sent event.
         if ($context == 'com_logmoniter.watchdog' || $context == 'com_logmoniter.form') {
-            if (empty($data->wcid) || empty($data->isid) || $data->bpid) {
+            if (empty($data->wcid) || empty($data->isid) || empty($data->bpid)) {
                 $data->setError(JText::_('COM_LOGMANAGER_FOLDER_NAME_IS_EMPTY'));
 
                 return false;
@@ -84,7 +83,7 @@ class plgContentLogmoniter extends JPlugin
 
                 //Create the new folder in the log root directory.
                 if (!JFolder::create(JPATH_ROOT.'/'.$logRootDir.'/'.$data->log_folder)) {
-                    $data->setError(JText::sprintf('COM_LOGMONITER_FOLDER_COULD_NOT_BE_CREATED', $data->title));
+                    $data->setError(JText::sprintf('COM_LOGMONITER_FOLDER_COULD_NOT_BE_CREATED', $data->log_folder));
 
                     return false;
                 }
@@ -162,7 +161,7 @@ class plgContentLogmoniter extends JPlugin
             }
 
             //Note: So far the log root directory is unchangeable but who knows in a futur version..
-            $logRootDir = 'logbook';
+            $logRootDir = 'logbookfiles';
 
             //If the file was replaced, the previous file must be removed from the server.
             if ($jform['replace_file']) {
