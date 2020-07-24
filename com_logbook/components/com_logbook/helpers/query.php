@@ -119,9 +119,9 @@ class LogbookHelperQuery
             $queryDate = ' CASE WHEN l.modified = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.modified END';
             break;
 
-        // use created if publish_up is not set
-        case 'published':
-            $queryDate = ' CASE WHEN l.publish_up = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.publish_up END ';
+        // use created if closed is not set
+        case 'closed':
+            $queryDate = ' CASE WHEN l.closed = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.closed END ';
             break;
 
         case 'created':

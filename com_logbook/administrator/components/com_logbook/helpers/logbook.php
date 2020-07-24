@@ -29,33 +29,10 @@ class LogbookHelper extends JHelperContent
             $vName == 'logs'
         );
 
-        /*JHtmlSidebar::addEntry(
+        JHtmlSidebar::addEntry(
             JText::_('COM_LOGBOOK_SUBMENU_CATEGORIES'),
             'index.php?option=com_categories&extension=com_logbook',
-            $vName == 'categories'
-        );
-
-        JHtmlSidebar::addEntry(
-            JText::_('COM_LOGBOOK_SUBMENU_LOCATIONS'),
-            'index.php?option=com_logbook&view=locations',
-            $vName == 'locations'
-        );
-        JHtmlSidebar::addEntry(
-            JText::_('COM_LOGBOOK_SUBMENU_BLUEPRINTS'),
-            'index.php?option=com_logbook&view=bluprints',
-            $vName == 'blueprints'
-        );
-
-        JHtmlSidebar::addEntry(
-            JText::_('COM_LOGBOOK_SUBMENU_FOLDERS'),
-            'index.php?option=com_logbook&view=folders',
-            $vName == 'folders'
-        );*/
-
-        JHtmlSidebar::addEntry(
-            JText::_('COM_LOGBOOK_SUBMENU_WATCHDOGS'),
-            'index.php?option=com_logbook&view=watchdogs',
-            $vName == 'watchdogs'
+            $viewName == 'categories'
         );
     }
 
@@ -85,17 +62,17 @@ class LogbookHelper extends JHelperContent
                 ->group('state');
 
             $db->setQuery($query);
-            $logs = $db->loadObjectList();
+            $documents = $db->loadObjectList();
 
-            foreach ($logs as $log) {
-                if ($log->state == 1) {
-                    $item->count_published = $log->count;
-                } elseif ($log->state == 0) {
-                    $item->count_unpublished = $log->count;
-                } elseif ($log->state == 2) {
-                    $item->count_archived = $log->count;
-                } elseif ($log->state == -2) {
-                    $item->count_trashed = $log->count;
+            foreach ($documents as $document) {
+                if ($document->state == 1) {
+                    $item->count_published = $document->count;
+                } elseif ($document->state == 0) {
+                    $item->count_unpublished = $document->count;
+                } elseif ($document->state == 2) {
+                    $item->count_archived = $document->count;
+                } elseif ($document->state == -2) {
+                    $item->count_trashed = $document->count;
                 }
             }
         }
@@ -104,108 +81,35 @@ class LogbookHelper extends JHelperContent
     }
 
     /**
-     * Get the list of the allowed actions for the user.
-     *
-     * @return array
-     *
-     * @since   1.0.0
-     */
-    /*public static function getActions($categoryId = 0)
-    {
-        $user = JFactory::getUser();
-        $result = new JObject();
-
-        if (empty($categoryId)) {
-            //Check permissions against the component.
-            $assetName = 'com_logbook';
-        } else {
-            //Check permissions against the component category.
-            $assetName = 'com_logbook.category.'.(int) $categoryId;
-        }
-
-        $actions = array('core.admin', 'core.manage', 'core.create', 'core.edit',
-                'core.edit.own', 'core.edit.state', 'core.delete', );
-
-        //Get from the core the user's permission for each action.
-        foreach ($actions as $action) {
-            $result->set($action, $user->authorise($action, $assetName));
-        }
-
-        return $result;
-    }*/
-
-    /**
-     * Return categories in which the user is allowed to do a given action. ("create" by default).
-     *
-     * @return array
-     *
-     * @since   1.0.0
-     */
-    /*public static function getUserCategories($action = 'create', $logs = false)
-    {
-        $subquery = '';
-        if ($logs) {
-            //Get the number of document items linked to each category.
-            $subquery = ',(SELECT COUNT(*) FROM #__logbook_logs WHERE catid=c.id) AS logs';
-        }
-
-        //Get the component categories.
-        $db = JFactory::getDbo();
-        $query = $db->getQuery(true);
-        $query->select('c.id, c.level, c.parent_id, c.title'.$subquery);
-        $query->from('#__categories AS c');
-        $query->where('extension="com_logbook"');
-        $query->order('c.lft ASC');
-        $db->setQuery($query);
-        $categories = $db->loadObjectList();
-
-        $userCategories = array();
-
-        if ($categories) {
-            foreach ($categories as $category) {
-                //Get the list of the actions allowed for the user on this category.
-                $canDo = LogbookHelper::getActions($category->id);
-
-                if ($canDo->get('core.'.$action)) {
-                    $userCategories[] = $category;
-                    //$userCategories[] = array('id' => $category->id, 'title' => $category->title);
-                }
-            }
-        }
-
-        return $userCategories;
-    }*/
-
-    /**
      * Load file on the server and return an array filled with the data file.
      *
      * @return array()
      *
      * @since 1.0.0
      */
-    public static function uploadFile($catid)
+    public static function uploadFile($wdid)
     {
         //Array to store the file data. Set an error index for a possible error message.
-        $log = array('error' => '');
+        $document = array('error' => '');
 
-        //Get the name and the id of the destination folder.
+        //Get the name of the destination folder.
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
-        $query->select('f.title, m.folder_id');
-        $query->from('#__logbook_folders AS f');
-        $query->join('LEFT', '#__logbook_folder_map AS m ON m.catid='.(int) $catid);
-        $query->where('f.id=m.folder_id');
+        $query->select('log_path');
+        $query->from('#__logbook_watchdogs');
+        $query->where('id='.(int) $wdid);
         $db->setQuery($query);
-        $destFolder = $db->loadObject();
+        $destFolder = $db->loadResult();
 
         $jinput = JFactory::getApplication()->input;
-        $uploaded_file = $jinput->uploaded_file->get('jform');
-        $uploaded_file = $uploaded_file['uploaded_file'];
+        $files = $jinput->files->get('jform');
+        $files = $files['uploaded_file'];
 
         //Get the component parameters:
         $params = JComponentHelper::getParams('com_logbook');
         //- The allowed extensions table
         $allowedExt = explode(';', $params->get('allowed_extensions'));
+
         // - The available extension icons table
         $iconsExt = explode(';', $params->get('extensions_list'));
         //- Allow or not all types of file.
@@ -216,23 +120,23 @@ class LogbookHelper extends JHelperContent
         $maxFileSize = $maxFileSize * 1048576;
 
         //Check if the file exists and if no error occurs.
-        if ($uploaded_file['error'] == 0) {
+        if ($files['error'] == 0) {
             //Get the file extension and convert it to lowercase.
-            $ext = strtolower(JFile::getExt($uploaded_file['name']));
+            $ext = strtolower(JFile::getExt($files['name']));
 
             //Check if the extension is allowed.
-            if (!in_array($ext, $allowedExt) && !$allFiles) {
-                $log['error'] = 'COM_LOGBOOK_EXTENSION_NOT_ALLOWED';
+            /*if (!in_array($ext, $allowedExt) && !$allFiles) {
+                $document['error'] = 'COM_LOGBOOK_EXTENSION_NOT_ALLOWED';
 
-                return $log;
-            }
+                return $document;
+            }*/
 
             //Check the size of the file.
-            if ($uploaded_file['size'] > $maxFileSize) {
-                $log['error'] = 'COM_LOGBOOK_FILE_SIZE_TOO_LARGE';
+            /*if ($files['size'] > $maxFileSize) {
+                $document['error'] = 'COM_LOGBOOK_FILE_SIZE_TOO_LARGE';
 
-                return $log;
-            }
+                return $document;
+            }*/
 
             $count = 1;
             while ($count > 0) {
@@ -251,59 +155,55 @@ class LogbookHelper extends JHelperContent
             }
 
             //Get the file name without its extension.
-            preg_match('#(.+)\.[a-zA-Z0-9\#?!$~@()-_]{1,}$#', $uploaded_file['name'], $matches);
+            preg_match('#(.+)\.[a-zA-Z0-9\#?!$~@()-_]{1,}$#', $files['name'], $matches);
             $fileName = $matches[1];
 
             //Sanitize the file name which will be used for downloading, (see stringURLSafe function for details).
             $fileName = JFilterOutput::stringURLSafe($fileName);
 
-            //Note: So far the log root directory is unchangeable but who knows in a futur version..
-            $docRootDir = 'logbook_logs';
-
             //Create a table containing all data about the file.
-            $log['file'] = $file;
-            $log['file_name'] = $fileName.'.'.$ext;
-            $log['file_type'] = $uploaded_file['type'];
-            $log['file_size'] = $uploaded_file['size'];
-            $log['folder_id'] = $destFolder->folder_id; //id of the folder which will contain the file.
+            $document['file'] = $file;
+            $document['file_name'] = $fileName.'.'.$ext;
+            $document['file_type'] = $files['type'];
+            $document['file_size'] = $files['size'];
             //Build the file path.
-            $log['file_path'] = $docRootDir.'/'.$destFolder->title;
+            $document['file_path'] = $destFolder;
 
             //To obtain the appropriate icon file name, we get the file extension then we concatenate it with .gif.
             //If the extension doesn't have any appropriate extension icon, we display the generic icon.
             if (!in_array($ext, $iconsExt)) {
-                $log['file_icon'] = 'generic.gif';
+                $document['file_icon'] = 'generic.gif';
             } else {
-                $log['file_icon'] = $ext.'.gif';
+                $document['file_icon'] = $ext.'.gif';
             }
 
             //Move the file on the server.
-            if (!JFile::upload($uploaded_file['tmp_name'], JPATH_ROOT.'/'.$docRootDir.'/'.$destFolder->title.'/'.$log['file'])) {
-                $log['error'] = 'COM_LOGBOOK_FILE_TRANSFER_ERROR';
+            if (!JFile::upload($files['tmp_name'], JPATH_ROOT.'/'.$destFolder.'/'.$document['file'])) {
+                $document['error'] = 'COM_LOGBOOK_FILE_TRANSFER_ERROR';
 
-                return $log;
+                return $document;
             }
 
             //File transfert has been successful.
-            return $log;
+            return $document;
         } else { //The upload of the file has failed.
             //Return the error which has occured.
-            switch ($uploaded_file['error']) {
+            switch ($files['error']) {
             case 1:
-                $log['error'] = 'COM_LOGBOOK_FILES_ERROR_1';
+                $document['error'] = 'COM_LOGBOOK_FILES_ERROR_1';
             break;
             case 2:
-            $log['error'] = 'COM_LOGBOOK_FILES_ERROR_2';
+            $document['error'] = 'COM_LOGBOOK_FILES_ERROR_2';
             break;
             case 3:
-                $log['error'] = 'COM_LOGBOOK_FILES_ERROR_3';
+                $document['error'] = 'COM_LOGBOOK_FILES_ERROR_3';
             break;
             case 4:
-                $log['error'] = 'COM_LOGBOOK_FILES_ERROR_4';
+                $document['error'] = 'COM_LOGBOOK_FILES_ERROR_4';
             break;
         }
 
-            return $log;
+            return $document;
         }
     }
 
@@ -347,11 +247,7 @@ class LogbookHelper extends JHelperContent
 
         $contexts = array(
             'com_logbook.log' => JText::_('COM_LOGBOOK_LOG'),
-           // 'com_logbook.location' => JText::_('COM_LOGBOOK_LOCATION'),
-           // 'com_logbook.blueprint' => JText::_('COM_LOGBOOK_BLUEPRINT'),
-            'com_logbook.watchdog' => JText::_('COM_LOGBOOK_WATCHDOG'),
-           // 'com_logbook.folder' => JText::_('COM_LOGBOOK_fOLDER'),
-           // 'com_logbook.categories' => JText::_('JCATEGORY'),
+            'com_logbook.categories' => JText::_('JCATEGORY'),
         );
 
         return $contexts;

@@ -9,6 +9,7 @@
 //      See the file for more details.
 
 defined('_JEXEC') or die;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Content log class.

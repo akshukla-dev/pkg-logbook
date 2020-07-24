@@ -37,13 +37,19 @@ CREATE TABLE IF NOT EXISTS `#__logbook_watchdogs` (
 		`metadesc` TEXT NOT NULL ,
 		`metadata` TEXT NOT NULL ,
 		`language` CHAR(7) NOT NULL,
+		`version` int(10) UNSIGNED NOT NULL DEFAULT 1,
+    `note` varchar(255) NOT NULL DEFAULT '',
 PRIMARY KEY (`id`),
+  KEY `idx_checkout` (`checked_out`),
+	KEY `idx_catid` (`catid`),
   KEY `idx_isid` (`isid`),
   KEY `idx_bpid` (`bpid`),
   KEY `idx_wcid` (`wcid`),
   KEY `idx_tiid` (`tiid`),
   KEY `idx_access` (`access`),
+	KEY `idx_state` (`state`),
   KEY `idx_createdby` (`created_by`),
+	KEY `idx_language` (`language`),
   KEY `idx_alias` (`alias`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
 

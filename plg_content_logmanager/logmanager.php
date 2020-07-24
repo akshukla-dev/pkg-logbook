@@ -20,7 +20,7 @@ class plgContentLogmanager extends JPlugin
         //fine on the server (files uploading, folders creating etc...) before continuing
         //the saving process
         //Filter the sent event.
-        if ($context == 'com_logmoniter.watchdog' || $context == 'com_logmoniter.form') {
+        if ($context == 'com_logmoniter.watchdog' || $context == 'com_logmoniter.form') { /////--WATCHDOG CREATION / EDITION--//////.
             if (empty($data->wcid) || empty($data->isid) || empty($data->bpid)) {
                 $data->setError(JText::_('COM_LOGMANAGER_FOLDER_NAME_IS_EMPTY'));
 
@@ -75,7 +75,7 @@ class plgContentLogmanager extends JPlugin
                 //Check first if the new folder name doesn't already exist.
                 foreach ($folderTree as $dir) {
                     if ($data->log_path == $logRootDir.'/'.$dir['name']) {
-                        $data->setError(JText::_('COM_LOGMONITER_FOLDER_NAME_ALREADY_EXISTS'));
+                        //$data->setError(JText::_('COM_LOGMONITER_FOLDER_NAME_ALREADY_EXISTS'));
 
                         return false;
                     }
@@ -88,36 +88,23 @@ class plgContentLogmanager extends JPlugin
                     return false;
                 }
             }
-        } elseif ($context == 'com_logbook.log' || $context == 'com_logbook.form') { /////--DOCUMENT CREATION / EDITION--//////.
+        } elseif ($context == 'com_logbook.log' || $context == 'com_logbook.form') { /////--LOG CREATION / EDITION--//////.
             //Check (again) if a component category is selected.
-            if (empty($data->catid)) {
+            if (empty($data->wdid)) {
                 $data->setError(JText::_('COM_LOGBOOK_NO_SELECTED_CATEGORY'));
 
                 return false;
             }
-
-            //Some variables must be retrieved directly from jform as they
-            //are not passed by the $data parameter.
-            $jinput = JFactory::getApplication()->input;
-            $jform = $jinput->post->get('jform', array(), 'array');
-
             $db = JFactory::getDbo();
             $query = $db->getQuery(true);
-
             //Existing item.
             if (!$isNew) {
                 //The previous setting of the log might be needed to check against the current setting.
-                $query->select('catid, file, folder_id, f.title AS file_folder');
-                $query->from('#__logbook_logs AS d');
-                $query->join('LEFT', '#__logbook_folders AS f ON folder_id=f.id');
-                $query->where('d.id='.(int) $data->id);
+                $query->select('wdid, file, file_path');
+                $query->from('#__logbook_logs');
+                $query->where('id='.(int) $data->id);
                 $db->setQuery($query);
                 $prevSetting = $db->loadObject();
-
-                //The file is not replaced, so we have to empty linkMethod variable to avoid errors.
-                if (!$jform['replace_file']) {
-                    $linkMethod = '';
-                }
             }
 
             //Get the component parameters.
@@ -127,7 +114,7 @@ class plgContentLogmanager extends JPlugin
             if ($jFrom['replace_file'] || $isNew) {
                 //Upload the file.
                 require_once JPATH_ADMINISTRATOR.'/components/com_logbook/helpers/logbook.php';
-                $file = LogbookHelper::uploadFile($data->catid);
+                $file = LogbookHelper::uploadFile($data->wdid);
 
                 if (empty($file['error'])) { //File upload has been successfull.
                     //Set the file fields.
@@ -135,16 +122,15 @@ class plgContentLogmanager extends JPlugin
                     $data->file_name = $file['file_name'];
                     $data->file_type = $file['file_type'];
                     $data->file_size = $file['file_size'];
-                    $data->folder_id = $file['folder_id'];
                     $data->file_path = $file['file_path'];
                     $data->file_icon = $file['file_icon'];
 
-                    //Increment the number of files in the folder.
-                    if ($isNew || ($jform['replace_file'] && $data->folder_id != $prevSetting->folder_id)) {
+                    //Increment the number of logs in the watchdog.
+                    if ($isNew || ($jform['replace_file'] && $data->file_path != $prevSetting->file_path)) {
                         $query->clear();
-                        $query->update('#__logbook_folders');
-                        $query->set('files=files+1');
-                        $query->where('id='.(int) $data->folder_id);
+                        $query->update('#__logbook_watchdogs');
+                        $query->set('log_count=log_count+1');
+                        $query->where('id='.(int) $data->wdid);
                         $db->setQuery($query);
                         $db->query();
 
@@ -159,28 +145,24 @@ class plgContentLogmanager extends JPlugin
                     return false;
                 }
             }
-
-            //Note: So far the log root directory is unchangeable but who knows in a futur version..
-            $logRootDir = 'logbookfiles';
-
-            //If the file was replaced, the previous file must be removed from the server.
+            //If the file was replaced, the previous file must be removed from the server
             if ($jform['replace_file']) {
                 //Remove the file from the server or generate an error message in case of failure.
                 //Warning: Don't ever use the JFile delete function cause if a problem occurs with
                 //the file, the returned value is undefined (nor boolean or whatever).
                 //Stick to the unlink PHP function which is safer.
-                if (!unlink(JPATH_ROOT.'/'.$logRootDir.'/'.$prevSetting->file_folder.'/'.$prevSetting->file)) {
+                if (!unlink(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file)) {
                     $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_DELETED', $prevSetting->file));
 
                     return false;
                 }
 
-                if ($data->folder_id != $prevSetting->folder_id) {
-                    //Decrement the number of files in the folder which contained the file.
+                if ($data->wdid != $prevSetting->wdid) {
+                    //Decrement the number of files in the watchdog which contained the log file.
                     $query->clear();
-                    $query->update('#__logbook_folders');
-                    $query->set('files=files-1');
-                    $query->where('id='.(int) $prevSetting->folder_id);
+                    $query->update('#__logbook_watchdogs');
+                    $query->set('log_count=log_count-1');
+                    $query->where('id='.(int) $prevSetting->wdid);
                     $db->setQuery($query);
                     $db->query();
                 }
@@ -192,47 +174,42 @@ class plgContentLogmanager extends JPlugin
             //If the file was not replaced we must check if category has changed and move the
             //file accordingly.
 
-            //Component category id has changed and the log is located on the server.
-            if ($data->catid != $prevSetting->catid) {
+            //log category(watchdog) id has changed.
+            if ($data->wdid != $prevSetting->wdid) {
                 //Retrieve the name and id of the folder linked to the new category.
                 $query->clear();
-                $query->select('f.title, fm.folder_id');
-                $query->from('#__logbook_folder_map AS fm');
-                $query->join('LEFT', '#__logbook_folders AS f ON f.id=fm.folder_id');
-                $query->where('fm.catid='.$data->catid);
+                $query->select('log_path');
+                $query->from('#__logbook_watchdogs');
+                $query->where('id='.$data->wdid);
                 $db->setQuery($query);
-                $newFolder = $db->loadObject();
+                $newPath = $db->loadResult();
 
-                //The new category is not linked to the same folder than the old one.
-                if ($newFolder->folder_id != $prevSetting->folder_id) {
-                    //Move the log into the right folder. Generate an error message if the move fails.
-                    //Note: JFile::move() function doesn't return false when a fail occurs. So we must test it against "not true".
-                    if (JFile::move(JPATH_ROOT.'/'.$logRootDir.'/'.$prevSetting->file_folder.'/'.$prevSetting->file,
-                            JPATH_ROOT.'/'.$logRootDir.'/'.$newFolder->title.'/'.$prevSetting->file) !== true) {
-                        $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_MOVED', $prevSetting->file));
+                //Move the log into the new folder. Generate an error message if the move fails.
+                //Note: JFile::move() function doesn't return false when a fail occurs. So we must test it against "not true".
+                if (JFile::move(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file,
+                            JPATH_ROOT.'/'.$newPath.'/'.$prevSetting->file) !== true) {
+                    $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_MOVED', $prevSetting->file));
 
-                        return false;
-                    } else {
-                        //Increment the number of files for the folder the log came in.
-                        $query->clear();
-                        $query->update('#__logbook_folders');
-                        $query->set('files=files+1');
-                        $query->where('id='.(int) $newFolder->folder_id);
-                        $db->setQuery($query);
-                        $db->query();
+                    return false;
+                } else {
+                    //Increment the number of files for the folder the log came in.
+                    $query->clear();
+                    $query->update('#__logbook_watchdogs');
+                    $query->set('log_count=log_count+1');
+                    $query->where('id='.(int) $data->wdid);
+                    $db->setQuery($query);
+                    $db->query();
 
-                        //Decrement the number of files for the folder the log came out.
-                        $query->clear();
-                        $query->update('#__logbook_folders');
-                        $query->set('files=files-1');
-                        $query->where('id='.(int) $data->folder_id);
-                        $db->setQuery($query);
-                        $db->query();
+                    //Decrement the number of files for the folder the log came out.
+                    $query->clear();
+                    $query->update('#__logbook_watchdogs');
+                    $query->set('log_count=log_count-1');
+                    $query->where('id='.(int) $prevSetting->wdid);
+                    $db->setQuery($query);
+                    $db->query();
 
-                        //Update the folder name and its id in the appropriate fields.
-                        $data->file_path = $logRootDir.'/'.$newFolder->title;
-                        $data->folder_id = $newFolder->folder_id;
-                    }
+                    //Update the folder name and its id in the appropriate fields.
+                    $data->file_path = $newPath;
                 }
             }
 

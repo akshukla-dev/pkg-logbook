@@ -239,8 +239,8 @@ class LogmoniterModelWatchdog extends JModelAdmin
     {
         if ($item = parent::getItem($pk)) {
             // Convert the params field to an array.
-            $registry = new Registry($item->attribs);
-            $item->attribs = $registry->toArray();
+            $registry = new Registry($item->params);
+            $item->params = $registry->toArray();
 
             // Convert the metadata field to an array.
             $registry = new Registry($item->metadata);

@@ -14,22 +14,26 @@ JHtml::_('behavior.calendar');
 JHtml::_('behavior.formvalidation');
 JHtml::_('formbehavior.chosen', 'select');
 ?>
-
+<?php
+$doc = JFactory::getDocument();
+//Load the jQuery script(s).
+$doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
+?>
 <script type="text/javascript">
-Joomla.submitbutton = function(task)
-{
-  if(task == 'log.cancel' || log.formvalidator.isValid(log.id('log-form'))) {
-    Joomla.submitform(task, log.getElementById('log-form'));
+  Joomla.submitbutton = function(task)
+  {
+    if(task == 'log.cancel' || document.formvalidator.isValid(document.getElementById('adminForm'))) {
+      Joomla.submitform(task);
+    }
+    else {
+      alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
+    }
   }
-  else {
-    alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
-  }
-}
-Logbook.closebutton = function(task){
-  if(task == 'log.close' & log.formvalidator.isValid(log.id('adminForm'))){
-    // close log
-    Joomla.submitform(task, log.getElementById('log-form'));
-  }
+  /*Logbook.closebutton = function(task){
+    if(task == 'log.close' & document.formvalidator.isValid(document.getElementById('adminForm'))){
+      // close log
+      Joomla.submitform(task);
+    }
 }
 </script>
 
@@ -44,7 +48,6 @@ Logbook.closebutton = function(task){
 
   <form action="<?php echo JRoute::_('index.php?option=com_logbook&l_id='.(int) $this->item->id); ?>"
   method="post" name="adminForm" id="adminForm" enctype="multipart/form-data" class="form-validate form-vertical">
-
     <div class="btn-toolbar">
       <div class="btn-group">
         <button type="button" class="btn btn-primary" onclick="Joomla.submitbutton('log.save')">
@@ -70,13 +73,13 @@ Logbook.closebutton = function(task){
     <fieldset>
       <?php echo JHtml::_('bootstrap.startTabSet', $this->tab_name, array('active' => 'editor')); ?>
         <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'editor', JText::_('COM_LOGBOOK_LOG_CONTENT')); ?>
-          <!-- -->
           <?php echo $this->form->renderField('title'); ?>
           <?php if (is_null($this->item->id)) : ?>
             <?php echo $this->form->renderField('alias'); ?>
           <?php endif; ?>
+          <?php echo $this->form->renderField('wdid'); ?>
           <?php if ($this->form->getValue('id') != 0) : //Existing item.?>
-            <div class="container-fluid">
+            <div class="container">
               <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                 <span class="label">
                   <?php echo JText::_('COM_LOGBOOK_FIELD_DOWNLOAD_LABEL'); ?>
@@ -103,7 +106,6 @@ Logbook.closebutton = function(task){
               </div>
             </div>
           <?php endif; ?>
-          <?php echo $this->form->renderField('wdid'); ?>
           <?php echo $this->form->renderField('uploaded_file'); ?>
           <?php echo $this->form->renderField('signatories'); ?>
           <?php echo $this->form->renderField('remarks'); ?>
@@ -128,21 +130,16 @@ Logbook.closebutton = function(task){
           <?php echo $this->form->renderField('language'); ?>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
       <?php echo JHtml::_('bootstrap.endTabSet'); ?>
-
       <!--Hidden input flag to check if a file replacement is required.-->
-        <?php if ($this->form->getValue('id') != 0) {
-    echo $this->form->getInput('replace_file');
-} ?>
-
-        <?php echo $this->form->getInput('id'); ?>
-        <input type="hidden" name="task" value="" />
-        <input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
-        <?php echo JHtml::_('form.token'); ?>
+      <?php echo $this->form->getInput('id'); ?>
+      <?php
+        if ($this->form->getValue('id') != 0) {
+            echo $this->form->getInput('replace_file');
+        }
+      ?>
+      <input type="hidden" name="task" value="" />
+      <input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
+      <?php echo JHtml::_('form.token'); ?>
     </fieldset>
   </form>
 </div>
-
-<?php
-$doc = JFactory::getDocument();
-//Load the jQuery script(s).
-$doc->addScript(JPATH_COMPONENT.'/js/log.js');

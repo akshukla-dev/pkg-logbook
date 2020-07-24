@@ -167,11 +167,13 @@
 		<field name="checked_out" type="hidden" filter="unset" />
 		<field name="checked_out_time" type="hidden" filter="unset" />
 	</fieldset>
-	<fieldset addfieldpath = "/administrator/components/com_logbook/models/fields">
+	<fieldset addfieldpath = "/administrator/components/com_logbook/models/fields" name="details">
 		<field
 			name="wdid"
 			type="logwatchdogs"
 			label="COM_LOGBOOK_FIELD_WATCHDOG_LABEL"
+			description="COM_LOGBOOK_FIELD_WATCHDOG_DESC"
+			id="wdid"
 			size = "60"
 			class="inputbox"
 			validate="logwatchdogs"
