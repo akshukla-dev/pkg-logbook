@@ -8,17 +8,22 @@
 // no direct access
 defined('_JEXEC') or die;
 
-JHtml::_('behavior.keepalive');
 JHtml::_('behavior.tabstate');
-JHtml::_('behavior.calendar');
-JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.keepalive');
+JHtml::_('behavior.formvalidator');
+JHtml::_('formbehavior.chosen', '#jform_catid', null, array('disable_search_threshold' => 0));
 JHtml::_('formbehavior.chosen', 'select');
-?>
-<?php
-$doc = JFactory::getDocument();
+$this->tab_name = 'com-content-form';
+$this->ignore_fieldsets = array('jmetadata', 'item_associations');
+
 //Load the jQuery script(s).
+$doc = JFactory::getDocument();
 $doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
+
+// Create shortcut to parameters.
+$params = $this->state->get('params');
 ?>
+
 <script type="text/javascript">
   Joomla.submitbutton = function(task)
   {
@@ -38,13 +43,13 @@ $doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
 </script>
 
 <div class="edit item-page<?php echo $this->pageclass_sfx; ?>">
-  <?php //if ($params->get('show_page_heading')) :?>
+  <?php if ($params->get('show_page_heading')) :?>
   <div class="page-header">
     <h1>
-      <?php //echo $this->escape($params->get('page_heading'));?>
+      <?php echo $this->escape($params->get('page_heading'));?>
     </h1>
   </div>
-  <?php //endif;?>
+  <?php endif;?>
 
   <form action="<?php echo JRoute::_('index.php?option=com_logbook&l_id='.(int) $this->item->id); ?>"
   method="post" name="adminForm" id="adminForm" enctype="multipart/form-data" class="form-validate form-vertical">
@@ -59,11 +64,11 @@ $doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
           <span class="icon-cancel"></span><?php echo JText::_('JCANCEL'); ?>
         </button>
       </div>
-      <?php // if ($params->get('save_history', 0) && $this->item->id) :?>
+      <?php if ($params->get('save_history', 0) && $this->item->id) :?>
       <div class="btn-group">
         <?php echo $this->form->getInput('contenthistory'); ?>
       </div>
-      <?php //endif;?>
+      <?php endif;?>
       <div class="btn-group">
         <button type="button" class="btn" onclick="Logbook.closebutton('log.close')">
           <span class="icon-close"></span>&#160;<?php echo JText::_('JCLOSE'); ?>
@@ -110,10 +115,16 @@ $doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
           <?php echo $this->form->renderField('signatories'); ?>
           <?php echo $this->form->renderField('remarks'); ?>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
-        <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'OtherInfo', JText::_('COM_LOGBOOK_LOG_CONTENT')); ?>
-          <!-- -->
+        <?php // echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+        <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'OtherInfo', JText::_('COM_LOGBOOK_LOG_OTHERINFO')); ?>
           <?php echo $this->form->renderField('catid'); ?>
           <?php echo $this->form->renderField('tags'); ?>
+          <?php if ($params->get('save_history', 0)) : ?>
+            <?php echo $this->form->renderField('version_note'); ?>
+          <?php endif; ?>
+          <?php if ($params->get('show_publishing_options', 1) == 1) : ?>
+            <?php echo $this->form->renderField('created_by_alias'); ?>
+          <?php endif; ?>
           <?php if ($this->item->params->get('access-change')) : ?>
             <?php echo $this->form->renderField('state'); ?>
           <?php endif; ?>
@@ -129,6 +140,12 @@ $doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
           <?php endif; ?>
           <?php echo $this->form->renderField('language'); ?>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
+        <?php if ($params->get('show_publishing_options', 1) == 1) : ?>
+          <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'metadata', JText::_('COM_CONTENT_METADATA')); ?>
+            <?php echo $this->form->renderField('metadesc'); ?>
+            <?php echo $this->form->renderField('metakey'); ?>
+          <?php echo JHtml::_('bootstrap.endTab'); ?>
+        <?php endif; ?>
       <?php echo JHtml::_('bootstrap.endTabSet'); ?>
       <!--Hidden input flag to check if a file replacement is required.-->
       <?php echo $this->form->getInput('id'); ?>

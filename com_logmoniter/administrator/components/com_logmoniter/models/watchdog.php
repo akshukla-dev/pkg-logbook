@@ -452,7 +452,7 @@ class LogmoniterModelWatchdog extends JModelAdmin
 
         // Association content items
         if (JLanguageAssociations::isEnabled()) {
-            $languages = JLanguageHelper::getContentLanguages(false, true, null, 'ordering', 'asc');
+            $languages = JLanguageHelper::getLogbookLanguages(false, true, null, 'ordering', 'asc');
 
             if (count($languages) > 1) {
                 $addform = new SimpleXMLElement('<form />');

@@ -36,6 +36,34 @@ class LogbookHelper extends JHelperContent
         );
     }
 
+
+    /**
+     * Applies the logbook tag filters to arbitrary text as per settings for current user group
+     *
+     * @param   text  $text  The string to filter
+     *
+     * @return  string  The filtered string
+     *
+     * @deprecated  4.0  Use JComponentHelper::filterText() instead.
+     */
+    public static function filterText($text)
+    {
+        try
+        {
+            JLog::add(
+                sprintf('%s() is deprecated. Use JComponentHelper::filterText() instead', __METHOD__),
+                JLog::WARNING,
+                'deprecated'
+            );
+        }
+        catch (RuntimeException $exception)
+        {
+            // Informational log only
+        }
+
+        return JComponentHelper::filterText($text);
+    }
+
     /**
      * Adds Count Items for Logbook Category Manager.
      *
@@ -62,17 +90,17 @@ class LogbookHelper extends JHelperContent
                 ->group('state');
 
             $db->setQuery($query);
-            $documents = $db->loadObjectList();
+            $logs = $db->loadObjectList();
 
-            foreach ($documents as $document) {
-                if ($document->state == 1) {
-                    $item->count_published = $document->count;
-                } elseif ($document->state == 0) {
-                    $item->count_unpublished = $document->count;
-                } elseif ($document->state == 2) {
-                    $item->count_archived = $document->count;
-                } elseif ($document->state == -2) {
-                    $item->count_trashed = $document->count;
+            foreach ($logs as $log) {
+                if ($log->state == 1) {
+                    $item->count_published = $log->count;
+                } elseif ($log->state == 0) {
+                    $item->count_unpublished = $log->count;
+                } elseif ($log->state == 2) {
+                    $item->count_archived = $log->count;
+                } elseif ($log->state == -2) {
+                    $item->count_trashed = $log->count;
                 }
             }
         }
@@ -81,7 +109,80 @@ class LogbookHelper extends JHelperContent
     }
 
     /**
-     * Load file on the server and return an array filled with the data file.
+     * Adds Count Items for Tag Manager.
+     *
+     * @param   stdClass[]  &$items     The content objects
+     * @param   string      $extension  The name of the active view.
+     *
+     * @return  stdClass[]
+     *
+     * @since   3.6
+     */
+    public static function countTagItems(&$items, $extension)
+    {
+        $db = JFactory::getDbo();
+        $parts     = explode('.', $extension);
+        $section   = null;
+
+        if (count($parts) > 1)
+        {
+            $section = $parts[1];
+        }
+
+        $join  = $db->qn('#__logbook_logs') . ' AS c ON ct.content_item_id=c.id';
+        $state = 'state';
+
+        if ($section === 'category')
+        {
+            $join = $db->qn('#__categories') . ' AS c ON ct.content_item_id=c.id';
+            $state = 'published as state';
+        }
+
+        foreach ($items as $item)
+        {
+            $item->count_trashed = 0;
+            $item->count_archived = 0;
+            $item->count_unpublished = 0;
+            $item->count_published = 0;
+            $query = $db->getQuery(true);
+            $query->select($state . ', count(*) AS count')
+                ->from($db->qn('#__contentitem_tag_map') . 'AS ct ')
+                ->where('ct.tag_id = ' . (int) $item->id)
+                ->where('ct.type_alias =' . $db->q($extension))
+                ->join('LEFT', $join)
+                ->group('state');
+            $db->setQuery($query);
+            $contents = $db->loadObjectList();
+
+            foreach ($contents as $content)
+            {
+                if ($content->state == 1)
+                {
+                    $item->count_published = $content->count;
+                }
+
+                if ($content->state == 0)
+                {
+                    $item->count_unpublished = $content->count;
+                }
+
+                if ($content->state == 2)
+                {
+                    $item->count_archived = $content->count;
+                }
+
+                if ($content->state == -2)
+                {
+                    $item->count_trashed = $content->count;
+                }
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Load file on the server and return an array filled with the data related to uploaded file.
      *
      * @return array()
      *
@@ -235,6 +336,40 @@ class LogbookHelper extends JHelperContent
     }
 
     /**
+     * Returns a valid section for articles. If it is not valid then null
+     * is returned.
+     *
+     * @param   string  $section  The section to get the mapping for
+     *
+     * @return  string|null  The new section
+     *
+     * @since   3.7.0
+     */
+    public static function validateSection($section)
+    {
+        if (JFactory::getApplication()->isClient('site')) {
+            // On the front end we need to map some sections
+            switch ($section)
+            {
+                // Editing an log
+                case 'form':
+
+                // Category list view
+                case 'category':
+                    $section = 'log';
+            }
+        }
+
+        if ($section != 'log') {
+            // We don't know other sections
+            return null;
+        }
+
+        return $section;
+    }
+
+
+    /**
      * Returns valid contexts.
      *
      * @return array
@@ -246,7 +381,7 @@ class LogbookHelper extends JHelperContent
         JFactory::getLanguage()->load('com_logbook', JPATH_ADMINISTRATOR);
 
         $contexts = array(
-            'com_logbook.log' => JText::_('COM_LOGBOOK_LOG'),
+            'com_logbook.log' => JText::_('COM_LOGBOOK'),
             'com_logbook.categories' => JText::_('JCATEGORY'),
         );
 

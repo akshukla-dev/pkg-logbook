@@ -35,7 +35,6 @@
 		<folder>controllers</folder>
 		<folder>download</folder>
 		<folder>helpers</folder>
-		<folder>js</folder>
         <folder>models</folder>
         <folder>views</folder>
 		<file>controller.php</file>
@@ -53,18 +52,11 @@
 				XML and be parsed by the installer
 			-->
 			<menu link="option=com_logbook" view="logs" img="class:book"
-				alt="Logbook/Logs">COM_LOGBOOK_LOGS</menu>
-			<!--<menu link="option=com_categories&amp;extension=com_logbook"
-				view="categories" img="class:logbook-cat" alt="Logbook/Categories">COM_LOGBOOK_CATEGORIES</menu>
-            <menu link="option=com_logbook" view="locations" img="class:location"
-				alt="Logbook/Locations">COM_LOGBOOK_LOCATIONS</menu>
-            <menu link="option=com_logbook" view="blueprints" img="class:paste"
-				alt="Logbook/Blueprint">COM_LOGBOOK_BLUEPRINTS</menu>
-			<menu link="option=com_logbook" view="folders" img="class:folder-2"
-				alt="Logbook/Locations">COM_LOGBOOK_FOLDERS</menu>-->
-            <menu link="option=com_logbook" view="watchdogs" img="class:alarm"
-				alt="Logbook/Schedule">COM_LOGBOOK_LOGREFS</menu>
+				alt="Logbook/Logs">COM_LOGBOOK_SUBMENU_LOGS</menu>
+	     	<menu link="option=com_categories&amp;extension=com_logbook" view="categories"
+		    img="class:log" alt="Logbook/Categories">COM_LOGBOOK_SUBMENU_CATEGORIES</menu>
 		</submenu>
+
 		<files folder="administrator/components/com_logbook">
 			<file>access.xml</file>
 			<file>config.xml</file>
@@ -72,6 +64,7 @@
             <file>logbook.php</file>
             <folder>controllers</folder>
             <folder>helpers</folder>
+			<folder>js</folder>
             <folder>models</folder>
             <folder>sql</folder>
 			<folder>tables</folder>

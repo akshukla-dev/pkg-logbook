@@ -31,10 +31,11 @@ class LogbookViewForm extends JViewLegacy
     public function display($tpl = null)
     {
         $user = JFactory::getUser();
+        $app  = JFactory::getApplication();
+
 
         //Redirect unregistered users to the login page.
         if ($user->guest) {
-            $app = JFactory::getApplication();
             $app->redirect('index.php?option=com_users&view=login');
 
             return true;
@@ -55,7 +56,7 @@ class LogbookViewForm extends JViewLegacy
         }
 
         if ($authorised !== true) {
-            JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+            $app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
             $app->setHeader('status', 403, true);
 
             return false;

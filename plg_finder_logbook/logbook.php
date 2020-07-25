@@ -264,7 +264,7 @@ class PlgFinderLogbook extends FinderIndexerAdapter
 		// Build the necessary route and path information.
 		$item->url = $this->getURL($item->id, $this->extension, $this->layout);
 		$item->route = LogbookHelperRoute::getLogRoute($item->slug, $item->catslug, $item->language);
-		$item->path = FinderIndexerHelper::getContentPath($item->route);
+		$item->path = FinderIndexerHelper::getLogbookPath($item->route);
 
 		/*
 		 * Add the meta-data processing instructions based on the newsfeeds
@@ -291,7 +291,7 @@ class PlgFinderLogbook extends FinderIndexerAdapter
 		$item->addTaxonomy('Language', $item->language);
 
 		// Get content extras.
-		FinderIndexerHelper::getContentExtras($item);
+		FinderIndexerHelper::getLogbookExtras($item);
 
 		// Index the item.
 		$this->indexer->index($item);

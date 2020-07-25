@@ -10,40 +10,41 @@
 	</layout>
 	<fields name="params">
 		<fieldset name="basic"
-			addfieldpath="/administrator/components/com_logbook/models/fields"
+			addfieldpath="/administrator/components/com_categories/models/fields"
 		>
-			<field name="wcid"
-				type="workcenter"
-				label="COM_LOGBOOK_CHOOSE_WCENTER_LABEL"
-				description="COM_LOGBOOK_CHOOSE_WCENTER_DESC"
-				select="true"
-				readonly="true"/>
-			<field name="isid"
-				type="inset"
-				label="COM_LOGBOOK_CHOOSE_INSET_LABEL"
-				description="COM_LOGBOOK_CHOOSE_INSET_DESC"
-				select="true"
-				readonly="true"/>
-			<field name="bpid"
-				type="blueprint"
-				label="COM_LOGBOOK_CHOOSE_BLUEPRINT_LABEL"
-				description="COM_LOGBOOK_CHOOSE_BLUEPRINT_DESC"
-				select="true"
-				readonly="true"/>
+			<field
+				name="enable_category"
+				type="radio"
+				label="COM_LOGBOOK_CREATE_LOG_CATEGORY_LABEL"
+				description="COM_LOGBOOK_CREATE_LOG_CATEGORY_DESC"
+				class="btn-group btn-group-yesno"
+				default="0"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 
-			<field name="spacer" type="spacer" hr="true" />
+			<field
+				name="catid"
+				type="modal_category"
+				label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
+				description="JGLOBAL_CHOOSE_CATEGORY_DESC"
+				extension="com_logbook"
+				select="true"
+				new="true"
+				edit="true"
+				clear="true"
+				showon="enable_category:1"
+			/>
 
-			<field name="tiid"
-				type="timeinterval"
-				label="COM_LOGBOOK_CHOOSEN_TINTERVAL_LABEL"
-				description="COM_LOGBOOK_CHOOSEN_TINTERVAL_DESC"
-				readonly="true"/>
-			<field name="wdid"
-				type="watchdog"
-				label="COM_LOGBOOK_CHOOSEN_WATCHDOG_LABEL"
-				description="COM_LOGBOOK_CHOOSEN_WATCHDOG_DESC"
-				readonly="true" />
-
+			<field
+				name="redirect_menuitem"
+				type="modal_menu"
+				label="COM_LOGBOOK_CREATE_LOG_REDIRECTMENU_LABEL"
+				description="COM_LOGBOOK_CREATE_LOG_REDIRECTMENU_DESC"
+				>
+				<option value="">JDEFAULT</option>
+			</field>
 		</fieldset>
 	</fields>
 </metadata>

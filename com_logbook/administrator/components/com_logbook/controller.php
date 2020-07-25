@@ -19,7 +19,7 @@ class LogbookController extends JControllerLegacy
      *
      * @since  1.6
      */
-    protected $default_view = 'watchdogs';
+    protected $default_view = 'logs';
 
     /**
      * Method to display a view.
@@ -34,8 +34,8 @@ class LogbookController extends JControllerLegacy
      */
     public function display($cacheable = false, $urlparams = array())
     {
-        $view = $this->input->get('view', 'watchdogs');
-        $layout = $this->input->get('layout', 'watchdogs');
+        $view = $this->input->get('view', 'logs');
+        $layout = $this->input->get('layout', 'logs');
         $id = $this->input->getInt('id');
         // Check for edit form.
         if ($view == 'log' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.log', $id)) {
