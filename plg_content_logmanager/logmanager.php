@@ -11,6 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
+use Joomla\CMS\Date\Date;
 
 class plgContentLogmanager extends JPlugin
 {
@@ -98,122 +99,208 @@ class plgContentLogmanager extends JPlugin
             $db = JFactory::getDbo();
             $query = $db->getQuery(true);
             //Existing item.
+            //The previous setting of the log might be needed to check against the current setting.
             if (!$isNew) {
-                //The previous setting of the log might be needed to check against the current setting.
-                $query->select('wdid, file, file_path');
-                $query->from('#__logbook_logs');
-                $query->where('id='.(int) $data->id);
+
+                $query->select('l.wdid AS wdid, l.file AS file, l.file_path AS file_path, l.created AS log_date', 'wd.tiid AS tiid');
+                $query->from('#__logbook_logs AS l');
+                $query->join('LEFT', '#__logbook_watchdogs AS wd ON wd.id=l.wdid');
+                $query->where('l.id='.(int) $data->id);
                 $db->setQuery($query);
                 $prevSetting = $db->loadObject();
-            }
 
-            //Get the component parameters.
-            $params = JComponentHelper::getParams('com_logbook');
+                //Some variables must be retrieved directly from jform as they
+                //are not passed by the $data parameter.
+                $jinput = JFactory::getApplication()->input;
+                $jform = $jinput->post->get('jform', array(), 'array');
+                if ($jform['replace_file']) {
+                    //The file must be uploaded on the server.
+                    //Upload the file.
+                    require_once JPATH_ADMINISTRATOR.'/components/com_logbook/helpers/logbook.php';
+                    $file = LogbookHelper::uploadFile($data->wdid);
 
-            //The file must be uploaded on the server.
-            if ($jFrom['replace_file'] || $isNew) {
+                    if (empty($file['error'])) {//File upload was successful
+                        //Set the file fields.
+                        $data->file = $file['file'];
+                        $data->file_name = $file['file_name'];
+                        $data->file_type = $file['file_type'];
+                        $data->file_size = $file['file_size'];
+                        $data->folder_id = $file['folder_id'];
+                        $data->file_path = $file['file_path'];
+                        $data->file_icon = $file['file_icon'];
+
+                        //Remove the file from the server or generate an error message in case of failure.
+                        //Warning: Don't ever use the JFile delete function cause if a problem occurs with
+                        //the file, the returned value is undefined (nor boolean or whatever).
+                        //Stick to the unlink PHP function which is safer.
+                        if (!unlink(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file)) {
+                            $data->setError(JText::sprintf('COM_LRM_FILE_COULD_NOT_BE_DELETED', $prevSetting->file));
+
+                            return false;
+                        }
+                        //That's it for a replaced file if wdid has not changed.
+                        if ($data->wdid != $prevSetting->wdid) {
+                            //Get T interval for the new wdid:
+                            $query->clear();
+                            $query->select('t.title')
+                                ->from('#__logbook_timeintervals AS t')
+                                ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
+                                ->where('wd.id='.(int)$data->wdid);
+                            $db->setQuery($query);
+                            $newtinterval=$db->loadResult();
+                            //Update Values in new wdid:
+                            $query->clear();
+                            $query->update('#__logbook_watchdogs');
+                            $query->set(
+                                array(
+                                    'log_count=log_count+1',
+                                    'latest_log_date='.$db->quote(new Date($data->created)),
+                                    'next_due_date='.$db->quote(new Date($data->created.'=+1'.$newtinterval)),
+                                )
+                            );
+                            $query->where('id='.(int) $data->wdid);
+                            $db->setQuery($query);
+                            $db->execute();
+                            //Reset values related to $prevSetting->wdid
+                            $query->clear();
+                            $query->select('created')
+                                ->from('#__logbook_logs')
+                                ->where('id='.$data->id-1);
+                            $db->setQuery($query);
+                            $prevSetting->second_last_log_date=$db->loadResult();
+                            $query->clear();
+                            $query->select('t.title')
+                                ->from('#__logbook_timeintervals AS t')
+                                ->where('t.id='.$prevSetting->tiid);
+                            $db->setQuery($query);
+                            $prevSetting->tinterval=$db->loadResult();
+                            $query->clear();
+                            $query->update('#__logbook_watchdogs');
+                            $query->set(
+                                array(
+                                    'log_count=log_count-1',
+                                    'latest_log_date='.$db->quote(new Date($prevSetting>second_last_log_date)),
+                                    'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval))
+                                )
+                            );
+                            $query->where('id='.(int) $prevSetting->wdid);
+                            $db->setQuery($query);
+                            $db->execute();
+                        }
+                        //Don't need to go further with a replaced file.
+                        return true;
+                    } else {
+                        //An issue has occurend
+                        $data->setError(JText::_($file['error']));
+
+                        return false;
+                    }
+                } else {
+                    // user might have changed the associated category
+                    if ($data->wdid != $prevSetting->wdid) {
+                        //Move the log into the new folder. Generate an error message if the move fails.
+                        //Note: JFile::move() function doesn't return false when a fail occurs. So we must test it against "not true".
+                        if (JFile::move(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file,
+                        JPATH_ROOT.'/'.$newPath.'/'.$prevSetting->file) !== true) {
+                            $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_MOVED', $prevSetting->file));
+
+                            return false;
+                        } else {
+                            //Get T interval for the new wdid:
+                                $query->clear();
+                                $query->select('t.title')
+                                    ->from('#__logbook_timeintervals AS t')
+                                    ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
+                                    ->where('wd.id='.(int)$data->wdid);
+                                $db->setQuery($query);
+                                $newtinterval=$db->loadResult();
+                                //Update Values in new wdid:
+                                $query->clear();
+                                $query->update('#__logbook_watchdogs');
+                                $query->set(array(
+                                    'log_count=log_count+1',
+                                    'latest_log_date='.$db->quote(new Date($data->created)),
+                                    'next_due_date='.$db->quote(new Date($data->created.'=+1'.$newtinterval))
+                                    )
+                                );
+                                $query->where('id='.(int) $data->wdid);
+                                $db->setQuery($query);
+                                $db->execute();
+                                //Reset values related to $prevSetting->wdid
+                                $query->clear();
+                                $query->select('created')
+                                    ->from('#__logbook_logs')
+                                    ->where('id='.$data->id-1);
+                                $db->setQuery($query);
+                                $prevSetting->second_last_log_date=$db->loadResult();
+                                $query->clear();
+                                $query->select('t.title')
+                                    ->from('#__logbook_timeintervals AS t')
+                                    ->where('t.id='.$prevSetting->tiid);
+                                $db->setQuery($query);
+                                $prevSetting->tinterval=$db->loadResult();
+                                $query->clear();
+                                $query->update('#__logbook_watchdogs');
+                                $query->set(
+                                    array(
+                                        'log_count=log_count-1',
+                                        'latest_log_date='.$db->quote(new Date($prevSetting>second_last_log_date)),
+                                        'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval))
+                                    )
+                                );
+                                $query->where('id='.(int) $prevSetting->wdid);
+                                $db->setQuery($query);
+                                $db->execute();
+                        }
+                    }
+                    //Don't need to go further...
+                    return true;
+                }
+            } else {//NewItem
                 //Upload the file.
                 require_once JPATH_ADMINISTRATOR.'/components/com_logbook/helpers/logbook.php';
                 $file = LogbookHelper::uploadFile($data->wdid);
-
-                if (empty($file['error'])) { //File upload has been successfull.
+                if (empty($file['error'])) {//File upload was successful
                     //Set the file fields.
                     $data->file = $file['file'];
                     $data->file_name = $file['file_name'];
                     $data->file_type = $file['file_type'];
                     $data->file_size = $file['file_size'];
+                    $data->folder_id = $file['folder_id'];
                     $data->file_path = $file['file_path'];
                     $data->file_icon = $file['file_icon'];
+                    //get the T interval text
+                    $query->clear();
+                    $query->select('t.title')
+                        ->from('#__logbook_timeintervals AS t')
+                        ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
+                        ->where('wd.id='.(int)$data->wdid);
+                    $db->setQuery($query);
+                    $tinterval=$db->loadResult();
 
-                    //Increment the number of logs in the watchdog.
-                    if ($isNew || ($jform['replace_file'] && $data->file_path != $prevSetting->file_path)) {
-                        $query->clear();
-                        $query->update('#__logbook_watchdogs');
-                        $query->set('log_count=log_count+1');
-                        $query->where('id='.(int) $data->wdid);
-                        $db->setQuery($query);
-                        $db->query();
+                    //Update watchdog database (Increment the number of files in the folder & .....)
+                    $query->clear();
+                    $query->update('#__logbook_watchdogs');
+                    $query->set(
+                        array(
+                        'log_count=log_count+1',
+                        'latest_log_date='.$db->quote(new Date($data->created)),
+                        'next_due_date='.$db->quote(new Date($data->created.'+1'.$tinterval)),
+                        )
+                    );
+                    $query->where('id='.(int) $data->wdid);
+                    $db->setQuery($query);
+                    $db->execute();
 
-                        //That's it for a new item.
-                        if ($isNew) {
-                            return true;
-                        }
-                    }
-                } else { //An issue has occured.
+                    //Don't need to go further.....
+                    return true;
+                } else {
+                    //An issue has occurend
                     $data->setError(JText::_($file['error']));
 
                     return false;
                 }
             }
-            //If the file was replaced, the previous file must be removed from the server
-            if ($jform['replace_file']) {
-                //Remove the file from the server or generate an error message in case of failure.
-                //Warning: Don't ever use the JFile delete function cause if a problem occurs with
-                //the file, the returned value is undefined (nor boolean or whatever).
-                //Stick to the unlink PHP function which is safer.
-                if (!unlink(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file)) {
-                    $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_DELETED', $prevSetting->file));
-
-                    return false;
-                }
-
-                if ($data->wdid != $prevSetting->wdid) {
-                    //Decrement the number of files in the watchdog which contained the log file.
-                    $query->clear();
-                    $query->update('#__logbook_watchdogs');
-                    $query->set('log_count=log_count-1');
-                    $query->where('id='.(int) $prevSetting->wdid);
-                    $db->setQuery($query);
-                    $db->query();
-                }
-
-                //Don't need to go further with a replaced file.
-                return true;
-            }
-
-            //If the file was not replaced we must check if category has changed and move the
-            //file accordingly.
-
-            //log category(watchdog) id has changed.
-            if ($data->wdid != $prevSetting->wdid) {
-                //Retrieve the name and id of the folder linked to the new category.
-                $query->clear();
-                $query->select('log_path');
-                $query->from('#__logbook_watchdogs');
-                $query->where('id='.$data->wdid);
-                $db->setQuery($query);
-                $newPath = $db->loadResult();
-
-                //Move the log into the new folder. Generate an error message if the move fails.
-                //Note: JFile::move() function doesn't return false when a fail occurs. So we must test it against "not true".
-                if (JFile::move(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file,
-                            JPATH_ROOT.'/'.$newPath.'/'.$prevSetting->file) !== true) {
-                    $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_MOVED', $prevSetting->file));
-
-                    return false;
-                } else {
-                    //Increment the number of files for the folder the log came in.
-                    $query->clear();
-                    $query->update('#__logbook_watchdogs');
-                    $query->set('log_count=log_count+1');
-                    $query->where('id='.(int) $data->wdid);
-                    $db->setQuery($query);
-                    $db->query();
-
-                    //Decrement the number of files for the folder the log came out.
-                    $query->clear();
-                    $query->update('#__logbook_watchdogs');
-                    $query->set('log_count=log_count-1');
-                    $query->where('id='.(int) $prevSetting->wdid);
-                    $db->setQuery($query);
-                    $db->query();
-
-                    //Update the folder name and its id in the appropriate fields.
-                    $data->file_path = $newPath;
-                }
-            }
-
-            return true;
         } else {
             //We don't treat other events.
             return true;

@@ -46,14 +46,6 @@ class LogbookController extends JControllerLegacy
 
             return false;
         }
-        if ($view == 'watchdog' && $layout == 'edit' && !$this->checkEditId('com_logbook.edit.watchdog', $id)) {
-            // Somehow the person just went to the form - we don't allow that.
-            $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
-            $this->setMessage($this->getError(), 'error');
-            $this->setRedirect(JRoute::_('index.php?option=com_logbook&view=watchdog', false));
-
-            return false;
-        }
 
         //Display the view.
         return parent::display();

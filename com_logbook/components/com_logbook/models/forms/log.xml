@@ -34,7 +34,7 @@
 			label="JGLOBAL_TITLE"
 			description="JFIELD_TITLE_DESC"
 			id="title"
-			class="inputbox"
+			class="inputbox span12"
 			size="60"
 			required="true"
 		/>
