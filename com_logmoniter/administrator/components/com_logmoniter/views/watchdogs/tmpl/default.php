@@ -30,11 +30,11 @@ if (strpos($listOrder, 'publish_up') !== false) {
 }
 
 if ($saveOrder) {
-    $saveOrderingUrl = 'index.php?option=com_logbook&task=watchdogs.saveOrderAjax&tmpl=component';
+    $saveOrderingUrl = 'index.php?option=COM_LOGMONITER&task=watchdogs.saveOrderAjax&tmpl=component';
     JHtml::_('sortablelist.sortable', 'watchdogList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 ?>
-<form action="index.php?option=com_logbook&view=watchdogs" method="post" id="adminForm" name="adminForm">
+<form action="index.php?option=COM_LOGMONITER&view=watchdogs" method="post" id="adminForm" name="adminForm">
     <?php if (!empty($this->sidebar)) : ?>
       <div id="j-sidebar-container" class="span2">
           <?php echo $this->sidebar; ?>
@@ -68,28 +68,28 @@ if ($saveOrder) {
                 <?php echo JHtml::_('grid.sort', 'J_ID', 'id', $listDirn, $listOrder); ?>
             </th>
             <th width="20%" class="wrap hidden-phone"><!--INSTRUCTION SET-->
-                <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_INSET_TITLE', 'inset', $listDirn, $listOrder); ?>
+                <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_INSET_TITLE', 'inset', $listDirn, $listOrder); ?>
             </th>
             <th width="20%" class="wrap hidden-phone"><!--Blueprint TITLE-->
-                <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_BLUEPRINT_TITLE', 'bprint', $listDirn, $listOrder); ?>
+                <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_BLUEPRINT_TITLE', 'bprint', $listDirn, $listOrder); ?>
             </th>
             <th width="10%" class="nowrap hidden-phone"><!--Work Center Title -->
-              <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_WCENTER_TITLE', 'wcenter', $listDirn, $listOrder); ?>
+              <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_WCENTER_TITLE', 'wcenter', $listDirn, $listOrder); ?>
             </th>
             <th width="5%" class="nowrap hidden-phone"><!--FREQUENCY-->
-                <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_TINTERVAL_TITLE', 'tinterval', $listDirn, $listOrder); ?>
+                <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_TINTERVAL_TITLE', 'tinterval', $listDirn, $listOrder); ?>
             </th>
             <th width="5%" class="nowrap hidden-phone"><!--WD START DATE-->
-                <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_START_DATE', 'wd.log_start_date', $listDirn, $listOrder); ?>
+                <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_START_DATE', 'wd.log_start_date', $listDirn, $listOrder); ?>
             </th>
             <th width="5%" class="nowrap hidden-phone"><!--WD END DUE DATE-->
-                <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_END_DATE', 'wd.log_end_date', $listDirn, $listOrder); ?>
+                <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_END_DATE', 'wd.log_end_date', $listDirn, $listOrder); ?>
             </th>
             <th width="5%" class="nowrap hidden-phone"><!--Acess-->
                 <?php echo JHtml::_('searchtools.sort', 'J_ACESS', 'access', $listDirn, $listOrder); ?>
             </th>
 			<th width="5%" class="nowrap hidden-phone"><!--CREATED BY -->
-                <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_CREATED_BY', 'wd.created_by', $listDirn, $listOrder); ?>
+                <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_CREATED_BY', 'wd.created_by', $listDirn, $listOrder); ?>
             </th>
           </tr>
 		</thead>
@@ -105,10 +105,10 @@ if ($saveOrder) {
 					<?php foreach ($this->items as $i => $row) :
                         $item->max_ordering = 0;
                         $ordering = ($listOrder == 'wd.ordering');
-                        $canEdit = $user->authorise('core.edit', 'com_logbook.watchdog.'.$item->id);
+                        $canEdit = $user->authorise('core.edit', 'COM_LOGMONITER.watchdog.'.$item->id);
                         $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-                        $canEditOwn = $user->authorise('core.edit.own', 'com_logbook.watchdog.'.$item->id) && $item->created_by == $userId;
-                        $canChange = $user->authorise('core.edit.state', 'com_logbook.watchdog.'.$item->id) && $canCheckin;
+                        $canEditOwn = $user->authorise('core.edit.own', 'COM_LOGMONITER.watchdog.'.$item->id) && $item->created_by == $userId;
+                        $canChange = $user->authorise('core.edit.state', 'COM_LOGMONITER.watchdog.'.$item->id) && $canCheckin;
                     ?>
 						<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->isid; ?>">
 							<td class="order nowrap center hidden-phone"><!--Ordering Handle -->
@@ -148,7 +148,7 @@ if ($saveOrder) {
 										<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'watchdogs.', $canCheckin); ?>
 									<?php endif; ?>
 									<?php if ($canEdit || $canEditOwn) : ?>
-										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_logbook&task=watchdog.edit&id='.$item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>">
+										<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=COM_LOGMONITER&task=watchdog.edit&id='.$item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>">
 											<?php echo (int) $item->id; ?></a>
 									<?php endif; ?>
 								</div>

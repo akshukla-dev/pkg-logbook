@@ -84,7 +84,7 @@ class LogmoniterModelWatchdog extends JModelItem
             $data->params->merge($registry);
 
             $user = JFactory::getUser();
-            // Technically guest could edit an article, but lets not check that to improve performance a little.
+            // Technically guest could edit an watchdog, but lets not check that to improve performance a little.
             if (!$user->get('guest')) {
                 $userId = $user->get('id');
                 $asset = 'com_logmoniter.watchdog.'.$data->id;

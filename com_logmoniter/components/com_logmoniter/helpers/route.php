@@ -16,13 +16,13 @@ defined('_JEXEC') or die;
 abstract class LogmoniterHelperRoute
 {
     /**
-     * Get the article route.
+     * Get the watchdog route.
      *
      * @param   integer  $id        The route of the content item.
      * @param   integer  $catid     The category ID.
      * @param   integer  $language  The language code.
      *
-     * @return  string  The article route.
+     * @return  string  The watchdog route.
      *
      * @since   1.5
      */
@@ -50,7 +50,7 @@ abstract class LogmoniterHelperRoute
 	 * @param   integer  $catid     The category ID.
 	 * @param   integer  $language  The language code.
 	 *
-	 * @return  string  The article route.
+	 * @return  string  The watchdog route.
 	 *
 	 * @since   1.5
 	 */
@@ -88,7 +88,7 @@ abstract class LogmoniterHelperRoute
 	 *
 	 * @param   integer  $id  The form ID.
 	 *
-	 * @return  string  The article route.
+	 * @return  string  The watchdog route.
 	 *
 	 * @since   1.5
 	 */

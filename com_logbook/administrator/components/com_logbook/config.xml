@@ -760,8 +760,8 @@
 
 	<fieldset
 		name="shared"
-		label="COM_CONTENT_SHARED_LABEL"
-		description="COM_CONTENT_SHARED_DESC"
+		label="COM_LOGBOOK_SHARED_LABEL"
+		description="COM_LOGBOOK_SHARED_DESC"
 	>
 		<field
 			name="orderby_pri"

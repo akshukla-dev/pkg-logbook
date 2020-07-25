@@ -7,7 +7,7 @@
 defined('_JEXEC') or die;
 
 /**
- * Logbook Component Query Helper.
+ * Logmoniter Component Query Helper.
  *
  * @static
  *

@@ -30,7 +30,7 @@ class JFormFieldLogTimeintervals extends JFormFieldList
 
       if($itemId) {
 
-        //Get the article ids previously selected.
+        //Get the watchdog ids previously selected.
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
         $query->select('id');

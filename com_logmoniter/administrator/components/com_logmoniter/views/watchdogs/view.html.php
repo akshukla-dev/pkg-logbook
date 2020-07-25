@@ -10,7 +10,7 @@ defined('_JEXEC') or die; // No direct access
  *
  * @since  1.6
  */
-class LogbookViewWatchdogs extends JViewLegacy
+class LogmoniterViewWatchdogs extends JViewLegacy
 {
     protected $items;
     protected $state;
@@ -29,7 +29,7 @@ class LogbookViewWatchdogs extends JViewLegacy
      */
     public function display($tpl = null)
     {
-        LogbookHelper::addSubmenu('watchdogs');
+        LogmoniterHelper::addSubmenu('watchdogs');
 
         $this->items = $this->get('Items');
         $this->state = $this->get('State');
@@ -58,14 +58,14 @@ class LogbookViewWatchdogs extends JViewLegacy
     protected function addToolBar()
     {
         //Get the allowed actions list
-        $canDo = LogbookHelper::getActions('com_logbook', 'watchdogs', $this->state->get($item->id));
+        $canDo = LogmoniterHelper::getActions('COM_LOGMONITER', 'watchdogs', $this->state->get($item->id));
         $user = JFactory::getUser();
 
         // Get the toolbar object instance
         $bar = JToolbar::getInstance('toolbar');
 
         //Display the view title and the icon.
-        JToolBarHelper::title(JText::_('COM_LOGBOOK_MANAGER_WATCHDOGS_TITLE'), 'stack watchdogs');
+        JToolBarHelper::title(JText::_('COM_LOGMONITER_MANAGER_WATCHDOGS_TITLE'), 'stack watchdogs');
 
         //The user is allowed to create?
         if ($canDo->get('core.create')) {
@@ -90,12 +90,12 @@ class LogbookViewWatchdogs extends JViewLegacy
         //Check for delete permission.
         if ($canDo->get('core.delete')) {
             JToolBarHelper::divider();
-            JToolBarHelper::deleteList(JText::_('COM_LOGBOOK_CONFIRM_DELETE'), 'watchdogs.delete', 'JTOOLBAR_DELETE');
+            JToolBarHelper::deleteList(JText::_('COM_LOGMONITER_CONFIRM_DELETE'), 'watchdogs.delete', 'JTOOLBAR_DELETE');
         }
 
         if ($canDo->get('core.admin')) {
             JToolBarHelper::divider();
-            JToolBarHelper::preferences('com_logbook', 550);
+            JToolBarHelper::preferences('COM_LOGMONITER', 550);
         }
     }
 

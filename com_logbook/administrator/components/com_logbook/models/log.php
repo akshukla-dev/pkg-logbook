@@ -404,7 +404,7 @@ class LogbookModelLog extends JModelAdmin
 
                 if ($table->load(array('alias' => $data['alias'], 'catid' => $data['catid'])))
                 {
-                    $msg = JText::_('COM_CONTENT_SAVE_WARNING');
+                    $msg = JText::_('COM_LOGBOOK_SAVE_WARNING');
                 }
 
                 list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);

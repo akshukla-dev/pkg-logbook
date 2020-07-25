@@ -141,7 +141,7 @@ $params = $this->state->get('params');
           <?php echo $this->form->renderField('language'); ?>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
         <?php if ($params->get('show_publishing_options', 1) == 1) : ?>
-          <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'metadata', JText::_('COM_CONTENT_METADATA')); ?>
+          <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'metadata', JText::_('COM_LOGBOOK_METADATA')); ?>
             <?php echo $this->form->renderField('metadesc'); ?>
             <?php echo $this->form->renderField('metakey'); ?>
           <?php echo JHtml::_('bootstrap.endTab'); ?>

@@ -123,7 +123,7 @@ class LogbookTableLog extends JTable
 
     //Note: The component categories ACL override the items ACL, (whenever the ACL of a
     //      category is modified, changes are spread into the items ACL).
-    //      This is the default com_content behavior. see: libraries/legacy/table/content.php
+    //      This is the default COM_LOGBOOK behavior. see: libraries/legacy/table/content.php
     protected function _getAssetParentId(JTable $table = null, $id = null)
     {
         $assetId = null;

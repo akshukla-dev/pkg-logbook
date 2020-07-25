@@ -197,7 +197,7 @@ class LogmoniterHelper extends JHelperContent
   }
 
   /**
-   * Returns a valid section for articles. If it is not valid then null
+   * Returns a valid section for watchdogs. If it is not valid then null
    * is returned.
    *
    * @param   string  $section  The section to get the mapping for

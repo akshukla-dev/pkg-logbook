@@ -302,7 +302,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
         $params   = $app->getParams();
         $menuitem = (int) $params->get('redirect_menuitem');
 
-        // Check for redirection after submission when creating a new article only
+        // Check for redirection after submission when creating a new watchdog only
         if ($menuitem > 0 && $recordId == 0)
         {
             $lang = '';

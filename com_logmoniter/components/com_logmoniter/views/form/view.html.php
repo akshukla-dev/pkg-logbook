@@ -73,7 +73,7 @@ class LogmoniterViewForm extends JViewLegacy
         $this->params->merge($this->item->params);
         $this->user = $user;
 
-        // Propose current language as default when creating new article
+        // Propose current language as default when creating new watchdog
         if (empty($this->item->id) && JLanguageMultilang::isEnabled()) {
             $lang = JFactory::getLanguage()->getTag();
             $this->form->setFieldAttribute('language', 'default', $lang);

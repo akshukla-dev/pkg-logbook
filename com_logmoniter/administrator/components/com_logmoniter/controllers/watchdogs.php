@@ -11,7 +11,7 @@ defined('_JEXEC') or die; //No direct access to this file.
  *
  * @since  1.6
  */
-class LogbookControllerWatchdogs extends JControllerAdmin
+class LogmoniterControllerWatchdogs extends JControllerAdmin
 {
     /**
      * Proxy for getModel.
@@ -24,7 +24,7 @@ class LogbookControllerWatchdogs extends JControllerAdmin
      *
      * @since   1.6
      */
-    public function getModel($name = 'Watchdog', $prefix = 'LogbookModel', $config = array('ignore_request' => true))
+    public function getModel($name = 'Watchdog', $prefix = 'LogmoniterModel', $config = array('ignore_request' => true))
     {
         return parent::getModel($name, $prefix, $config);
     }

@@ -77,7 +77,7 @@ echo JLayoutHelper::render('joomll.searchtools.default', array('view' => $this))
         <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_AUTHOR_LABEL', 'l.author', $listDirn, $listOrder); ?>
       </th>
       <th width="10%" class="nowrap hidden-phone"><!-- Date-->
-        <?php echo JHtml::_('searchtools.sort', 'COM_CONTENT_HEADING_DATE_'.strtoupper($orderingColumn), 'l.'.$orderingColumn, $listDirn, $listOrder); ?>
+        <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_DATE_'.strtoupper($orderingColumn), 'l.'.$orderingColumn, $listDirn, $listOrder); ?>
       </th>
       <th width="1%"><!-- Downloads-->
         <?php echo JHtml::_('searchtools.sort', 'COM_LOGBOOK_HEADING_DOWNLOADS', 'l.downloads', $listDirn, $listOrder); ?>

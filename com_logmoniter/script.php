@@ -129,7 +129,7 @@ class com_logmoniterInstallerScript
             $query->insert('#__content_types');
             $query->columns($columns);
             $query->values($db->Quote('Log Moniter').','.$db->Quote('com_logmoniter.watchdog').','.
-            $db->Quote('{"special"{"dbtable":"#__logbook_watchdogs","key":"id","type":"Watchdog","prefix":"LogmoniterTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}').','.
+            $db->Quote('{"special"{"dbtable":"#__Logmoniter_watchdogs","key":"id","type":"Watchdog","prefix":"LogmoniterTable","config":"array()"},"common":{"dbtable":"#__ucm_content","key":"ucm_id","type":"Corecontent","prefix":"JTable","config":"array()"}}').','.
             $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created","core_modified_time":"modified","core_body":"introtext","core_hits":"hits","core_publish_up":"publish_up","core_publish_down":"publish_down","core_access":"access","core_params":"null","core_featured":"null","core_metadata":"null","core_language":"language","core_images":"null","core_urls":"null","core_version":"null","core_ordering":"ordering","core_metakey":"null","core_metadesc":"null","core_catid":"catid","core_xreference":"null","asset_id":"null"},"special": {}}').','.
             $db->Quote('LogmoniterHelperRoute::getWatchdogRoute'));
             $db->setQuery($query);

@@ -11,7 +11,7 @@ defined('_JEXEC') or die; //No direct access to this file.
  *
  * @since  1.6
  */
-class LogbookModelWatchdogs extends JModelList
+class LogmoniterModelWatchdogs extends JModelList
 {
     /**
      * Constructor.

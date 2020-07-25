@@ -411,7 +411,7 @@ class LogmoniterRouterRulesLegacy implements JComponentRouterRulesInterface
 
 		if (!$category)
 		{
-			JError::raiseError(404, JText::_('COM_CONTENT_ERROR_PARENT_CATEGORY_NOT_FOUND'));
+			JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_PARENT_CATEGORY_NOT_FOUND'));
 
 			return;
 		}

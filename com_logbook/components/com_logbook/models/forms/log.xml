@@ -6,7 +6,7 @@
 		<field
 			name="id"
 			type="hidden"
-			label="COM_CONTENT_ID_LABEL"
+			label="COM_LOGBOOK_ID_LABEL"
 			class="inputbox"
 			id="id"
 			size="10"
@@ -19,7 +19,7 @@
 			type="contenthistory"
 			label="JTOOLBAR_VERSIONS"
 			id="contenthistory"
-			data-typeAlias="com_content.article"
+			data-typeAlias="COM_LOGBOOK.article"
 		/>
 
 		<field
@@ -34,7 +34,7 @@
 			label="JGLOBAL_TITLE"
 			description="JFIELD_TITLE_DESC"
 			id="title"
-			class="inputbox span12"
+			class="inputbox span8"
 			size="60"
 			required="true"
 		/>
@@ -175,7 +175,7 @@
 			description="COM_LOGBOOK_FIELD_WATCHDOG_DESC"
 			id="wdid"
 			size = "60"
-			class="inputbox"
+			class="inputbox span8"
 			validate="logwatchdogs"
 			required="true"
 		/>
@@ -194,6 +194,7 @@
 			type="text"
 			label="COM_LOGBOOK_FIELD_SIGNATORIES_LABEL"
 			description="COM_LOGBOOK_FIELD_SIGNATORIES_DESC"
+			class="inputbox span4"
 			size="60"
 			required="true"
 		/>
@@ -215,6 +216,7 @@
 			filter="unset"
 			readonly="true"
 			class="readonly"
+			class="info span6"
 			size="40" >
 		</field>
 
@@ -233,6 +235,7 @@
 			name="replace_file"
 			type="hidden"
 			default="0"
+			class="btn btn-primary"
 			filter="unset"
 		/>
 	</fieldset>

@@ -20,7 +20,7 @@ class LogmoniterController extends JControllerLegacy
     {
         $this->input = JFactory::getApplication()->input;
 
-        // Article frontpage Editor article proxying:
+        // Article frontpage Editor watchdog proxying:
 
         if ($this->input->get('view') === 'watchdogs' && $this->input->get('layout') === 'modal') {
             JHtml::_('stylesheet', 'system/adminlist.css', array('version' => 'auto', 'relative' => true));
