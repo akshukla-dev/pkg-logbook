@@ -24,7 +24,7 @@
 				label="JGLOBAL_TITLE"
 				description="JFIELD_TITLE_DESC"
 				id="title"
-				class="inputbox span8"
+				class="inputbox span9"
 				size="80"
 				required="true"
 			/>
@@ -48,7 +48,7 @@
 				id="catid"
 				size="80"
 				extension="com_logmoniter"
-				class="inputbox span8"
+				class="inputbox span9"
 				required="true"
 			/>
 
@@ -168,7 +168,7 @@
 			label="COM_LOGMONITER_FIELD_INSET_LIST_LABEL"
 			description="COM_LOGMONITER_FIELD_INSET_LIST_DESC"
 			id="isid"
-			class="inputbox span8"
+			class="inputbox span9"
 			validate="loginstructionsets"
 			required="true"
 			size="80"
@@ -181,7 +181,7 @@
 			label="COM_LOGMONITER_FIELD_BPRINT_LIST_LABEL"
 			description="COM_LOGMONITER_FIELD_BPRINT_LIST_DESC"
 			id="bpid"
-			class="inputbox span8"
+			class="inputbox span9"
 			validate="logblueprints"
 			required="true"
 			size="80"

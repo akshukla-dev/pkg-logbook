@@ -216,9 +216,8 @@
 			filter="unset"
 			readonly="true"
 			class="readonly"
-			class="info span6"
-			size="40" >
-		</field>
+			size="40"
+		/>
 
 		<field
 			name="downloads"
@@ -282,7 +281,3 @@
 		</fieldset>
 	</fields>
 </form>
-
-
-
-

@@ -154,7 +154,7 @@ class LogmoniterModelWatchdogs extends JModelList
             $this->getState(
                 'list.select',
                 'wd.id, wd.alias, wd.isid, wd.bpid, wd.wcid, wd.tiid'.
-                ', wd.logging_window, wd.first_log_date, wd.last_log_date'.
+                ', wd.lwid, wd.first_log_date, wd.last_log_date'.
                 ', wd.log_count, wd.access, wd.state, wd.ordering'.
                 ', wd.next_due_date, wd.publish_up, wd.publish_down, wd.created'.
                 ', wd.modified, wd.created_by, wd.created_by_alias, wd.modified_by'
