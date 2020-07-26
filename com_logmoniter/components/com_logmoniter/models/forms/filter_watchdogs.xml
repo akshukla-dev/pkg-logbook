@@ -123,15 +123,15 @@
 			label="COM_LOGMONITER_LIST_FULL_ORDERING"
 			description="COM_LOGMONITER_LIST_FULL_ORDERING_DESC"
 			onchange="this.form.submit();"
-			default="w.title ASC"
+			default="wd.title ASC"
 			>
 			<option value="">JGLOBAL_SORT_BY</option>
-			<option value="w.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
-			<option value="w.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
-			<option value="w.state ASC">JSTATUS_ASC</option>
-			<option value="w.state DESC">JSTATUS_DESC</option>
-			<option value="w.title ASC">JGLOBAL_TITLE_ASC</option>
-			<option value="w.title DESC">JGLOBAL_TITLE_DESC</option>
+			<option value="wd.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
+			<option value="wd.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+			<option value="wd.state ASC">JSTATUS_ASC</option>
+			<option value="wd.state DESC">JSTATUS_DESC</option>
+			<option value="wd.title ASC">JGLOBAL_TITLE_ASC</option>
+			<option value="wd.title DESC">JGLOBAL_TITLE_DESC</option>
 			<option value="category_title ASC">JCATEGORY_ASC</option>
 			<option value="category_title DESC">JCATEGORY_DESC</option>
 			<option value="wcenter_title ASC">COM_LOGMONITER_WCENTER_ASC</option>
@@ -144,24 +144,24 @@
 			<option value="tinterval_title DESC">COM_LOGMONITER_TINTERVAL_DESC</option>
 			<option value="association ASC" requires="associations">JASSOCIATIONS_ASC</option>
 			<option value="association DESC" requires="associations">JASSOCIATIONS_DESC</option>
-			<option value="w.access ASC">JGRID_HEADING_ACCESS_ASC</option>
-			<option value="w.access DESC">JGRID_HEADING_ACCESS_DESC</option>
-			<option value="w.created_by ASC">JAUTHOR_ASC</option>
-			<option value="w.created_by DESC">JAUTHOR_DESC</option>
+			<option value="wd.access ASC">JGRID_HEADING_ACCESS_ASC</option>
+			<option value="wd.access DESC">JGRID_HEADING_ACCESS_DESC</option>
+			<option value="wd.created_by ASC">JAUTHOR_ASC</option>
+			<option value="wd.created_by DESC">JAUTHOR_DESC</option>
 			<option value="language ASC">JGRID_HEADING_LANGUAGE_ASC</option>
 			<option value="language DESC">JGRID_HEADING_LANGUAGE_DESC</option>
-			<option value="w.created ASC">JDATE_ASC</option>
-			<option value="w.created DESC">JDATE_DESC</option>
-			<option value="w.latest_log_date ASC">COM_LOGMONITER_LATEST_LOG_DATE_ASC</option>
-			<option value="w.latest_log_date DESC">COM_LOGMONITER_LATEST_LOG_DATE_DESC</option>
-			<option value="w.next_due_date ASC">COM_LOGMONITER_NEXT_DUE_DATE_ASC</option>
-			<option value="w.next_due_date DESC">COM_LOGMONITER_NEXT_DUE_DATE_DESC</option>
-			<option value="w.id ASC">JGRID_HEADING_ID_ASC</option>
-			<option value="w.id DESC">JGRID_HEADING_ID_DESC</option>
-			<option value="w.hits ASC">JGLOBAL_HITS_ASC</option>
-			<option value="w.hits DESC">JGLOBAL_HITS_DESC</option>
-			<option value="w.logs ASC">COM_LOGMONITER_LOG_COUNT_ASC</option>
-			<option value="w.logs DESC">COM_LOGMONITER_LOG_COUNT_DESC</option>
+			<option value="wd.created ASC">JDATE_ASC</option>
+			<option value="wd.created DESC">JDATE_DESC</option>
+			<option value="wd.latest_log_date ASC">COM_LOGMONITER_LATEST_LOG_DATE_ASC</option>
+			<option value="wd.latest_log_date DESC">COM_LOGMONITER_LATEST_LOG_DATE_DESC</option>
+			<option value="wd.next_due_date ASC">COM_LOGMONITER_NEXT_DUE_DATE_ASC</option>
+			<option value="wd.next_due_date DESC">COM_LOGMONITER_NEXT_DUE_DATE_DESC</option>
+			<option value="wd.id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="wd.id DESC">JGRID_HEADING_ID_DESC</option>
+			<option value="wd.hits ASC">JGLOBAL_HITS_ASC</option>
+			<option value="wd.hits DESC">JGLOBAL_HITS_DESC</option>
+			<option value="wd.logs ASC">COM_LOGMONITER_LOG_COUNT_ASC</option>
+			<option value="wd.logs DESC">COM_LOGMONITER_LOG_COUNT_DESC</option>
 
 		</field>
 

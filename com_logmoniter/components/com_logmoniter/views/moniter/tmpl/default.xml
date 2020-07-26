@@ -95,7 +95,7 @@
 				default=""
 				useglobal="true"
 				>
-				<option value="use_article">COM_LOGMONITER_FIELD_VALUE_USE_WATCHDOG_SETTINGS</option>
+				<option value="use_watchdog">COM_LOGMONITER_FIELD_VALUE_USE_WATCHDOG_SETTINGS</option>
 				<option value="0">COM_LOGMONITER_FIELD_OPTION_ABOVE</option>
 				<option value="1">COM_LOGMONITER_FIELD_OPTION_BELOW</option>
 				<option value="2">COM_LOGMONITER_FIELD_OPTION_SPLIT</option>

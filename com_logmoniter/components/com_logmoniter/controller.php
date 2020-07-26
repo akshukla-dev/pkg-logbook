@@ -20,7 +20,7 @@ class LogmoniterController extends JControllerLegacy
     {
         $this->input = JFactory::getApplication()->input;
 
-        // Article frontpage Editor watchdog proxying:
+        // Watchdog frontpage Editor watchdog proxying:
 
         if ($this->input->get('view') === 'watchdogs' && $this->input->get('layout') === 'modal') {
             JHtml::_('stylesheet', 'system/adminlist.css', array('version' => 'auto', 'relative' => true));
@@ -34,10 +34,10 @@ class LogmoniterController extends JControllerLegacy
     {
         /**
          * Set the default view name and format from the Request.
-         * Note we are using w_id to avoid collisions with the router and the return page.
+         * Note we are using wd_id to avoid collisions with the router and the return page.
          * Frontend is a bit messier than the backend.
          */
-        $id = $this->input->getInt('w_id');
+        $id = $this->input->getInt('wd_id');
         //Set the view, (categories by default).
         $vName = $this->input->getCmd('view', 'categories');
         $this->input->set('view', $vName);

@@ -38,7 +38,7 @@ class LogmoniterRouter extends JComponentRouterView
 		$watchdog->setKey('id')->setParent($category, 'catid');
 		$this->registerView($watchdog);
 		$form = new JComponentRouterViewconfiguration('form');
-		$form->setKey('w_id');
+		$form->setKey('wd_id');
 		$this->registerView($form);
 
 		parent::__construct($app, $menu);

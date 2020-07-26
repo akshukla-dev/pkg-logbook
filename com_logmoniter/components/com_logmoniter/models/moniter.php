@@ -65,7 +65,7 @@ class LogmoniterModelMoniter extends LogmoniterModelWatchdogs
         // No category ordering
         $secondary = LogmoniterHelperQuery::orderbySecondary($watchdogOrderby, $watchdogOrderDate);
 
-        $this->setState('list.ordering', $secondary.', w.created DESC');
+        $this->setState('list.ordering', $secondary.', wd.created DESC');
         $this->setState('list.direction', '');
     }
 
@@ -87,10 +87,10 @@ class LogmoniterModelMoniter extends LogmoniterModelWatchdogs
         // Add routing for moniter
         // Sqlsrv changes
         $case_when = ' CASE WHEN ';
-        $case_when .= $query->charLength('w.alias', '!=', '0');
+        $case_when .= $query->charLength('wd.alias', '!=', '0');
         $case_when .= ' THEN ';
-        $l_id = $query->castAsChar('w.id');
-        $case_when .= $query->concatenate(array($l_id, 'w.alias'), ':');
+        $l_id = $query->castAsChar('wd.id');
+        $case_when .= $query->concatenate(array($l_id, 'wd.alias'), ':');
         $case_when .= ' ELSE ';
         $case_when .= $l_id.' END as slug';
 
@@ -120,19 +120,19 @@ class LogmoniterModelMoniter extends LogmoniterModelWatchdogs
         // Filter on work-center, lmi, blueprint & time Interval
 
         if ($wcenter = $this->getState('filter.wcenter')) {
-            $query->where('w.wcid = '.$wcenter);
+            $query->where('wd.wcid = '.$wcenter);
         }
 
         if ($inset = $this->getState('filter.inset')) {
-            $query->where('w.isid = '.$inset);
+            $query->where('wd.isid = '.$inset);
         }
 
         if ($bprint = $this->getState('filter.bprint')) {
-            $query->where('w.bpid = '.$bprint);
+            $query->where('wd.bpid = '.$bprint);
         }
 
         if ($tinterval = $this->getState('filter.tinterval')) {
-            $query->where('w.tiid = '.$tinterval);
+            $query->where('wd.tiid = '.$tinterval);
         }
 
         return $query;

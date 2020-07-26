@@ -38,7 +38,7 @@ $params = $this->state->get('params');
     </div>
   <?php endif; ?>
 
-  <form action="<?php echo JRoute::_('index.php?option=com_logmoniter&view=form&w_id='.(int) $this->item->id); ?>"
+  <form action="<?php echo JRoute::_('index.php?option=com_logmoniter&view=form&wd_id='.(int) $this->item->id); ?>"
   method="post" name="adminForm" id="adminForm" class="form-validate form-vertical">
     <fieldset>
       <?php echo JHtml::_('bootstrap.startTabSet', $this->tab_name, array('active' => 'editor')); ?>

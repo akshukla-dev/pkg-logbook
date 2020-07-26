@@ -59,14 +59,14 @@ class LogmoniteriModelCategory extends JModelList
     {
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = array(
-          'id', 'w.id',
-          'title', 'w.title',
-          'created', 'w.created',
-          'modified', 'w.modified',
-          'published', 'w.published',
-          'ordering', 'w.ordering',
-          'publish_up', 'w.publish_up',
-          'publish_down', 'w.publish_down',
+          'id', 'wd.id',
+          'title', 'wd.title',
+          'created', 'wd.created',
+          'modified', 'wd.modified',
+          'published', 'wd.published',
+          'ordering', 'wd.ordering',
+          'publish_up', 'wd.publish_up',
+          'publish_down', 'wd.publish_down',
           );
         }
 
@@ -191,7 +191,6 @@ class LogmoniteriModelCategory extends JModelList
             //Note: Document params (if they are defined) override global/menu params.
             $item->params->merge($documentParams);
 
-
             // Compute the asset access permissions.
             // Technically guest could edit a document, but lets not check that to improve performance a little.
             if (!$guest) {
@@ -213,7 +212,7 @@ class LogmoniteriModelCategory extends JModelList
             $access = $this->getState('filter.access');
             //Set the access view parameter.
             if ($access) {
-                // If the access filter has been set, we already have only the documents this user can view.
+                // If the access filter has been set, we already have only the documents this user can viewd.
                 $item->params->set('access-view', true);
             } else { // If no access filter is set, the layout takes some responsibility for display of limited information.
                 if ($item->catid == 0 || $item->category_access === null) {
@@ -227,19 +226,19 @@ class LogmoniteriModelCategory extends JModelList
             //Set the type of date to display, (default layout only).
             if ($this->getState('params')->get('list_show_date') && $this->getState('params')->get('order_date')) {
                 switch ($this->getState('params')->get('order_date')) {
-									case 'modified':
-											$item->displayDate = $item->modified;
-											break;
+                                    case 'modified':
+                                            $item->displayDate = $item->modified;
+                                            break;
 
-									case 'published':
-											$item->displayDate = ($item->publish_up == 0) ? $item->created : $item->publish_up;
-											break;
+                                    case 'published':
+                                            $item->displayDate = ($item->publish_up == 0) ? $item->created : $item->publish_up;
+                                            break;
 
-									default:
-									case 'created':
-											$item->displayDate = $item->created;
-											break;
-								}
+                                    default:
+                                    case 'created':
+                                            $item->displayDate = $item->created;
+                                            break;
+                                }
             }
 
             // Get the tags
@@ -267,19 +266,19 @@ class LogmoniteriModelCategory extends JModelList
         $query = $db->getQuery(true);
 
         // Select required fields from the categories.
-        $query->select($this->getState('list.select', 'w.*'))
+        $query->select($this->getState('list.select', 'wd.*'))
       ->from($db->quoteName('#__logbook_watchdogs').' AS w');
 
         // Filter by category.
         if ($categoryId = $this->getState('category.id')) {
             $query->select('c.title AS category_title, c.path AS category_route, c.access AS category_access, c.alias AS category_alias')
-        			->join('LEFT', '#__categories AS c ON c.id = d.catid')
-        				->where('w.catid = '.(int) $categoryId);
+                    ->join('LEFT', '#__categories AS c ON c.id = d.catid')
+                        ->where('wd.catid = '.(int) $categoryId);
         }
 
         // Join over the users.
         $query->select('u.name AS put_online_by')
-      		->join('LEFT', '#__users AS u ON u.id = d.created_by');
+              ->join('LEFT', '#__users AS u ON u.id = d.created_by');
 
         // Join over the asset groups.
         $query->select('ag.title AS access_level');
@@ -287,23 +286,23 @@ class LogmoniteriModelCategory extends JModelList
 
         // Filter by access level.
         if ($access = $this->getState('filter.access')) {
-            $query->where('w.access IN ('.$groups.')')
-        		->where('c.access IN ('.$groups.')');
+            $query->where('wd.access IN ('.$groups.')')
+                ->where('c.access IN ('.$groups.')');
         }
 
         // Filter by state
         $state = $this->getState('filter.state');
         if (is_numeric($state)) {
-            $query->where('w.published='.(int) $state);
+            $query->where('wd.published='.(int) $state);
         }
 
         //Do not show trashed or archived documents on the front-end.
-        $query->where('w.published != -2');
-        $query->where('w.published != 2');
+        $query->where('wd.published != -2');
+        $query->where('wd.published != 2');
 
         //Do not show unpublished documents to users who can't edit or edit.state.
         if ($this->getState('filter.published')) {
-            $query->where('w.published != 0');
+            $query->where('wd.published != 0');
         }
 
         // Filter by start and end dates.
@@ -314,12 +313,12 @@ class LogmoniteriModelCategory extends JModelList
         //Do not show expired documents to users who can't edit or edit.state.
         if ($this->getState('filter.publish_date')) {
             $query->where('(d.publish_up = '.$nullDate.' OR d.publish_up <= '.$nowDate.')')
-        			->where('(d.publish_down = '.$nullDate.' OR d.publish_down >= '.$nowDate.')');
+                    ->where('(d.publish_down = '.$nullDate.' OR d.publish_down >= '.$nowDate.')');
         }
 
         // Filter by language
         if ($this->getState('filter.language')) {
-            $query->where('w.language IN ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+            $query->where('wd.language IN ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
         }
 
         // Filter by search in title

@@ -27,18 +27,18 @@ JHtml::_('behavior.caption');
         <div class="container">
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php echo $this->renderField('logworkcenters'); ?>
+                    <?php //echo $this->form->renderField('logworkcenters');?>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php echo $this->renderField('loginstructionsets'); ?>
+                    <?php //echo $this->form->renderField('loginstructionsets');?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php echo $this->renderField('logblueprints'); ?>
+                    <?php //echo $this->form->renderField('logblueprints');?>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php echo $this->renderField('logtimeintervals'); ?>
+                    <?php //echo $this->form->renderField('logtimeintervals');?>
                 </div>
             </div>
             <div class="row">

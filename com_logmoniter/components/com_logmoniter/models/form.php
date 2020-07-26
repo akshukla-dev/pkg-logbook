@@ -31,7 +31,7 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
         $app = JFactory::getApplication();
 
         // Load state from the request.
-        $pk = $app->input->getInt('w_id');
+        $pk = $app->input->getInt('wd_id');
         $this->setState('watchdog.id', $pk);
 
         // Add compatibility variable for default naming conventions.

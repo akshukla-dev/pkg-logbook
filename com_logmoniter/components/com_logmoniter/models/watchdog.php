@@ -55,7 +55,7 @@ class LogmoniterModelWatchdog extends JModelItem
         if (!isset($this->_item[$pk])) {
             $db = JFactory::getDbo();
             $query = $db->getQuery(true);
-            $query->select('w.*');
+            $query->select('wd.*');
             $query->from('#__logbook_watchdogs AS w');
 
             // Join on category table.
@@ -66,7 +66,7 @@ class LogmoniterModelWatchdog extends JModelItem
             $query->select('u.name AS put_online_by')
                 ->join('LEFT', '#__users AS u ON u.id = d.created_by');
 
-            $query->where('w.id='.$pk);
+            $query->where('wd.id='.$pk);
             $db->setQuery($query);
             $data = $db->loadObject();
 

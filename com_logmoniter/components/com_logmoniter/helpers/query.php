@@ -71,31 +71,31 @@ class LogmoniterHelperQuery
           break;
 
       case 'alpha':
-          $orderby = 'w.title';
+          $orderby = 'wd.title';
           break;
 
       case 'ralpha':
-          $orderby = 'w.title DESC';
+          $orderby = 'wd.title DESC';
           break;
 
       case 'hits':
-          $orderby = 'w.hits';
+          $orderby = 'wd.hits';
           break;
 
       case 'rhits':
-          $orderby = 'w.hits DESC';
+          $orderby = 'wd.hits DESC';
           break;
 
       case 'logs':
-          $orderby = 'w.logs';
+          $orderby = 'wd.logs';
           break;
 
       case 'rlogs':
-          $orderby = 'w.logs DESC';
+          $orderby = 'wd.logs DESC';
           break;
 
       default:
-          $orderby = 'w.ordering';
+          $orderby = 'wd.ordering';
           break;
     }
 
@@ -117,19 +117,19 @@ class LogmoniterHelperQuery
 
         switch ($orderDate) {
       case 'modified':
-          $queryDate = ' CASE WHEN w.modified = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.modified END';
+          $queryDate = ' CASE WHEN wd.modified = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.modified END';
           break;
 
       // use created if publish_up is not set
       case 'published':
-          $queryDate = ' CASE WHEN w.publish_up = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.publish_up END ';
+          $queryDate = ' CASE WHEN wd.publish_up = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.publish_up END ';
           break;
-	  case 'unpublished' :
-		  $queryDate = ' CASE WHEN w.publish_down = ' . $db->quote($db->getNullDate()) . ' THEN w.created ELSE w.publish_down END ';
-		  break;
+      case 'unpublished':
+          $queryDate = ' CASE WHEN wd.publish_down = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.publish_down END ';
+          break;
       case 'created':
       default:
-          $queryDate = ' w.created ';
+          $queryDate = ' wd.created ';
           break;
     }
 

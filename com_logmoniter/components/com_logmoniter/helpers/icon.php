@@ -28,7 +28,7 @@ abstract class JHtmlIcon
     {
         $uri = JUri::getInstance();
 
-        $url = 'index.php?option=com_logmoniter&task=watchdog.add&return='.base64_encode($uri).'&w_id=0&catid='.$category->id;
+        $url = 'index.php?option=com_logmoniter&task=watchdog.add&return='.base64_encode($uri).'&wd_id=0&catid='.$category->id;
 
         $text = JLayoutHelper::render('joomla.content.icons.create', array('params' => $params, 'legacy' => $legacy));
 
@@ -125,7 +125,7 @@ abstract class JHtmlIcon
         }
 
         $contentUrl = LogmoniterHelperRoute::getWatchdogRoute($watchdog->slug, $watchdog->catid, $watchdog->language);
-        $url = $contentUrl.'&task=watchdog.edit&w_id='.$watchdog->id.'&return='.base64_encode($uri);
+        $url = $contentUrl.'&task=watchdog.edit&wd_id='.$watchdog->id.'&return='.base64_encode($uri);
 
         if ($watchdog->state == 0) {
             $overlib = JText::_('JUNPUBLISHED');

@@ -94,6 +94,6 @@ abstract class LogmoniterHelperRoute
 	 */
 	public static function getFormRoute($id)
 	{
-		return 'index.php?option=com_logmoniter&task=watchdog.edit&w_id=' . (int) $id;
+		return 'index.php?option=com_logmoniter&task=watchdog.edit&wd_id=' . (int) $id;
 	}
 }

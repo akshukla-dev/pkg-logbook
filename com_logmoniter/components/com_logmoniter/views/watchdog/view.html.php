@@ -10,11 +10,11 @@
 defined('_JEXEC') or die;
 
 /**
- * HTML Article View class for the Content component
+ * HTML Watchdog View class for the Logmoniter component
  *
  * @since  1.5
  */
-class ContentViewArticle extends JViewLegacy
+class LogmoniterViewWatchdog extends JViewLegacy
 {
 	protected $item;
 
@@ -68,7 +68,7 @@ class ContentViewArticle extends JViewLegacy
 		}
 
 		// TODO: Change based on shownoauth
-		$item->readmore_link = JRoute::_(ContentHelperRoute::getArticleRoute($item->slug, $item->catid, $item->language));
+		$item->readmore_link = JRoute::_(LogmoniterHelperRoute::getWatchdogRoute($item->slug, $item->catid, $item->language));
 
 		// Merge watchdog params. If this is single-watchdog view, menu params override watchdog params
 		// Otherwise, watchdog params override menu item params
@@ -181,23 +181,23 @@ class ContentViewArticle extends JViewLegacy
 
 		if ($item->params->get('show_associations'))
 		{
-			$item->associations = ContentHelperAssociation::displayAssociations($item->id);
+			$item->associations = LogmoniterHelperAssociation::displayAssociations($item->id);
 		}
 
 		// Process the content plugins.
 
 		JPluginHelper::importPlugin('content');
-		$dispatcher->trigger('onContentPrepare', array ('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
+		$dispatcher->trigger('onLogmoniterPrepare', array ('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
 
 		$item->event = new stdClass;
-		$results = $dispatcher->trigger('onContentAfterTitle', array('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
+		$results = $dispatcher->trigger('onLogmoniterAfterTitle', array('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
 		$item->event->afterDisplayTitle = trim(implode("\n", $results));
 
-		$results = $dispatcher->trigger('onContentBeforeDisplay', array('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
-		$item->event->beforeDisplayContent = trim(implode("\n", $results));
+		$results = $dispatcher->trigger('onLogmoniterBeforeDisplay', array('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
+		$item->event->beforeDisplayLogmoniter = trim(implode("\n", $results));
 
-		$results = $dispatcher->trigger('onContentAfterDisplay', array('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
-		$item->event->afterDisplayContent = trim(implode("\n", $results));
+		$results = $dispatcher->trigger('onLogmoniterAfterDisplay', array('COM_LOGMONITER.watchdog', &$item, &$item->params, $offset));
+		$item->event->afterDisplayLogmoniter = trim(implode("\n", $results));
 
 		// Escape strings for HTML output
 		$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
@@ -243,11 +243,11 @@ class ContentViewArticle extends JViewLegacy
 			$title = $this->item->params->get('watchdog_page_title', $this->item->title ?: $title);
 
 			$path     = array(array('title' => $this->item->title, 'link' => ''));
-			$category = JCategories::getInstance('Content')->get($this->item->catid);
+			$category = JCategories::getInstance('Logmoniter')->get($this->item->catid);
 
 			while ($category && ($menu->query['option'] !== 'COM_LOGMONITER' || $menu->query['view'] === 'watchdog' || $id != $category->id) && $category->id > 1)
 			{
-				$path[]   = array('title' => $category->title, 'link' => ContentHelperRoute::getCategoryRoute($category->id));
+				$path[]   = array('title' => $category->title, 'link' => LogmoniterHelperRoute::getCategoryRoute($category->id));
 				$category = $category->getParent();
 			}
 

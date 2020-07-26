@@ -45,7 +45,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
      *
      * @since  3.2
      */
-    protected $urlVar = 'w.id';
+    protected $urlVar = 'wd.id';
 
     /**
      * Method to add a new record.
@@ -64,7 +64,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
         // Redirect to the edit screen.
         $this->setRedirect(
             JRoute::_(
-                'index.php?option=' . $this->option . '&view=' . $this->view_item . '&w_id=0'
+                'index.php?option=' . $this->option . '&view=' . $this->view_item . '&wd_id=0'
                 . $this->getRedirectToItemAppend(), false
             )
         );
@@ -155,7 +155,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
      *
      * @since   1.6
      */
-    public function cancel($key = 'w_id')
+    public function cancel($key = 'wd_id')
     {
         // Redirect to the return page.
 		$this->setRedirect(JRoute::_($this->getReturnPage()));
@@ -173,7 +173,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
      *
      * @since   1.6
      */
-    public function edit($key = null, $urlVar = 'w_id')
+    public function edit($key = null, $urlVar = 'wd_id')
     {
         $result = parent::edit($key, $urlVar);
 
@@ -208,7 +208,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
      *
      * @since   1.6
      */
-    protected function getRedirectToItemAppend($recordId = null, $urlVar = 'w_id')
+    protected function getRedirectToItemAppend($recordId = null, $urlVar = 'wd_id')
     {
         // Need to override the parent method completely.
         $tmpl = $this->input->get('tmpl');
@@ -293,7 +293,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
      *
      * @since   1.6
      */
-    public function save($key = null, $urlVar = 'w_id')
+    public function save($key = null, $urlVar = 'wd_id')
     {
         $app = JFactory::getApplication();
         $recordId = $this->input->getInt($urlVar);

@@ -28,28 +28,28 @@ class LogmoniterModelWatchdogs extends JModelList
     {
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = array(
-                'id', 'w.id',
-                'title', 'w.title',
-                'alias', 'w.alias',
-                'checked_out', 'w.checked_out',
-                'checked_out_time', 'w.checked_out_time',
-                'catid', 'w.catid', 'category_title',
-                'wcid', 'w.wcid', 'wcenter_title',
-                'isid', 'w.isid', 'inset_title',
-                'bpid', 'w.bpid', 'bprint_title',
-                'tiid', 'w.tiid', 'tinterval_title',
-                'state', 'w.state',
-                'access', 'w.access', 'access_level',
-                'created', 'w.created',
-                'created_by', 'w.created_by',
-                'ordering', 'w.ordering',
-                'language', 'w.language',
-                'hits', 'w.hits',
-                'log_count', 'w.log_count',
-                'latest_log_date', 'w.latest_log_date',
-                'next-due_date', 'w.next_due_date',
-                'publish_up', 'w.publish_up',
-                'publish_down', 'w.publish_down',
+                'id', 'wd.id',
+                'title', 'wd.title',
+                'alias', 'wd.alias',
+                'checked_out', 'wd.checked_out',
+                'checked_out_time', 'wd.checked_out_time',
+                'catid', 'wd.catid', 'category_title',
+                'wcid', 'wd.wcid', 'wcenter_title',
+                'isid', 'wd.isid', 'inset_title',
+                'bpid', 'wd.bpid', 'bprint_title',
+                'tiid', 'wd.tiid', 'tinterval_title',
+                'state', 'wd.state',
+                'access', 'wd.access', 'access_level',
+                'created', 'wd.created',
+                'created_by', 'wd.created_by',
+                'ordering', 'wd.ordering',
+                'language', 'wd.language',
+                'hits', 'wd.hits',
+                'log_count', 'wd.log_count',
+                'latest_log_date', 'wd.latest_log_date',
+                'next-due_date', 'wd.next_due_date',
+                'publish_up', 'wd.publish_up',
+                'publish_down', 'wd.publish_down',
                 'filter_tag',
             );
         }
@@ -85,10 +85,10 @@ class LogmoniterModelWatchdogs extends JModelList
         $value = $app->input->get('filter_tag', 0, 'uint');
         $this->setState('filter.tag', $value);
 
-        $orderCol = $app->input->get('filter_order', 'w.ordering');
+        $orderCol = $app->input->get('filter_order', 'wd.ordering');
 
         if (!in_array($orderCol, $this->filter_fields)) {
-            $orderCol = 'w.ordering';
+            $orderCol = 'wd.ordering';
         }
 
         $this->setState('list.ordering', $orderCol);
@@ -185,21 +185,21 @@ class LogmoniterModelWatchdogs extends JModelList
         $query->select(
             $this->getState(
                 'list.select',
-                'w.id, w.title, w.alias, w.wcid, w.isid, '.
-                    'w.bpid, w.tiid, w.tiid, '.
-                    'w.latest_log_date, w.next_due_date, '.
-                    'w.checked_out, w.checked_out_time, '.
-                    'w.catid, w.created, w.created_by, w.created_by_alias, '.
+                'wd.id, wd.title, wd.alias, wd.wcid, wd.isid, '.
+                    'wd.bpid, wd.tiid, wd.tiid, '.
+                    'wd.latest_log_date, wd.next_due_date, '.
+                    'wd.checked_out, wd.checked_out_time, '.
+                    'wd.catid, wd.created, wd.created_by, wd.created_by_alias, '.
                     // Published/archived watchdog in archive category is treats as archive watchdog
                     // If category is not published then force 0
-                    'CASE WHEN c.published = 2 AND w.state > 0 THEN 2 WHEN c.published != 1 THEN 0 ELSE w.state END as state,'.
+                    'CASE WHEN c.published = 2 AND wd.state > 0 THEN 2 WHEN c.published != 1 THEN 0 ELSE wd.state END as state,'.
                     // Use created if modified is 0
-                    'CASE WHEN w.modified = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.modified END as modified, '.
-                    'w.modified_by, uam.name as modified_by_name,'.
+                    'CASE WHEN wd.modified = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.modified END as modified, '.
+                    'wd.modified_by, uam.name as modified_by_name,'.
                     // Use created if publish_up is 0
-                    'CASE WHEN w.publish_up = '.$db->quote($db->getNullDate()).' THEN w.created ELSE w.publish_up END as publish_up,'.
-                    'w.publish_down, , , w.params, w.metadata, w.metakey, w.metadesc, w.access, '.
-                    'w.hits, w.log_count, w.language'
+                    'CASE WHEN wd.publish_up = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.publish_up END as publish_up,'.
+                    'wd.publish_down, , , wd.params, wd.metadata, wd.metakey, wd.metadesc, wd.access, '.
+                    'wd.hits, wd.log_count, wd.language'
             )
         );
 
@@ -211,30 +211,29 @@ class LogmoniterModelWatchdogs extends JModelList
         // Join over the categories.
         $query->select('c.title AS category_title, c.path AS category_route, c.access AS category_access, c.alias AS category_alias')
             ->select('c.published, c.published AS parents_published')
-            ->join('LEFT', '#__categories AS c ON c.id = w.catid');
+            ->join('LEFT', '#__categories AS c ON c.id = wd.catid');
 
         // Join over the work-centers.
         $query->select('wc.title AS wcenter_title')
-            ->join('LEFT', '#__logbook_workcenters AS wc ON wc.id = w.wcid');
+            ->join('LEFT', '#__logbook_workcenters AS wc ON wc.id = wd.wcid');
 
         // Join over the instrcution sets.
         $query->select('inset.title AS inset_title')
-            ->join('LEFT', '#__logbook_instrcutionsets AS inset ON inset.id = w.isid');
+            ->join('LEFT', '#__logbook_instrcutionsets AS inset ON inset.id = wd.isid');
 
         // Join over the Blueprints.
         $query->select('bp.title AS bprint_title')
-            ->join('LEFT', '#__logbook_blueprints AS bp ON bp.id = w.bpid');
+            ->join('LEFT', '#__logbook_blueprints AS bp ON bp.id = wd.bpid');
 
         // Join over the Time Intervals.
         $query->select('ti.title AS tinterval_title')
-            ->join('LEFT', '#__logbook_timeintervals AS ti ON ti.id = w.tiid');
+            ->join('LEFT', '#__logbook_timeintervals AS ti ON ti.id = wd.tiid');
 
         // Join over the users for the author and modified_by names.
-        $query->select("CASE WHEN w.created_by_alias > ' ' THEN w.created_by_alias ELSE uw.name END AS author")
+        $query->select("CASE WHEN wd.created_by_alias > ' ' THEN wd.created_by_alias ELSE uw.name END AS author")
             ->select('uw.email AS author_email')
-
-            ->join('LEFT', '#__users AS ua ON uw.id = w.created_by')
-            ->join('LEFT', '#__users AS uam ON uam.id = w.modified_by');
+            ->join('LEFT', '#__users AS ua ON uw.id = wd.created_by')
+            ->join('LEFT', '#__users AS uam ON uam.id = wd.modified_by');
 
         // Join over the categories to get parent category titles
         $query->select('parent.title as parent_title, parent.id as parent_id, parent.path as parent_route, parent.alias as parent_alias')
@@ -243,7 +242,7 @@ class LogmoniterModelWatchdogs extends JModelList
         // Filter by access level.
         if ($access = $this->getState('filter.access')) {
             $groups = implode(',', $user->getAuthorisedViewLevels());
-            $query->where('w.access IN ('.$groups.')')
+            $query->where('wd.access IN ('.$groups.')')
                 ->where('c.access IN ('.$groups.')');
         }
 
@@ -253,16 +252,16 @@ class LogmoniterModelWatchdogs extends JModelList
         if (is_numeric($published) && $published == 2) {
             // If category is archived then watchdog has to be published or archived.
             // If categogy is published then watchdog has to be archived.
-            $query->where('(c.published = 2 AND w.state > 0) OR (c.published = 1 AND w.state = 2)');
+            $query->where('(c.published = 2 AND wd.state > 0) OR (c.published = 1 AND wd.state = 2)');
         } elseif (is_numeric($published)) {
             // Category has to be published
-            $query->where('c.published = 1 AND w.state = '.(int) $published);
+            $query->where('c.published = 1 AND wd.state = '.(int) $published);
         } elseif (is_array($published)) {
             $published = ArrayHelper::toInteger($published);
             $published = implode(',', $published);
 
             // Category has to be published
-            $query->where('c.published = 1 AND w.state IN ('.$published.')');
+            $query->where('c.published = 1 AND wd.state IN ('.$published.')');
         }
 
         // Filter by a single or group of watchdogs.
@@ -270,12 +269,12 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_numeric($watchdogId)) {
             $type = $this->getState('filter.watchdog_id.include', true) ? '= ' : '<> ';
-            $query->where('w.id '.$type.(int) $watchdogId);
+            $query->where('wd.id '.$type.(int) $watchdogId);
         } elseif (is_array($watchdogId)) {
             $watchdogId = ArrayHelper::toInteger($watchdogId);
             $watchdogId = implode(',', $watchdogId);
             $type = $this->getState('filter.watchdog_id.include', true) ? 'IN' : 'NOT IN';
-            $query->where('w.id '.$type.' ('.$watchdogId.')');
+            $query->where('wd.id '.$type.' ('.$watchdogId.')');
         }
 
         // Filter by a single or group of categories
@@ -286,7 +285,7 @@ class LogmoniterModelWatchdogs extends JModelList
 
             // Add subcategory check
             $includeSubcategories = $this->getState('filter.subcategories', false);
-            $categoryEquals = 'w.catid '.$type.(int) $categoryId;
+            $categoryEquals = 'wd.catid '.$type.(int) $categoryId;
 
             if ($includeSubcategories) {
                 $levels = (int) $this->getState('filter.max_category_levels', '1');
@@ -303,7 +302,7 @@ class LogmoniterModelWatchdogs extends JModelList
                 }
 
                 // Add the subquery to the main query
-                $query->where('('.$categoryEquals.' OR w.catid IN ('.(string) $subQuery.'))');
+                $query->where('('.$categoryEquals.' OR wd.catid IN ('.(string) $subQuery.'))');
             } else {
                 $query->where($categoryEquals);
             }
@@ -313,7 +312,7 @@ class LogmoniterModelWatchdogs extends JModelList
 
             if (!empty($categoryId)) {
                 $type = $this->getState('filter.category_id.include', true) ? 'IN' : 'NOT IN';
-                $query->where('w.catid '.$type.' ('.$categoryId.')');
+                $query->where('wd.catid '.$type.' ('.$categoryId.')');
             }
         }
 
@@ -322,12 +321,12 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_numeric($wcenterId)) {
             $type = $this->getState('filter.wcenter_id.include', true) ? '= ' : '<> ';
-            $query->where('w.id '.$type.(int) $wcenterId);
+            $query->where('wd.id '.$type.(int) $wcenterId);
         } elseif (is_array($wcenterId)) {
             $wcenterId = ArrayHelper::toInteger($wcenterId);
             $wcenterId = implode(',', $wcenterId);
             $type = $this->getState('filter.wcenter_id.include', true) ? 'IN' : 'NOT IN';
-            $query->where('w.id '.$type.' ('.$wcenterId.')');
+            $query->where('wd.id '.$type.' ('.$wcenterId.')');
         }
 
         // Filter by a single or group of instruction sets
@@ -335,12 +334,12 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_numeric($insetId)) {
             $type = $this->getState('filter.inset_id.include', true) ? '= ' : '<> ';
-            $query->where('w.id '.$type.(int) $insetId);
+            $query->where('wd.id '.$type.(int) $insetId);
         } elseif (is_array($insetId)) {
             $insetId = ArrayHelper::toInteger($insetId);
             $insetId = implode(',', $insetId);
             $type = $this->getState('filter.inset_id.include', true) ? 'IN' : 'NOT IN';
-            $query->where('w.id '.$type.' ('.$insetId.')');
+            $query->where('wd.id '.$type.' ('.$insetId.')');
         }
 
         // Filter by a single or group of blueprints
@@ -348,12 +347,12 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_numeric($bprintId)) {
             $type = $this->getState('filter.bprint_id.include', true) ? '= ' : '<> ';
-            $query->where('w.id '.$type.(int) $bprintId);
+            $query->where('wd.id '.$type.(int) $bprintId);
         } elseif (is_array($bprintId)) {
             $bprintId = ArrayHelper::toInteger($bprintId);
             $bprintId = implode(',', $bprintId);
             $type = $this->getState('filter.bprint_id.include', true) ? 'IN' : 'NOT IN';
-            $query->where('w.id '.$type.' ('.$bprintId.')');
+            $query->where('wd.id '.$type.' ('.$bprintId.')');
         }
 
         // Filter by a single or group of time intervals
@@ -361,12 +360,12 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_numeric($tintervalId)) {
             $type = $this->getState('filter.tinterval_id.include', true) ? '= ' : '<> ';
-            $query->where('w.id '.$type.(int) $tintervalId);
+            $query->where('wd.id '.$type.(int) $tintervalId);
         } elseif (is_array($tintervalId)) {
             $tintervalId = ArrayHelper::toInteger($tintervalId);
             $tintervalId = implode(',', $tintervalId);
             $type = $this->getState('filter.tinterval_id.include', true) ? 'IN' : 'NOT IN';
-            $query->where('w.id '.$type.' ('.$tintervalId.')');
+            $query->where('wd.id '.$type.' ('.$tintervalId.')');
         }
 
         // Filter by author
@@ -375,14 +374,14 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_numeric($authorId)) {
             $type = $this->getState('filter.author_id.include', true) ? '= ' : '<> ';
-            $authorWhere = 'w.created_by '.$type.(int) $authorId;
+            $authorWhere = 'wd.created_by '.$type.(int) $authorId;
         } elseif (is_array($authorId)) {
             $authorId = ArrayHelper::toInteger($authorId);
             $authorId = implode(',', $authorId);
 
             if ($authorId) {
                 $type = $this->getState('filter.author_id.include', true) ? 'IN' : 'NOT IN';
-                $authorWhere = 'w.created_by '.$type.' ('.$authorId.')';
+                $authorWhere = 'wd.created_by '.$type.' ('.$authorId.')';
             }
         }
 
@@ -392,7 +391,7 @@ class LogmoniterModelWatchdogs extends JModelList
 
         if (is_string($authorAlias)) {
             $type = $this->getState('filter.author_alias.include', true) ? '= ' : '<> ';
-            $authorAliasWhere = 'w.created_by_alias '.$type.$db->quote($authorAlias);
+            $authorAliasWhere = 'wd.created_by_alias '.$type.$db->quote($authorAlias);
         } elseif (is_array($authorAlias)) {
             $first = current($authorAlias);
 
@@ -405,7 +404,7 @@ class LogmoniterModelWatchdogs extends JModelList
 
                 if ($authorAlias) {
                     $type = $this->getState('filter.author_alias.include', true) ? 'IN' : 'NOT IN';
-                    $authorAliasWhere = 'w.created_by_alias '.$type.' ('.$authorAlias.
+                    $authorAliasWhere = 'wd.created_by_alias '.$type.' ('.$authorAlias.
                         ')';
                 }
             }
@@ -426,13 +425,13 @@ class LogmoniterModelWatchdogs extends JModelList
 
         // Filter by start and end dates.
         if ((!$user->authorise('core.edit.state', 'com_logmoniter')) && (!$user->authorise('core.edit', 'com_logmoniter'))) {
-            $query->where('(w.publish_up = '.$nullDate.' OR w.publish_up <= '.$nowDate.')')
-                ->where('(w.publish_down = '.$nullDate.' OR w.publish_down >= '.$nowDate.')');
+            $query->where('(wd.publish_up = '.$nullDate.' OR wd.publish_up <= '.$nowDate.')')
+                ->where('(wd.publish_down = '.$nullDate.' OR wd.publish_down >= '.$nowDate.')');
         }
 
         // Filter by Date Range or Relative Date
         $dateFiltering = $this->getState('filter.date_filtering', 'off');
-        $dateField = $this->getState('filter.date_field', 'w.created');
+        $dateField = $this->getState('filter.date_field', 'wd.created');
 
         switch ($dateFiltering) {
             case 'range':
@@ -468,30 +467,30 @@ class LogmoniterModelWatchdogs extends JModelList
             switch ($params->get('filter_field')) {
                 case 'author':
                     $query->where(
-                        'LOWER( CASE WHEN w.created_by_alias > '.$db->quote(' ').
-                            ' THEN w.created_by_alias ELSE uw.name END ) LIKE '.$filter.' '
+                        'LOWER( CASE WHEN wd.created_by_alias > '.$db->quote(' ').
+                            ' THEN wd.created_by_alias ELSE uw.name END ) LIKE '.$filter.' '
                     );
                     break;
 
                 case 'hits':
-                    $query->where('w.hits >= '.$hitsFilter.' ');
+                    $query->where('wd.hits >= '.$hitsFilter.' ');
                     break;
 
                 case 'logs':
-                    $query->where('w.log_count <= '.$logsFilter.' ');
+                    $query->where('wd.log_count <= '.$logsFilter.' ');
                     break;
 
                 case 'title':
                 default:
                     // Default to 'title' if parameter is not valid
-                    $query->where('LOWER( w.title ) LIKE '.$filter);
+                    $query->where('LOWER( wd.title ) LIKE '.$filter);
                     break;
             }
         }
 
         // Filter by language
         if ($this->getState('filter.language')) {
-            $query->where('w.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
+            $query->where('wd.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
         }
 
         // Filter by a single tag.
@@ -501,13 +500,13 @@ class LogmoniterModelWatchdogs extends JModelList
             $query->where($db->quoteName('tagmap.tag_id').' = '.(int) $tagId)
                 ->join(
                     'LEFT', $db->quoteName('#__contentitem_tag_map', 'tagmap')
-                    .' ON '.$db->quoteName('tagmap.content_item_id').' = '.$db->quoteName('w.id')
+                    .' ON '.$db->quoteName('tagmap.content_item_id').' = '.$db->quoteName('wd.id')
                     .' AND '.$db->quoteName('tagmap.type_alias').' = '.$db->quote('com_logmoniter.watchdog')
                 );
         }
 
         // Add the list ordering clause.
-        $query->order($this->getState('list.ordering', 'w.ordering').' '.$this->getState('list.direction', 'ASC'));
+        $query->order($this->getState('list.ordering', 'wd.ordering').' '.$this->getState('list.direction', 'ASC'));
 
         return $query;
     }

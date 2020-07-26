@@ -46,7 +46,7 @@ abstract class LogmoniterHelperAssociation extends CategoryHelperAssociation
 
 				foreach ($associations as $tag => $item)
 				{
-					$return[$tag] = LogmoniterHelperRoute::getArticleRoute($item->id, (int) $item->catid, $item->language);
+					$return[$tag] = LogmoniterHelperRoute::getWatchdogRoute($item->id, (int) $item->catid, $item->language);
 				}
 
 				return $return;
