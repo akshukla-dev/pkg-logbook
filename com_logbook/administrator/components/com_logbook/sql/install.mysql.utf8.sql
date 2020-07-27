@@ -1,7 +1,9 @@
 --
 -- Table structure for table `#__logbook_logs`
 --
-CREATE TABLE IF NOT EXISTS `#__logbook_logs`(
+
+DROP TABLE IF EXISTS `#__logbook_logs`;
+CREATE TABLE `#__logbook_logs`(
 	`id`	INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` INT(10) UNSIGNED NOT NULL DEFAULT 0 ,
   `title` VARCHAR(255) NOT NULL DEFAULT '',

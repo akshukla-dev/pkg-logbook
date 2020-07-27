@@ -2,7 +2,7 @@
 -- Table structure for table `#__logbook_watchdogs`
 --
 DROP TABLE IF EXISTS `#__logbook_watchdogs`;
-CREATE TABLE IF NOT EXISTS `#__logbook_watchdogs` (
+CREATE TABLE `#__logbook_watchdogs` (
     `id`	INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `asset_id` INT(10) UNSIGNED NOT NULL DEFAULT 0 ,
     `title` VARCHAR(255) NOT NULL DEFAULT '',

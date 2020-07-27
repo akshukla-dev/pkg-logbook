@@ -9,6 +9,9 @@ use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 
+
+JLoader::register('LogmoniterHelperAssociation', JPATH_SITE . '/components/com_logmoniter/helpers/association.php');
+
 /**
  * This models supports retrieving lists of watchdogs.
  *
@@ -198,7 +201,7 @@ class LogmoniterModelWatchdogs extends JModelList
                     'wd.modified_by, uam.name as modified_by_name,'.
                     // Use created if publish_up is 0
                     'CASE WHEN wd.publish_up = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.publish_up END as publish_up,'.
-                    'wd.publish_down, , , wd.params, wd.metadata, wd.metakey, wd.metadesc, wd.access, '.
+                    'wd.publish_down, wd.params, wd.metadata, wd.metakey, wd.metadesc, wd.access, '.
                     'wd.hits, wd.log_count, wd.language'
             )
         );
@@ -219,7 +222,7 @@ class LogmoniterModelWatchdogs extends JModelList
 
         // Join over the instrcution sets.
         $query->select('inset.title AS inset_title')
-            ->join('LEFT', '#__logbook_instrcutionsets AS inset ON inset.id = wd.isid');
+            ->join('LEFT', '#__logbook_instructionsets AS inset ON inset.id = wd.isid');
 
         // Join over the Blueprints.
         $query->select('bp.title AS bprint_title')

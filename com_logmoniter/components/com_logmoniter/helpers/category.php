@@ -16,7 +16,7 @@ class LogmoniterCategories extends JCategories
 {
     public function __construct($options = array())
     {
-        $options['table'] = '#__logbook_wathdogs';
+        $options['table'] = '#__logbook_watchdogs';
         $options['extension'] = 'com_logmoniter';
 
         parent::__construct($options);
