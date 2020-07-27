@@ -1,580 +1,238 @@
 <?php
 /**
- * @copyright Copyright (c)2020 Amit Kumar Shukla
- * @license GNU General Public License version 3, or later
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die; //No direct access to this file.
+defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
 
-JLoader::register('LogmoniterHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/logmoniter.php');
-
-class LogmoniterModelWatchdog extends JModelAdmin
+/**
+ * Logmoniter Component Article Model.
+ *
+ * @since  1.5
+ */
+class LogmoniterModelArticle extends JModelItem
 {
     /**
-     * The prefix to use with controller messages.
+     * Model context string.
      *
      * @var string
-     *
-     * @since  1.6
      */
-    protected $text_prefix = 'COM_LOGMONITER';
+    protected $_context = 'com_logmoniter.watchdog';
 
     /**
-     * The type alias for this logmoniter type (for example, 'com_logmoniter.watchdog').
+     * Method to auto-populate the model state.
      *
-     * @var string
-     *
-     * @since  3.2
-     */
-    public $typeAlias = 'com_logmoniter.watchdog';
-
-    /**
-     * The context used for the associations table.
-     *
-     * @var string
-     *
-     * @since  3.4.4
-     */
-    protected $associationsContext = 'com_logmoniter.item';
-
-    /**
-     * Batch copy items to a new category or current.
-     *
-     * @param int   $value    the new category
-     * @param array $pks      an array of row IDs
-     * @param array $contexts an array of item contexts
-     *
-     * @return mixed an array of new IDs on success, boolean false on failure
-     *
-     * @since   11.1
-     */
-    protected function batchCopy($value, $pks, $contexts)
-    {
-        $categoryId = (int) $value;
-
-        $newIds = array();
-
-        if (!$this->checkCategoryId($categoryId)) {
-            return false;
-        }
-
-        // Parent exists so we let's proceed
-        while (!empty($pks)) {
-            // Pop the first ID off the stack
-            $pk = array_shift($pks);
-
-            $this->table->reset();
-
-            // Check that the row actually exists
-            if (!$this->table->load($pk)) {
-                if ($error = $this->table->getError()) {
-                    // Fatal error
-                    $this->setError($error);
-
-                    return false;
-                } else {
-                    // Not fatal error
-                    $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-                    continue;
-                }
-            }
-
-            // Alter the title & alias
-            $data = $this->generateNewTitle($categoryId, $this->table->alias, $this->table->title);
-            $this->table->title = $data['0'];
-            $this->table->alias = $data['1'];
-
-            // Reset the ID because we are making a copy
-            $this->table->id = 0;
-
-            // Reset hits because we are making a copy
-            $this->table->hits = 0;
-
-            // Unpublish because we are making a copy
-            $this->table->state = 0;
-
-            // New category ID
-            $this->table->catid = $categoryId;
-
-            // Check the row.
-            if (!$this->table->check()) {
-                $this->setError($this->table->getError());
-
-                return false;
-            }
-
-            $this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
-
-            // Store the row.
-            if (!$this->table->store()) {
-                $this->setError($this->table->getError());
-
-                return false;
-            }
-
-            // Get the new item ID
-            $newId = $this->table->get('id');
-
-            // Add the new ID to the array
-            $newIds[$pk] = $newId;
-        }
-
-        // Clean the cache
-        $this->cleanCache();
-
-        return $newIds;
-    }
-
-    /**
-     * Method to test whether a record can be deleted.
-     *
-     * @param object $record a record object
-     *
-     * @return bool True if allowed to delete the record. Defaults to the permission set in the component.
+     * Note. Calling getState in this method will result in recursion.
      *
      * @since   1.6
      */
-    protected function canDelete($record)
+    protected function populateState()
     {
-        if (!empty($record->id)) {
-            if ($record->state != -2) {
-                return;
-            }
+        $app = JFactory::getApplication('site');
 
-            if ($record->catid) {
-                return JFactory::getUser()->authorise('core.delete', 'com_logmoniter.category.'.(int) $record->catid);
-            }
+        // Load state from the request.
+        $pk = $app->input->getInt('id');
+        $this->setState('watchdog.id', $pk);
 
-            return parent::canDelete($record);
-        }
-    }
+        // Load the parameters.
+        $params = $app->getParams();
+        $this->setState('params', $params);
 
-    /**
-     * Method to test whether a record can have its state edited.
-     *
-     * @param object $record a record object
-     *
-     * @return bool True if allowed to change the state of the record. Defaults to the permission set in the component.
-     *
-     * @since   1.6
-     */
-    protected function canEditState($record)
-    {
+        // TODO: Tune these values based on other permissions.
         $user = JFactory::getUser();
 
-        // Check for existing watchdog.
-        if (!empty($record->id)) {
-            return $user->authorise('core.edit.state', 'com_logmoniter.watchdog.'.(int) $record->id);
+        if ((!$user->authorise('core.edit.state', 'com_logmoniter')) && (!$user->authorise('core.edit', 'com_logmoniter'))) {
+            $this->setState('filter.published', 1);
+            $this->setState('filter.archived', 2);
         }
 
-        // New watchdog, so check against the category.
-        if (!empty($record->catid)) {
-            return $user->authorise('core.edit.state', 'com_logmoniter.category.'.(int) $record->catid);
-        }
-
-        // Default to component settings if neither watchdog nor category known.
-        return parent::canEditState($record);
+        $this->setState('filter.language', JLanguageMultilang::isEnabled());
     }
 
     /**
-     * Prepare and sanitise the table data prior to saving.
+     * Method to get watchdog data.
      *
-     * @param JTable $table a JTable object
+     * @param int $pk the id of the watchdog
      *
-     * @since   1.6
-     */
-    protected function prepareTable($table)
-    {
-        $date = JFactory::getDate();
-        $user = JFactory::getUser();
-
-        $table->title = htmlspecialchars_decode($table->title, ENT_QUOTES);
-        $table->alias = JApplicationHelper::stringURLSafe($table->alias);
-
-        if (empty($table->alias)) {
-            $table->alias = JApplicationHelper::stringURLSafe($table->title);
-        }
-
-        // Set the publish date to now
-        if ($table->state == 1 && (int) $table->publish_up == 0) {
-            $table->publish_up = JFactory::getDate()->toSql();
-        }
-
-        if ($table->state == 1 && intval($table->publish_down) == 0) {
-            $table->publish_down = $this->getDbo()->getNullDate();
-        }
-
-        // Increment the content version number.
-        //++$table->version;
-
-        // Reorder the watchdogs within the category so the new watchdog is first
-        if (empty($table->id)) {
-            $table->reorder('catid = '.(int) $table->catid.' AND state >= 0');
-        }
-    }
-
-    /**
-     * Returns a Table object, always creating it.
-     *
-     * @param string $type   The table type to instantiate
-     * @param string $prefix A prefix for the table class name. Optional.
-     * @param array  $config Configuration array for model. Optional.
-     *
-     * @return JTable A database object
-     */
-    public function getTable($type = 'Watchdog', $prefix = 'LogmoniterTable', $config = array())
-    {
-        return JTable::getInstance($type, $prefix, $config);
-    }
-
-    /**
-     * Method to get a single record.
-     *
-     * @param int $pk the id of the primary key
-     *
-     * @return mixed object on success, false on failure
+     * @return object|bool|JException Menu item data object on success, boolean false or JException instance on error
      */
     public function getItem($pk = null)
     {
-        if ($item = parent::getItem($pk)) {
-            // Convert the params field to an array.
-            $registry = new Registry($item->params);
-            $item->params = $registry->toArray();
-
-            // Convert the metadata field to an array.
-            $registry = new Registry($item->metadata);
-            $item->metadata = $registry->toArray();
-
-            // Load associated content items
-            $assoc = JLanguageAssociations::isEnabled();
-
-            if ($assoc) {
-                $item->associations = array();
-
-                if ($item->id != null) {
-                    $associations = JLanguageAssociations::getAssociations('com_logmoniter', '#__logbook_watchdogs', 'com_logmoniter.item', $item->id);
-
-                    foreach ($associations as $tag => $association) {
-                        $item->associations[$tag] = $association->id;
-                    }
-                }
-            }
-
-            if (!empty($item->id)) {
-                $item->tags = new JHelperTags();
-                $item->tags->getTagIds($item->id, 'com_logmoniter.watchdog');
-            }
-        }
-
-        return $item;
-    }
-
-    /**
-     * Method to get the record form.
-     *
-     * @param array $data     data for the form
-     * @param bool  $loadData true if the form is to load its own data (default case), false if not
-     *
-     * @return JForm|bool A JForm object on success, false on failure
-     *
-     * @since   1.6
-     */
-    public function getForm($data = array(), $loadData = true)
-    {
-        // Get the form.
-        $form = $this->loadForm('com_logmoniter.watchdog', 'watchdog', array('control' => 'jform', 'load_data' => $loadData));
-
-        if (empty($form)) {
-            return false;
-        }
-
-        $jinput = JFactory::getApplication()->input;
-
-        /*
-         * The front end calls this model and uses w_id to avoid id clashes so we need to check for that first.
-         * The back end uses id so we use that the rest of the time and set it to 0 by default.
-         */
-        $id = $jinput->get('w_id', $jinput->get('id', 0));
-
-        // Determine correct permissions to check.
-        if ($this->getState('watchdog.id')) {
-            $id = $this->getState('watchdog.id');
-
-            // Existing record. Can only edit in selected categories.
-            $form->setFieldAttribute('catid', 'action', 'core.edit');
-
-            // Existing record. Can only edit own watchdogs in selected categories.
-            $form->setFieldAttribute('catid', 'action', 'core.edit.own');
-        } else {
-            // New record. Can only create in selected categories.
-            $form->setFieldAttribute('catid', 'action', 'core.create');
-        }
-
         $user = JFactory::getUser();
 
-        // Check for existing watchdog.
-        // Modify the form based on Edit State access controls.
-        if ($id != 0 && (!$user->authorise('core.edit.state', 'com_logmoniter.watchdog.'.(int) $id))
-            || ($id == 0 && !$user->authorise('core.edit.state', 'com_logmoniter'))) {
-            // Disable fields for display.
-            $form->setFieldAttribute('ordering', 'disabled', 'true');
+        $pk = (!empty($pk)) ? $pk : (int) $this->getState('watchdog.id');
 
-            // Disable fields while saving.
-            // The controller has already verified this is an watchdog you can edit.
-            $form->setFieldAttribute('ordering', 'filter', 'unset');
-            $form->setFieldAttribute('publish_up', 'filter', 'unset');
-            $form->setFieldAttribute('publish_down', 'filter', 'unset');
-            $form->setFieldAttribute('state', 'filter', 'unset');
+        if ($this->_item === null) {
+            $this->_item = array();
         }
 
-        // Prevent messing with watchdog language and category when editing existing watchdog with associations
-        $app = JFactory::getApplication();
-        $assoc = JLanguageAssociations::isEnabled();
+        if (!isset($this->_item[$pk])) {
+            try {
+                $db = $this->getDbo();
+                $query = $db->getQuery(true)
+                    ->select(
+                        $this->getState(
+                            'item.select',
+                            'wd.id, wd.asset_id, wd.title, wd.alias'.
+                            ', wd.isid, wd.bpid, wd.wcid, wd.tiid, wd.lwid'.
+                            ', wd.state, wd.catid, wd.created, wd.created_by, wd.created_by_alias'.
+                            ', wd.log_count, wd.next_due_date, wd.latest_log_date'.
+                            // Use created if modified is 0
+                            ', CASE WHEN wd.modified = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.modified END as modified'.
+                            ', wd.modified_by, wd.checked_out, wd.checked_out_time, wd.publish_up, wd.publish_down'.
+                            ', wd.params, wd.version, wd.ordering'.
+                            ', wd.metakey, wd.metadesc, wd.access, wd.hits, wd.metadata, wd.language'
+                        )
+                    );
+                $query->from('#__logbook_watchdogs AS wd')
+                    ->where('wd.id = '.(int) $pk);
 
-        // Check if watchdog is associated
-        if ($this->getState('watchdog.id') && $app->isClient('site') && $assoc) {
-            $associations = JLanguageAssociations::getAssociations('com_logmoniter', '#__logbook_watchdogs', 'com_logmoniter.item', $id);
+                // Join on category table.
+                $query->select('c.title AS category_title, c.alias AS category_alias, c.access AS category_access')
+                    ->innerJoin('#__categories AS c on c.id = wd.catid')
+                    ->where('c.published > 0');
 
-            // Make fields read only
-            if (!empty($associations)) {
-                $form->setFieldAttribute('language', 'readonly', 'true');
-                $form->setFieldAttribute('catid', 'readonly', 'true');
-                $form->setFieldAttribute('language', 'filter', 'unset');
-                $form->setFieldAttribute('catid', 'filter', 'unset');
-            }
-        }
+                // Join over the instruction sets
+                $query->select('i.title AS inset_title')
+                    ->join('LEFT', '`#__logbook_instructionsets`AS i ON i.id = wd.isid');
 
-        return $form;
-    }
+                //Get the bluprint title.
+                $query->select('bp.title AS bprint_title')
+                    ->join('LEFT', '`#__logbook_blueprints`AS bp ON bp.id = wd.bpid');
 
-    /**
-     * Method to get the data that should be injected in the form.
-     *
-     * @return mixed the data for the form
-     *
-     * @since   1.6
-     */
-    protected function loadFormData()
-    {
-        // Check the session for previously entered form data.
-        $app = JFactory::getApplication();
-        $data = $app->getUserState('com_logmoniter.edit.watchdog.data', array());
+                //Get the work center.
+                $query->select('wc.title AS wcenter_title')
+                    ->join('LEFT', '`#__logbook_workcenters`AS wc ON wc.id = wd.wcid');
 
-        if (empty($data)) {
-            $data = $this->getItem();
+                //Get the Frequency.
+                $query->select('ti.title AS tinterval_title')
+                    ->join('LEFT', '`#__logbook_timeintervals`AS ti ON ti.id = wd.tiid');
 
-            // Pre-select some filters (Status, Category, Language, Access) in edit form if those have been selected in Article Manager: Articles
-            if ($this->getState('watchdog.id') == 0) {
-                $filters = (array) $app->getUserState('com_logmoniter.watchdogs.filter');
-                $data->set(
-                    'state',
-                    $app->input->getInt(
-                        'state',
-                        ((isset($filters['published']) && $filters['published'] !== '') ? $filters['published'] : null)
-                    )
-                );
-                $data->set('catid', $app->input->getInt('catid', (!empty($filters['category_id']) ? $filters['category_id'] : null)));
-                $data->set('language', $app->input->getString('language', (!empty($filters['language']) ? $filters['language'] : null)));
-                $data->set('access',
-                    $app->input->getInt('access', (!empty($filters['access']) ? $filters['access'] : JFactory::getConfig()->get('access')))
-                );
-            }
-        }
+                // Join on user table.
+                $query->select('u.name AS author')
+                    ->join('LEFT', '#__users AS u on u.id = wd.created_by');
 
-        // If there are params fieldsets in the form it will fail with a registry object
-        if (isset($data->params) && $data->params instanceof Registry) {
-            $data->params = $data->params->toArray();
-        }
-
-        $this->preprocessData('com_logmoniter.watchdog', $data);
-
-        return $data;
-    }
-
-    /**
-     * Method to validate the form data.
-     *
-     * @param JForm  $form  the form to validate against
-     * @param array  $data  the data to validate
-     * @param string $group the name of the field group to validate
-     *
-     * @return array|bool array of filtered data if valid, false otherwise
-     *
-     * @see     JFormRule
-     * @see     JFilterInput
-     * @since   3.7.0
-     */
-    public function validate($form, $data, $group = null)
-    {
-        // Don't allow to change the users if not allowed to access com_users.
-        if (JFactory::getApplication()->isClient('administrator') && !JFactory::getUser()->authorise('core.manage', 'com_users')) {
-            if (isset($data['created_by'])) {
-                unset($data['created_by']);
-            }
-
-            if (isset($data['modified_by'])) {
-                unset($data['modified_by']);
-            }
-        }
-
-        return parent::validate($form, $data, $group);
-    }
-
-    /**
-     * A protected method to get a set of ordering conditions.
-     *
-     * @param object $table a record object
-     *
-     * @return array an array of conditions to add to add to ordering queries
-     *
-     * @since   1.6
-     */
-    protected function getReorderConditions($table)
-    {
-        return array('catid = '.(int) $table->catid);
-    }
-
-    /**
-     * Allows preprocessing of the JForm object.
-     *
-     * @param JForm  $form  The form object
-     * @param array  $data  The data to be merged into the form object
-     * @param string $group The plugin group to be executed
-     *
-     * @since   3.0
-     */
-    protected function preprocessForm(JForm $form, $data, $group = 'content')
-    {
-        if ($this->canCreateCategory()) {
-            $form->setFieldAttribute('catid', 'allowAdd', 'true');
-        }
-
-        // Association content items
-        if (JLanguageAssociations::isEnabled()) {
-            $languages = JLanguageHelper::getLogmoniterLanguages(false, true, null, 'ordering', 'asc');
-
-            if (count($languages) > 1) {
-                $addform = new SimpleXMLElement('<form />');
-                $fields = $addform->addChild('fields');
-                $fields->addAttribute('name', 'associations');
-                $fieldset = $fields->addChild('fieldset');
-                $fieldset->addAttribute('name', 'item_associations');
-
-                foreach ($languages as $language) {
-                    $field = $fieldset->addChild('field');
-                    $field->addAttribute('name', $language->lang_code);
-                    $field->addAttribute('type', 'modal_watchdog');
-                    $field->addAttribute('language', $language->lang_code);
-                    $field->addAttribute('label', $language->title);
-                    $field->addAttribute('translate_label', 'false');
-                    $field->addAttribute('select', 'true');
-                    $field->addAttribute('new', 'true');
-                    $field->addAttribute('edit', 'true');
-                    $field->addAttribute('clear', 'true');
+                // Filter by language
+                if ($this->getState('filter.language')) {
+                    $query->where('wd.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
                 }
 
-                $form->load($addform, false);
+                // Join over the categories to get parent category titles
+                $query->select('parent.title as parent_title, parent.id as parent_id, parent.path as parent_route, parent.alias as parent_alias')
+                    ->join('LEFT', '#__categories as parent ON parent.id = c.parent_id');
+
+                if ((!$user->authorise('core.edit.state', 'com_logmoniter')) && (!$user->authorise('core.edit', 'com_logmoniter'))) {
+                    // Filter by start and end dates.
+                    $nullDate = $db->quote($db->getNullDate());
+                    $date = JFactory::getDate();
+
+                    $nowDate = $db->quote($date->toSql());
+
+                    $query->where('(wd.publish_up = '.$nullDate.' OR wd.publish_up <= '.$nowDate.')')
+                        ->where('(wd.publish_down = '.$nullDate.' OR wd.publish_down >= '.$nowDate.')');
+                }
+
+                // Filter by published state.
+                $published = $this->getState('filter.published');
+                $archived = $this->getState('filter.archived');
+
+                if (is_numeric($published)) {
+                    $query->where('(wd.state = '.(int) $published.' OR wd.state ='.(int) $archived.')');
+                }
+
+                $db->setQuery($query);
+
+                $data = $db->loadObject();
+
+                if (empty($data)) {
+                    return JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_WATCHDOG_NOT_FOUND'));
+                }
+
+                // Check for published state if filter set.
+                if ((is_numeric($published) || is_numeric($archived)) && (($data->state != $published) && ($data->state != $archived))) {
+                    return JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_WATCHDOG_NOT_FOUND'));
+                }
+
+                // Convert parameter fields to objects.
+                $registry = new Registry($data->attribs);
+
+                $data->params = clone $this->getState('params');
+                $data->params->merge($registry);
+
+                $data->metadata = new Registry($data->metadata);
+
+                // Technically guest could edit an watchdog, but lets not check that to improve performance a little.
+                if (!$user->get('guest')) {
+                    $userId = $user->get('id');
+                    $asset = 'com_logmoniter.watchdog.'.$data->id;
+
+                    // Check general edit permission first.
+                    if ($user->authorise('core.edit', $asset)) {
+                        $data->params->set('access-edit', true);
+                    }
+
+                    // Now check if edit.own is available.
+                    elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
+                        // Check for a valid user and that they are the owner.
+                        if ($userId == $data->created_by) {
+                            $data->params->set('access-edit', true);
+                        }
+                    }
+                }
+
+                // Compute view access permissions.
+                if ($access = $this->getState('filter.access')) {
+                    // If the access filter has been set, we already know this user can view.
+                    $data->params->set('access-view', true);
+                } else {
+                    // If no access filter is set, the layout takes some responsibility for display of limited information.
+                    $user = JFactory::getUser();
+                    $groups = $user->getAuthorisedViewLevels();
+
+                    if ($data->catid == 0 || $data->category_access === null) {
+                        $data->params->set('access-view', in_array($data->access, $groups));
+                    } else {
+                        $data->params->set('access-view', in_array($data->access, $groups) && in_array($data->category_access, $groups));
+                    }
+                }
+
+                $this->_item[$pk] = $data;
+            } catch (Exception $e) {
+                if ($e->getCode() == 404) {
+                    // Need to go thru the error handler to allow Redirect to work.
+                    JError::raiseError(404, $e->getMessage());
+                } else {
+                    $this->setError($e);
+                    $this->_item[$pk] = false;
+                }
             }
         }
 
-        parent::preprocessForm($form, $data, $group);
+        return $this->_item[$pk];
     }
 
     /**
-     * Method to save the form data.
+     * Increment the hit counter for the watchdog.
      *
-     * @param array $data the form data
+     * @param int $pk optional primary key of the watchdog to increment
      *
-     * @return bool true on success
-     *
-     * @since	3.1
+     * @return bool true if successful; false otherwise and internal error set
      */
-    public function save($data)
+    public function hit($pk = 0)
     {
-        $app = JFactory::getApplication();
+        $input = JFactory::getApplication()->input;
+        $hitcount = $input->getInt('hitcount', 1);
 
-        JLoader::register('CategoriesHelper', JPATH_ADMINISTRATOR.'/components/com_categories/helpers/categories.php');
+        if ($hitcount) {
+            $pk = (!empty($pk)) ? $pk : (int) $this->getState('watchdog.id');
 
-        // Cast catid to integer for comparison
-        $catid = (int) $data['catid'];
-
-        // Check if New Category exists
-        if ($catid > 0) {
-            $catid = CategoriesHelper::validateCategoryId($data['catid'], 'com_logmoniter');
+            $table = JTable::getInstance('Logmoniter', 'LogmoniterTable');
+            $table->load($pk);
+            $table->hit($pk);
         }
 
-        // Save New Category
-        if ($catid == 0 && $this->canCreateCategory()) {
-            $table = array();
-            $table['title'] = $data['catid'];
-            $table['parent_id'] = 1;
-            $table['extension'] = 'com_logmoniter';
-            $table['language'] = $data['language'];
-            $table['published'] = 1;
-
-            // Create new category and get catid back
-            $data['catid'] = CategoriesHelper::createCategory($table);
-        }
-
-        // Alter the title for save as copy
-        if ($app->input->get('task') == 'save2copy') {
-            list($name, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
-            $data['title'] = $name;
-            $data['alias'] = $alias;
-            $data['state'] = 0;
-        }
-
-        return parent::save($data);
-    }
-
-    /**
-     * Method to change the title & alias.
-     *
-     * @param int    $category_id the id of the parent
-     * @param string $alias       the alias
-     * @param string $name        the title
-     *
-     * @return array contains the modified title and alias
-     *
-     * @since   3.1
-     */
-    protected function generateNewTitle($category_id, $alias, $name)
-    {
-        // Alter the title & alias
-        $table = $this->getTable();
-
-        while ($table->load(array('alias' => $alias, 'catid' => $category_id))) {
-            if ($name == $table->title) {
-                $name = JString::increment($name);
-            }
-
-            $alias = JString::increment($alias, 'dash');
-        }
-
-        return array($name, $alias);
-    }
-
-    /**
-     * Void hit function for pagebreak when editing content from frontend.
-     *
-     *
-     * @since   3.6.0
-     */
-    public function hit()
-    {
-        return;
-    }
-
-    /**
-     * Is the user allowed to create an on the fly category?
-     *
-     * @return bool
-     *
-     * @since   3.6.1
-     */
-    private function canCreateCategory()
-    {
-        return JFactory::getUser()->authorise('core.create', 'com_logmoniter');
+        return true;
     }
 }

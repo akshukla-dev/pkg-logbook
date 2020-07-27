@@ -89,10 +89,10 @@ class LogmoniterModelMoniter extends LogmoniterModelWatchdogs
         $case_when = ' CASE WHEN ';
         $case_when .= $query->charLength('wd.alias', '!=', '0');
         $case_when .= ' THEN ';
-        $l_id = $query->castAsChar('wd.id');
-        $case_when .= $query->concatenate(array($l_id, 'wd.alias'), ':');
+        $wd_id = $query->castAsChar('wd.id');
+        $case_when .= $query->concatenate(array($wd_id, 'wd.alias'), ':');
         $case_when .= ' ELSE ';
-        $case_when .= $l_id.' END as slug';
+        $case_when .= $wd_id.' END as slug';
 
         $query->select($case_when);
 

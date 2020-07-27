@@ -19,12 +19,12 @@ abstract class JHtmlIcon
      *
      * @param object   $category The category information
      * @param Registry $params   The item parameters
-     * @param array    $params   Optional attributes for the link
+     * @param array    $attribs  Optional attributes for the link
      * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
      *
      * @return string The HTML markup for the create item link
      */
-    public static function create($category, $params, $params = array(), $legacy = false)
+    public static function create($category, $params, $attribs = array(), $legacy = false)
     {
         $uri = JUri::getInstance();
 
@@ -32,14 +32,14 @@ abstract class JHtmlIcon
 
         $text = JLayoutHelper::render('joomla.content.icons.create', array('params' => $params, 'legacy' => $legacy));
 
-        // Add the button classes to the params array
-        if (isset($params['class'])) {
-            $params['class'] .= ' btn btn-primary';
+        // Add the button classes to the attribs array
+        if (isset($attribs['class'])) {
+            $attribs['class'] .= ' btn btn-primary';
         } else {
-            $params['class'] = 'btn btn-primary';
+            $attribs['class'] = 'btn btn-primary';
         }
 
-        $button = JHtml::_('link', JRoute::_($url), $text, $params);
+        $button = JHtml::_('link', JRoute::_($url), $text, $attribs);
 
         $output = '<span class="hasTooltip" title="'.JHtml::_('tooltipText', 'COM_LOGMONITER_CREATE_WATCHDOG').'">'.$button.'</span>';
 
@@ -51,12 +51,12 @@ abstract class JHtmlIcon
      *
      * @param object   $watchdog The watchdog information
      * @param Registry $params   The item parameters
-     * @param array    $params   Optional attributes for the link
+     * @param array    $attribs  Optional attributes for the link
      * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
      *
      * @return string The HTML markup for the email item link
      */
-    public static function email($watchdog, $params, $params = array(), $legacy = false)
+    public static function email($watchdog, $params, $attribs = array(), $legacy = false)
     {
         JLoader::register('MailtoHelper', JPATH_SITE.'/components/com_mailto/helpers/mailto.php');
 
@@ -70,11 +70,11 @@ abstract class JHtmlIcon
 
         $text = JLayoutHelper::render('joomla.content.icons.email', array('params' => $params, 'legacy' => $legacy));
 
-        $params['title'] = JText::_('JGLOBAL_EMAIL_TITLE');
-        $params['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
-        $params['rel'] = 'nofollow';
+        $attribs['title'] = JText::_('JGLOBAL_EMAIL_TITLE');
+        $attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
+        $attribs['rel'] = 'nofollow';
 
-        return JHtml::_('link', JRoute::_($url), $text, $params);
+        return JHtml::_('link', JRoute::_($url), $text, $attribs);
     }
 
     /**
@@ -85,14 +85,14 @@ abstract class JHtmlIcon
      *
      * @param object   $watchdog The watchdog information
      * @param Registry $params   The item parameters
-     * @param array    $params   Optional attributes for the link
+     * @param array    $attribs  Optional attributes for the link
      * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
      *
      * @return string the HTML for the watchdog edit icon
      *
      * @since   1.6
      */
-    public static function edit($watchdog, $params, $params = array(), $legacy = false)
+    public static function edit($watchdog, $params, $attribs = array(), $legacy = false)
     {
         $user = JFactory::getUser();
         $uri = JUri::getInstance();
@@ -119,7 +119,7 @@ abstract class JHtmlIcon
 
             $text = JLayoutHelper::render('joomla.content.icons.edit_lock', array('tooltip' => $tooltip, 'legacy' => $legacy));
 
-            $output = JHtml::_('link', '#', $text, $params);
+            $output = JHtml::_('link', '#', $text, $attribs);
 
             return $output;
         }
@@ -143,8 +143,8 @@ abstract class JHtmlIcon
 
         $text = JLayoutHelper::render('joomla.content.icons.edit', array('watchdog' => $watchdog, 'overlib' => $overlib, 'legacy' => $legacy));
 
-        $params['title'] = JText::_('JGLOBAL_EDIT_TITLE');
-        $output = JHtml::_('link', JRoute::_($url), $text, $params);
+        $attribs['title'] = JText::_('JGLOBAL_EDIT_TITLE');
+        $output = JHtml::_('link', JRoute::_($url), $text, $attribs);
 
         return $output;
     }
@@ -154,12 +154,12 @@ abstract class JHtmlIcon
      *
      * @param object   $watchdog The watchdog information
      * @param Registry $params   The item parameters
-     * @param array    $params   Optional attributes for the link
+     * @param array    $attribs  Optional attributes for the link
      * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
      *
      * @return string The HTML markup for the popup link
      */
-    public static function print_popup($watchdog, $params, $params = array(), $legacy = false)
+    public static function print_popup($watchdog, $params, $attribs = array(), $legacy = false)
     {
         $app = JFactory::getApplication();
         $input = $app->input;
@@ -172,11 +172,11 @@ abstract class JHtmlIcon
 
         $text = JLayoutHelper::render('joomla.content.icons.print_popup', array('params' => $params, 'legacy' => $legacy));
 
-        $params['title'] = JText::sprintf('JGLOBAL_PRINT_TITLE', htmlspecialchars($watchdog->title, ENT_QUOTES, 'UTF-8'));
-        $params['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
-        $params['rel'] = 'nofollow';
+        $attribs['title'] = JText::sprintf('JGLOBAL_PRINT_TITLE', htmlspecialchars($watchdog->title, ENT_QUOTES, 'UTF-8'));
+        $attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
+        $attribs['rel'] = 'nofollow';
 
-        return JHtml::_('link', JRoute::_($url), $text, $params);
+        return JHtml::_('link', JRoute::_($url), $text, $attribs);
     }
 
     /**
@@ -184,12 +184,12 @@ abstract class JHtmlIcon
      *
      * @param object   $watchdog Not used, @deprecated for 4.0
      * @param Registry $params   The item parameters
-     * @param array    $params   Not used, @deprecated for 4.0
+     * @param array    $attribs  Not used, @deprecated for 4.0
      * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
      *
      * @return string The HTML markup for the popup link
      */
-    public static function print_screen($watchdog, $params, $params = array(), $legacy = false)
+    public static function print_screen($watchdog, $params, $attribs = array(), $legacy = false)
     {
         $text = JLayoutHelper::render('joomla.content.icons.print_screen', array('params' => $params, 'legacy' => $legacy));
 

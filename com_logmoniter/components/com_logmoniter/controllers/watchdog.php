@@ -17,7 +17,6 @@ use Joomla\Utilities\ArrayHelper;
  *
  * @since  1.6.0
  */
-
 class LogmoniterControllerWatchdog extends JControllerForm
 {
     /**
@@ -64,8 +63,8 @@ class LogmoniterControllerWatchdog extends JControllerForm
         // Redirect to the edit screen.
         $this->setRedirect(
             JRoute::_(
-                'index.php?option=' . $this->option . '&view=' . $this->view_item . '&wd_id=0'
-                . $this->getRedirectToItemAppend(), false
+                'index.php?option='.$this->option.'&view='.$this->view_item.'&wd_id=0'
+                .$this->getRedirectToItemAppend(), false
             )
         );
 
@@ -83,7 +82,7 @@ class LogmoniterControllerWatchdog extends JControllerForm
      */
     protected function allowAdd($data = array())
     {
-        $user       = JFactory::getUser();
+        $user = JFactory::getUser();
         //Get a possible category id passed in the data or URL.
         $catId = ArrayHelper::getValue($data, 'catid', $this->input->getInt('id'), 'int');
         $allow = null;
@@ -118,11 +117,9 @@ class LogmoniterControllerWatchdog extends JControllerForm
         $asset = 'com_logmoniter.watchdog.'.$recordId;
 
         // Zero record (id:0), return component edit permission by calling parent controller method
-        if (!$recordId)
-        {
+        if (!$recordId) {
             return parent::allowEdit($data, $key);
         }
-
 
         // Check general edit permission first.
         if ($user->authorise('core.edit', $asset)) {
@@ -135,14 +132,14 @@ class LogmoniterControllerWatchdog extends JControllerForm
             // Existing record already has an owner, get it
             $record = $this->getModel()->getItem($recordId);
 
-            if (empty($record))
-            {
+            if (empty($record)) {
                 return false;
             }
 
             // Grant if current user is owner of the record
             return $user->get('id') == $record->created_by;
         }
+
         return false;
     }
 
@@ -158,8 +155,9 @@ class LogmoniterControllerWatchdog extends JControllerForm
     public function cancel($key = 'wd_id')
     {
         // Redirect to the return page.
-		$this->setRedirect(JRoute::_($this->getReturnPage()));
-		return parent::cancel($key);
+        $this->setRedirect(JRoute::_($this->getReturnPage()));
+
+        return parent::cancel($key);
     }
 
     /**
@@ -295,82 +293,32 @@ class LogmoniterControllerWatchdog extends JControllerForm
      */
     public function save($key = null, $urlVar = 'wd_id')
     {
+        $result = parent::save($key, $urlVar);
         $app = JFactory::getApplication();
         $recordId = $this->input->getInt($urlVar);
 
         // Load the parameters.
-        $params   = $app->getParams();
+        $params = $app->getParams();
         $menuitem = (int) $params->get('redirect_menuitem');
 
         // Check for redirection after submission when creating a new watchdog only
-        if ($menuitem > 0 && $recordId == 0)
-        {
+        if ($menuitem > 0 && $recordId == 0) {
             $lang = '';
 
-            if (JLanguageMultilang::isEnabled())
-            {
+            if (JLanguageMultilang::isEnabled()) {
                 $item = $app->getMenu()->getItem($menuitem);
-                $lang =  !is_null($item) && $item->language != '*' ? '&lang=' . $item->language : '';
+                $lang = !is_null($item) && $item->language != '*' ? '&lang='.$item->language : '';
             }
 
             // If ok, redirect to the return page.
-            if ($result)
-            {
-                $this->setRedirect(JRoute::_('index.php?Itemid=' . $menuitem . $lang));
+            if ($result) {
+                $this->setRedirect(JRoute::_('index.php?Itemid='.$menuitem.$lang));
             }
-        }
-        else
-        {
+        } else {
             // If ok, redirect to the return page.
-            if ($result)
-            {
+            if ($result) {
                 $this->setRedirect(JRoute::_($this->getReturnPage()));
             }
-        }
-
-
-        //Get the jform data.
-        $data = $this->input->post->get('jform', array(), 'array');
-
-        //Set the alias of the document.
-
-        //Remove possible spaces.
-        $data['alias'] = trim($data['alias']);
-        if (empty($data['alias'])) {
-            //Created a sanitized alias from the title field, (see stringURLSafe function for details).
-            $data['alias'] = JFilterOutput::stringURLSafe($data['title']);
-        }
-
-        // Verify that the alias is unique
-
-        //Note: Usually this code goes into the overrided store JTable function but the file
-        //would already be uploaded on the server if any duplicate alias is found.
-        //To avoid this situation we check the alias unicity here as the file uploading
-        //is not still triggered.
-
-        $model = $this->getModel();
-        $table = $model->getTable();
-
-        if ($table->load(array('alias' => $data['alias'], 'catid' => $data['catid'])) && ($table->id != $recordId || $recordId == 0)) {
-            JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGMONITER_DATABASE_ERROR_LOG_UNIQUE_ALIAS'), 'error');
-
-            // Save the data in the session.
-            //Note: It allows to preserve the data previously set by the user after the redirection.
-            $app->setUserState($this->option.'.edit.'.$this->context.'.data', $data);
-
-            $this->setRedirect(JRoute::_('index.php?option='.$this->option.'&view='.$this->view_item.$this->getRedirectToItemAppend($recordId, $urlVar), false));
-
-            return false;
-        }
-
-        //Update jform with the modified data.
-        $this->input->post->set('jform', $data);
-
-        $result = parent::save($key, $urlVar);
-
-        // If ok, redirect to the return page.
-        if ($result) {
-            $this->setRedirect($this->getReturnPage());
         }
 
         return $result;

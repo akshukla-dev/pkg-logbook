@@ -9,8 +9,7 @@ use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 
-
-JLoader::register('LogmoniterHelperAssociation', JPATH_SITE . '/components/com_logmoniter/helpers/association.php');
+JLoader::register('LogmoniterHelperAssociation', JPATH_SITE.'/components/com_logmoniter/helpers/association.php');
 
 /**
  * This models supports retrieving lists of watchdogs.
@@ -48,7 +47,7 @@ class LogmoniterModelWatchdogs extends JModelList
                 'ordering', 'wd.ordering',
                 'language', 'wd.language',
                 'hits', 'wd.hits',
-                'log_count', 'wd.log_count',
+                'logs', 'wd.log_count',
                 'latest_log_date', 'wd.latest_log_date',
                 'next-due_date', 'wd.next_due_date',
                 'publish_up', 'wd.publish_up',
@@ -206,7 +205,7 @@ class LogmoniterModelWatchdogs extends JModelList
             )
         );
 
-        $query->from('#__logbook_watchdogs AS w');
+        $query->from('#__logbook_watchdogs AS wd');
 
         $params = $this->getState('params');
         $orderby_sec = $params->get('orderby_sec');
@@ -233,9 +232,9 @@ class LogmoniterModelWatchdogs extends JModelList
             ->join('LEFT', '#__logbook_timeintervals AS ti ON ti.id = wd.tiid');
 
         // Join over the users for the author and modified_by names.
-        $query->select("CASE WHEN wd.created_by_alias > ' ' THEN wd.created_by_alias ELSE uw.name END AS author")
-            ->select('uw.email AS author_email')
-            ->join('LEFT', '#__users AS ua ON uw.id = wd.created_by')
+        $query->select("CASE WHEN wd.created_by_alias > ' ' THEN wd.created_by_alias ELSE ua.name END AS author")
+            ->select('ua.email AS author_email')
+            ->join('LEFT', '#__users AS ua ON ua.id = wd.created_by')
             ->join('LEFT', '#__users AS uam ON uam.id = wd.modified_by');
 
         // Join over the categories to get parent category titles
