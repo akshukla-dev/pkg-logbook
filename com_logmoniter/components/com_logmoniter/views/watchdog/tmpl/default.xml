@@ -23,7 +23,6 @@
 				new="true"
 				edit="true"
 				clear="true"
-				description="COM_LOGMONITER_FIELD_SELECT_WATCHDOG_DESC"
 			/>
 		</fieldset>
 	</fields>
@@ -250,18 +249,6 @@
 				<option value="1">JSHOW</option>
 				<option value="0">JHIDE</option>
 			</field>
-
-			<field
-				name="show_noauth"
-				type="list"
-				label="JGLOBAL_SHOW_UNAUTH_LINKS_LABEL"
-				description="JGLOBAL_SHOW_UNAUTH_LINKS_DESC"
-				useglobal="true"
-				>
-				<option value="1">JYES</option>
-				<option value="0">JNO</option>
-			</field>
-
 		</fieldset>
 	</fields>
 </metadata>

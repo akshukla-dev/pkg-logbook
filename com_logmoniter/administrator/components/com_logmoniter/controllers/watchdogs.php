@@ -1,10 +1,9 @@
 <?php
 /**
- * @copyright Copyright (c)2017 Amit Kumar Shukla
- * @license GNU General Public License version 3, or later
- * @contact akshukla.dev@gmail.com
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die; //No direct access to this file.
+defined('_JEXEC') or die;
 
 /**
  * Watchdogs list controller class.

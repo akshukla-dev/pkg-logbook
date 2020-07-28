@@ -6,10 +6,10 @@
     <creationDate>2020-07-19</creationDate>
     <author>Amit Kumar Shukla</author>
     <authorEmail>akshukla.dev@gmail.com</authorEmail>
-    <authorUrl>https://github.com/akshukla-dev/pkg-Logmoniter</authorUrl>
+    <authorUrl>https://github.com/akshukla-dev/pkg-logmoniter</authorUrl>
     <license>GPL 3.0</license>
     <!--  The version string is recorded in the components table -->
-    <version>1.0.10</version>
+    <version>2.0.0</version>
     <!-- The description is optional and defaults to the name -->
     <description>COM_LOGMONITER_INSTALLATION_DESC</description>
 
@@ -73,7 +73,7 @@
 		    <folder>helpers</folder>
 		    <folder>models</folder>
 		    <folder>sql</folder>
-		    <folder>tables</folder>
+			<folder>tables</folder>
 		    <folder>views</folder>
 	    </files>
 		<languages folder="administrator/language">

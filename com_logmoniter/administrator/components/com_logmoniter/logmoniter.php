@@ -1,27 +1,17 @@
 <?php
 /**
- *
- * @copyright Copyright (c)2020 Amit Kumar Shukla
- * @license GNU General Public License version 3, or later
- *
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+defined('_JEXEC') or die;
+JHtml::_('behavior.tabstate');
 
-
-defined('_JEXEC') or die; // No direct access.
-
-//Check against the user permissions.
-if(!JFactory::getUser()->authorise('core.manage', 'com_logmoniter')) {
-  JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
-  return false;
+if (!JFactory::getUser()->authorise('core.manage', 'com_logmoniter')) {
+    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
+JLoader::register('LogmoniterHelper', __DIR__.'/helpers/logmoniter.php');
+
 $controller = JControllerLegacy::getInstance('Logmoniter');
-
-//Execute the requested task (set in the url).
-//If no task is set then the "display' task will be executed.
 $controller->execute(JFactory::getApplication()->input->get('task'));
-
 $controller->redirect();
-
-
-
