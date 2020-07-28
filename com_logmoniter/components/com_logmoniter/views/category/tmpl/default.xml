@@ -14,7 +14,7 @@
 		<fieldset name="request"
 			addfieldpath="/administrator/components/com_categories/models/fields"
 		>
-			<field 
+			<field
 				name="id"
 				type="modal_category"
 				label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
@@ -42,8 +42,8 @@
 	<fields name="params">
 		<fieldset name="basic" label="JGLOBAL_CATEGORY_OPTIONS">
 
-			<field 
-				name="show_category_title" 
+			<field
+				name="show_category_title"
 				type="list"
 				label="JGLOBAL_SHOW_CATEGORY_TITLE"
 				description="JGLOBAL_SHOW_CATEGORY_TITLE_DESC"
@@ -54,8 +54,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_description" 
+			<field
+				name="show_description"
 				type="list"
 				label="JGLOBAL_SHOW_CATEGORY_DESCRIPTION_LABEL"
 				description="JGLOBAL_SHOW_CATEGORY_DESCRIPTION_DESC"
@@ -66,8 +66,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_description_image" 
+			<field
+				name="show_description_image"
 				type="list"
 				label="JGLOBAL_SHOW_CATEGORY_IMAGE_LABEL"
 				description="JGLOBAL_SHOW_CATEGORY_IMAGE_DESC"
@@ -78,8 +78,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="maxLevel" 
+			<field
+				name="maxLevel"
 				type="list"
 				label="JGLOBAL_MAXLEVEL_LABEL"
 				description="JGLOBAL_MAXLEVEL_DESC"
@@ -94,8 +94,8 @@
 				<option value="5">J5</option>
 			</field>
 
-			<field 
-				name="show_empty_categories" 
+			<field
+				name="show_empty_categories"
 				type="list"
 				label="JGLOBAL_SHOW_EMPTY_CATEGORIES_LABEL"
 				description="COM_LOGMONITER_SHOW_EMPTY_CATEGORIES_DESC"
@@ -106,8 +106,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_no_watchdogs" 
+			<field
+				name="show_no_watchdogs"
 				type="list"
 				label="COM_LOGMONITER_NO_WATCHDOGS_LABEL"
 				description="COM_LOGMONITER_NO_WATCHDOGS_DESC"
@@ -118,7 +118,7 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
+			<field
 				name="show_category_heading_title_text"
 				type="list"
 				label="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_LABEL"
@@ -130,8 +130,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_subcat_desc" 
+			<field
+				name="show_subcat_desc"
 				type="list"
 				label="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_LABEL"
 				description="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_DESC"
@@ -142,8 +142,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_cat_num_watchdogs" 
+			<field
+				name="show_cat_num_watchdogs"
 				type="list"
 				label="COM_LOGMONITER_NUMBER_CATEGORY_ITEMS_LABEL"
 				description="COM_LOGMONITER_NUMBER_CATEGORY_ITEMS_DESC"
@@ -154,8 +154,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_cat_tags" 
+			<field
+				name="show_cat_tags"
 				type="list"
 				label="COM_LOGMONITER_FIELD_SHOW_CAT_TAGS_LABEL"
 				description="COM_LOGMONITER_FIELD_SHOW_CAT_TAGS_DESC"
@@ -166,8 +166,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="page_subheading" 
+			<field
+				name="page_subheading"
 				type="text"
 				label="JGLOBAL_SUBHEADING_LABEL"
 				description="JGLOBAL_SUBHEADING_DESC"
@@ -177,8 +177,8 @@
 		</fieldset>
 
 		<fieldset name="advanced" label="JGLOBAL_LIST_LAYOUT_OPTIONS">
-			<field 
-				name="show_pagination_limit" 
+			<field
+				name="show_pagination_limit"
 				type="list"
 				label="JGLOBAL_DISPLAY_SELECT_LABEL"
 				description="JGLOBAL_DISPLAY_SELECT_DESC"
@@ -189,8 +189,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="filter_field" 
+			<field
+				name="filter_field"
 				type="list"
 				label="JGLOBAL_FILTER_FIELD_LABEL"
 				description="JGLOBAL_FILTER_FIELD_DESC"
@@ -204,8 +204,8 @@
 	 			<option value="month">JMONTH_PUBLISHED</option>
 			</field>
 
-			<field 
-				name="show_headings" 
+			<field
+				name="show_headings"
 				type="list"
 				label="JGLOBAL_SHOW_HEADINGS_LABEL"
 				description="JGLOBAL_SHOW_HEADINGS_DESC"
@@ -216,8 +216,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="list_show_date" 
+			<field
+				name="list_show_date"
 				type="list"
 				label="JGLOBAL_SHOW_DATE_LABEL"
 				description="JGLOBAL_SHOW_DATE_DESC"
@@ -231,8 +231,8 @@
 				<option value="next_due_date">'Next due date'</option>
 			</field>
 
-			<field 
-				name="date_format" 
+			<field
+				name="date_format"
 				type="text"
 				label="JGLOBAL_DATE_FORMAT_LABEL"
 				description="JGLOBAL_DATE_FORMAT_DESC"
@@ -240,8 +240,8 @@
 				useglobal="true"
 			/>
 
-			<field 
-				name="list_show_hits" 
+			<field
+				name="list_show_hits"
 				type="list"
 				label="JGLOBAL_LIST_HITS_LABEL"
 				description="JGLOBAL_LIST_HITS_DESC"
@@ -252,8 +252,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="list_show_logs" 
+			<field
+				name="list_show_logs"
 				type="list"
 				label="JGLOBAL_LIST_LOGS_LABEL"
 				description="JGLOBAL_LIST_LOGS_DESC"
@@ -264,8 +264,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="list_show_author" 
+			<field
+				name="list_show_author"
 				type="list"
 				label="JGLOBAL_LIST_AUTHOR_LABEL"
 				description="JGLOBAL_LIST_AUTHOR_DESC"
@@ -282,8 +282,8 @@
 				hr="true"
 			/>
 
-			<field 
-				name="orderby_pri" 
+			<field
+				name="orderby_pri"
 				type="list"
 				label="JGLOBAL_CATEGORY_ORDER_LABEL"
 				description="JGLOBAL_CATEGORY_ORDER_DESC"
@@ -295,10 +295,10 @@
 				<option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
 			</field>
 
-			<field 
-				name="orderby_sec" 
+			<field
+				name="orderby_sec"
 				type="list"
-				label="JGLOBAL_WATCHDOG_ORDER_LABEL"
+				label="COM_LOGMONITER_WATCHDOG_ORDER_LABEL"
 				description="JGLOBAL_WATCHDOG_ORDER_DESC"
 				useglobal="true"
 				>
@@ -320,8 +320,8 @@
 				<option value="rrank" requires="vote">JGLOBAL_RATINGS_ASC</option>
 			</field>
 
-			<field 
-				name="order_date" 
+			<field
+				name="order_date"
 				type="list"
 				label="JGLOBAL_ORDERING_DATE_LABEL"
 				description="JGLOBAL_ORDERING_DATE_DESC"
@@ -332,8 +332,8 @@
 				<option value="published">JPUBLISHED</option>
 			</field>
 
-			<field 
-				name="show_pagination" 
+			<field
+				name="show_pagination"
 				type="list"
 				label="JGLOBAL_PAGINATION_LABEL"
 				description="JGLOBAL_PAGINATION_DESC"
@@ -345,8 +345,8 @@
 				<option value="2">JGLOBAL_AUTO</option>
 			</field>
 
-			<field 
-				name="show_pagination_results" 
+			<field
+				name="show_pagination_results"
 				type="list"
 				label="JGLOBAL_PAGINATION_RESULTS_LABEL"
 				description="JGLOBAL_PAGINATION_RESULTS_DESC"
@@ -357,8 +357,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="display_num" 
+			<field
+				name="display_num"
 				type="list"
 				label="JGLOBAL_NUMBER_ITEMS_LIST_LABEL"
 				description="JGLOBAL_NUMBER_ITEMS_LIST_DESC"
@@ -388,8 +388,8 @@
 				view="watchdog"
 			/>
 
-			<field 
-				name="show_title" 
+			<field
+				name="show_title"
 				type="list"
 				label="JGLOBAL_SHOW_TITLE_LABEL"
 				description="JGLOBAL_SHOW_TITLE_DESC"
@@ -400,8 +400,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="link_titles" 
+			<field
+				name="link_titles"
 				type="list"
 				label="JGLOBAL_LINKED_TITLES_LABEL"
 				description="JGLOBAL_LINKED_TITLES_DESC"
@@ -412,8 +412,8 @@
 				<option value="1">JYES</option>
 			</field>
 
-			<field 
-				name="show_category" 
+			<field
+				name="show_category"
 				type="list"
 				label="JGLOBAL_SHOW_CATEGORY_LABEL"
 				description="JGLOBAL_SHOW_CATEGORY_DESC"
@@ -424,20 +424,20 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="link_category" 
+			<field
+				name="link_category"
 				type="list"
 				label="JGLOBAL_LINK_CATEGORY_LABEL"
 				description="JGLOBAL_LINK_CATEGORY_DESC"
 				useglobal="true"
-				class="chzn-color"				
+				class="chzn-color"
 				>
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
 
-			<field 
-				name="show_parent_category" 
+			<field
+				name="show_parent_category"
 				type="list"
 				label="JGLOBAL_SHOW_PARENT_CATEGORY_LABEL"
 				description="JGLOBAL_SHOW_PARENT_CATEGORY_DESC"
@@ -448,8 +448,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="link_parent_category" 
+			<field
+				name="link_parent_category"
 				type="list"
 				label="JGLOBAL_LINK_PARENT_CATEGORY_LABEL"
 				description="JGLOBAL_LINK_PARENT_CATEGORY_DESC"
@@ -459,7 +459,7 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-			
+
 			<field
 				name="show_associations"
 				type="list"
@@ -472,8 +472,8 @@
 				<option value="0">JHIDE</option>
 			</field>
 
-			<field 
-				name="show_author" 
+			<field
+				name="show_author"
 				type="list"
 				label="JGLOBAL_SHOW_AUTHOR_LABEL"
 				description="JGLOBAL_SHOW_AUTHOR_DESC"
@@ -484,8 +484,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="link_author" 
+			<field
+				name="link_author"
 				type="list"
 				label="JGLOBAL_LINK_AUTHOR_LABEL"
 				description="JGLOBAL_LINK_AUTHOR_DESC"
@@ -496,8 +496,8 @@
 				<option value="1">JYES</option>
 			</field>
 
-			<field 
-				name="show_create_date" 
+			<field
+				name="show_create_date"
 				type="list"
 				label="JGLOBAL_SHOW_CREATE_DATE_LABEL"
 				description="JGLOBAL_SHOW_CREATE_DATE_DESC"
@@ -508,8 +508,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_modify_date" 
+			<field
+				name="show_modify_date"
 				type="list"
 				label="JGLOBAL_SHOW_MODIFY_DATE_LABEL"
 				description="JGLOBAL_SHOW_MODIFY_DATE_DESC"
@@ -520,8 +520,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_publish_date" 
+			<field
+				name="show_publish_date"
 				type="list"
 				label="JGLOBAL_SHOW_PUBLISH_DATE_LABEL"
 				description="JGLOBAL_SHOW_PUBLISH_DATE_DESC"
@@ -532,8 +532,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_item_navigation" 
+			<field
+				name="show_item_navigation"
 				type="list"
 				label="JGLOBAL_SHOW_NAVIGATION_LABEL"
 				description="JGLOBAL_SHOW_NAVIGATION_DESC"
@@ -544,9 +544,9 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			
-			<field 
-				name="show_icons" 
+
+			<field
+				name="show_icons"
 				type="list"
 				label="JGLOBAL_SHOW_ICONS_LABEL"
 				description="JGLOBAL_SHOW_ICONS_DESC"
@@ -557,8 +557,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_print_icon" 
+			<field
+				name="show_print_icon"
 				type="list"
 				label="JGLOBAL_SHOW_PRINT_ICON_LABEL"
 				description="JGLOBAL_SHOW_PRINT_ICON_DESC"
@@ -569,8 +569,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_email_icon" 
+			<field
+				name="show_email_icon"
 				type="list"
 				label="JGLOBAL_SHOW_EMAIL_ICON_LABEL"
 				description="JGLOBAL_SHOW_EMAIL_ICON_DESC"
@@ -581,8 +581,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_hits" 
+			<field
+				name="show_hits"
 				type="list"
 				label="JGLOBAL_SHOW_HITS_LABEL"
 				description="JGLOBAL_SHOW_HITS_DESC"
@@ -593,8 +593,8 @@
 				<option value="1">JSHOW</option>
 			</field>
 
-			<field 
-				name="show_noauth" 
+			<field
+				name="show_noauth"
 				type="list"
 				label="JGLOBAL_SHOW_UNAUTH_LINKS_LABEL"
 				description="JGLOBAL_SHOW_UNAUTH_LINKS_DESC"

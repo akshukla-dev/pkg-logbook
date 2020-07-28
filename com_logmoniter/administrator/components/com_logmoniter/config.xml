@@ -774,7 +774,7 @@
 		<field
 			name="orderby_sec"
 			type="list"
-			label="JGLOBAL_WATCHDOG_ORDER_LABEL"
+			label="COM_LOGMONITER_WATCHDOG_ORDER_LABEL"
 			description="JGLOBAL_WATCHDOG_ORDER_DESC"
 			default="rdate"
 		>

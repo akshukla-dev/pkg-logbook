@@ -70,16 +70,16 @@ class LogmoniterViewWatchdogs extends JViewLegacy
      */
     public function display($tpl = null)
     {
-        if ($this->getLayout() !== 'modal') {
-            LogmoniterHelper::addSubmenu('watchdogs');
-        }
-
         $this->items = $this->get('Items');
         $this->pagination = $this->get('Pagination');
         $this->state = $this->get('State');
         $this->authors = $this->get('Authors');
         $this->filterForm = $this->get('FilterForm');
         $this->activeFilters = $this->get('ActiveFilters');
+
+        if ($this->getLayout() !== 'modal') {
+            LogmoniterHelper::addSubmenu('watchdogs');
+        }
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
@@ -125,7 +125,7 @@ class LogmoniterViewWatchdogs extends JViewLegacy
         // Get the toolbar object instance
         $bar = JToolbar::getInstance('toolbar');
 
-        JToolbarHelper::title(JText::_('COM_LOGMONITER_WATCHDOGS_TITLE'), 'stack watchdog');
+        JToolbarHelper::title(JText::_('COM_LOGMONITER_WATCHDOGS_TITLE'), 'stack watchdogs');
 
         if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_logmoniter', 'core.create')) > 0) {
             JToolbarHelper::addNew('watchdog.add');
@@ -142,10 +142,17 @@ class LogmoniterViewWatchdogs extends JViewLegacy
             JToolbarHelper::checkin('watchdogs.checkin');
         }
 
+        if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
+            JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'watchdogs.delete', 'JTOOLBAR_EMPTY_TRASH');
+        } elseif ($canDo->get('core.edit.state')) {
+            JToolbarHelper::trash('watchdogs.trash');
+        }
+
         // Add a batch button
         if ($user->authorise('core.create', 'com_logmoniter')
             && $user->authorise('core.edit', 'com_logmoniter')
             && $user->authorise('core.edit.state', 'com_logmoniter')) {
+            JHtml::_('bootstrap.modal', 'collapseModal');
             $title = JText::_('JTOOLBAR_BATCH');
 
             // Instantiate a new JLayoutFile instance and render the batch button
@@ -153,12 +160,6 @@ class LogmoniterViewWatchdogs extends JViewLegacy
 
             $dhtml = $layout->render(array('title' => $title));
             $bar->appendButton('Custom', $dhtml, 'batch');
-        }
-
-        if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete')) {
-            JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'watchdogs.delete', 'JTOOLBAR_EMPTY_TRASH');
-        } elseif ($canDo->get('core.edit.state')) {
-            JToolbarHelper::trash('watchdogs.trash');
         }
 
         if ($user->authorise('core.admin', 'com_logmoniter') || $user->authorise('core.options', 'com_logmoniter')) {

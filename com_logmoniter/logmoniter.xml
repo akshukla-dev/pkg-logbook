@@ -52,10 +52,10 @@
 	    <submenu>
 
 	      <menu link="option=com_logmoniter" view="watchdogs"
-	      alt="Okeydoc/Documents">COM_LOGMONITER_SUBMENU_WATCHDOGS</menu>
+	      alt="LMI-Log Moniter/Watchdog">COM_LOGMONITER_SUBMENU_WATCHDOGS</menu>
 
 	      <menu link="option=com_categories&amp;extension=com_logmoniter" view="categories"
-		    alt="Okeydoc/Categories">COM_LOGMONITER_SUBMENU_CATEGORIES</menu>
+		    alt="LMI-Log Moniter/Categories">COM_LOGMONITER_SUBMENU_CATEGORIES</menu>
 
 	    </submenu>
 	    <!-- Administration Main File Copy Section -->

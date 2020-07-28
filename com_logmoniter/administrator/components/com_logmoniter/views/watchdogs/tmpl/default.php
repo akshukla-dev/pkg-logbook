@@ -95,10 +95,10 @@ $assoc = JLanguageAssociations::isEnabled();
                             <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_DATE_'.strtoupper($orderingColumn), 'wd.'.$orderingColumn, $listDirn, $listOrder); ?>
                         </th>
                         <th width="10%" class="nowrap hidden-phone">
-                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_DATE_LATEST_LOG_DATE', 'wd.latest_log_date', $listDirn, $listOrder); ?>
+                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_LATEST_LOG_DATE', 'wd.latest_log_date', $listDirn, $listOrder); ?>
                         </th>
                         <th width="10%" class="nowrap hidden-phone">
-                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_DATE_NEXT_DUE_DATE', 'wd.next_due_date', $listDirn, $listOrder); ?>
+                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_NEXT_DUE_DATE', 'wd.next_due_date', $listDirn, $listOrder); ?>
                         </th>
                         <th width="1%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_HITS', 'wd.hits', $listDirn, $listOrder); ?>
@@ -176,13 +176,19 @@ $assoc = JLanguageAssociations::isEnabled();
                                 <div class="small">
                                     <?php echo JText::_('JCATEGORY').': '.$this->escape($item->category_title); ?>
                                 </div>
-                                <div class="small">
+                                <div class="small info">
                                     <?php echo JText::_('COM_LOGMONITER_INSET').': '.$this->escape($item->inset_title); ?>
                                 </div>
-                                <div class="small">
+                                <div class="small message">
                                     <?php echo JText::_('COM_LOGMONITER_BPRINT').': '.$this->escape($item->bprint_title); ?>
                                 </div>
                             </div>
+                        </td>
+						<td class="small hidden-phone">
+                            <?php echo $this->escape($item->wcenter_title); ?>
+                        </td>
+						<td class="small hidden-phone">
+                            <?php echo $this->escape($item->tinterval_title); ?>
                         </td>
                         <td class="small hidden-phone">
                             <?php echo $this->escape($item->access_level); ?>
