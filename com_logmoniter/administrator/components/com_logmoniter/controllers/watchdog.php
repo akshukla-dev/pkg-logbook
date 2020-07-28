@@ -33,12 +33,12 @@ class LogmoniterControllerWatchdog extends JControllerForm
             $allow = JFactory::getUser()->authorise('core.create', 'com_logmoniter.category.'.$categoryId);
         }
 
-        if ($allow === null) {
-            // In the absense of better information, revert to the component permissions.
-            return parent::allowAdd();
+        if ($allow !== null) {
+            return $allow;
         }
 
-        return $allow;
+        // In the absense of better information, revert to the component permissions.
+        return parent::allowAdd($data);
     }
 
     /**
@@ -54,32 +54,30 @@ class LogmoniterControllerWatchdog extends JControllerForm
     protected function allowEdit($data = array(), $key = 'id')
     {
         $recordId = (int) isset($data[$key]) ? $data[$key] : 0;
-        $user = JFactory::getUser();
 
         // Zero record (id:0), return component edit permission by calling parent controller method
         if (!$recordId) {
             return parent::allowEdit($data, $key);
         }
 
-        // Check edit on the record asset (explicit or inherited)
-        if ($user->authorise('core.edit', 'com_logmoniter.watchdog.'.$recordId)) {
-            return true;
+        // Get the item.
+        $item = $this->getModel()->getItem($recordId);
+
+        // Get the item.
+        $item = $this->getModel()->getItem($recordId);
+
+        // Since there is no item, return false.
+        if (empty($item)) {
+            return false;
         }
 
-        // Check edit own on the record asset (explicit or inherited)
-        if ($user->authorise('core.edit.own', 'com_logmoniter.watchdog.'.$recordId)) {
-            // Existing record already has an owner, get it
-            $record = $this->getModel()->getItem($recordId);
+        $user = JFactory::getUser();
 
-            if (empty($record)) {
-                return false;
-            }
+        // Check if can edit own core.edit.own.
+        $canEditOwn = $user->authorise('core.edit.own', $this->option.'.category.'.(int) $item->catid) && $item->created_by == $user->id;
 
-            // Grant if current user is owner of the record
-            return $user->id == $record->created_by;
-        }
-
-        return false;
+        // Check the category core.edit permissions.
+        return $canEditOwn || $user->authorise('core.edit', $this->option.'.category.'.(int) $item->catid);
     }
 
     /**

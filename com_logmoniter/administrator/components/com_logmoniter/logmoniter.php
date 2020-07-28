@@ -10,7 +10,7 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_logmoniter')) {
     throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
-JLoader::register('LogmoniterHelper', __DIR__.'/helpers/logmoniter.php');
+//JLoader::register('LogmoniterHelper', __DIR__.'/helpers/logmoniter.php');
 
 $controller = JControllerLegacy::getInstance('Logmoniter');
 $controller->execute(JFactory::getApplication()->input->get('task'));

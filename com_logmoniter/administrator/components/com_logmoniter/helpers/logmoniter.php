@@ -12,8 +12,6 @@ defined('_JEXEC') or die; //No direct access to this file.
  */
 class LogmoniterHelper extends JHelperContent
 {
-    public static $extension = 'com_logmoniter';
-
     /**
      * Configure the Linkbar.
      *
@@ -24,15 +22,15 @@ class LogmoniterHelper extends JHelperContent
     public static function addSubmenu($viewName)
     {
         JHtmlSidebar::addEntry(
-        JText::_('COM_LOGMONITER_SUBMENU_WATCHDOGS'),
-        'index.php?option=com_logmoniter&view=watchdogs',
-        $viewName == 'watchdogs'
-    );
+            JText::_('COM_LOGMONITER_SUBMENU_WATCHDOGS'),
+            'index.php?option=com_logmoniter&view=watchdogs',
+            $viewName == 'watchdogs'
+        );
         JHtmlSidebar::addEntry(
-        JText::_('COM_LOGMONITER_SUBMENU_CATEGORIES'),
-        'index.php?option=com_categories&extension=com_logmoniter',
-        $viewName == 'categories'
-    );
+            JText::_('COM_LOGMONITER_SUBMENU_CATEGORIES'),
+            'index.php?option=com_categories&extension=com_logmoniter',
+            $viewName == 'categories'
+        );
     }
 
     /**
@@ -119,11 +117,11 @@ class LogmoniterHelper extends JHelperContent
             $item->count_published = 0;
             $query = $db->getQuery(true);
             $query->select($state.', count(*) AS count')
-        ->from($db->qn('#__contentitem_tag_map').'AS ct ')
-        ->where('ct.tag_id = '.(int) $item->id)
-        ->where('ct.type_alias ='.$db->q($extension))
-        ->join('LEFT', $join)
-        ->group('state');
+                ->from($db->qn('#__contentitem_tag_map').'AS ct ')
+                ->where('ct.tag_id = '.(int) $item->id)
+                ->where('ct.type_alias ='.$db->q($extension))
+                ->join('LEFT', $join)
+                ->group('state');
             $db->setQuery($query);
             $contents = $db->loadObjectList();
 

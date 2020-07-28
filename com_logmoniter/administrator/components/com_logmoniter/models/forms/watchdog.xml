@@ -318,7 +318,6 @@
 				label="COM_LOGMONITER_FIELD_LATEST_LOG_DATE_LABEL"
 				description="COM_LOGMONITER_FIELD_LATEST_LOG_DATE_DESC"
 				translateformat="true"
-				id="latest_log_date"
 				filter="user_utc"
 				readonly="true"
 			/>
@@ -330,7 +329,6 @@
 				label="COM_LOGMONITER_FIELD_NEXT_DUE_DATE_LABEL"
 				description="COM_LOGMONITER_FIELD_NEXT_DUE_DATE_DESC"
 				translateformat="true"
-				id="latest_log_date"
 				filter="user_utc"
 			/>
 

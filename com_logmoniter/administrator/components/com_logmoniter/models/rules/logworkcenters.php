@@ -14,7 +14,7 @@ jimport('joomla.form.formrule');
 /**
  * Form Rule class for the Joomla Framework.
  */
-class JFormRuleLogWorkcenters extends JFormRule
+class JFormRuleLogworkcenters extends JFormRule
 {
     /**
      * The regular expression.

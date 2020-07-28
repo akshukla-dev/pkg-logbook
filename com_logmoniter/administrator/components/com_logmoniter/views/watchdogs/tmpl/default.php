@@ -70,13 +70,7 @@ $assoc = JLanguageAssociations::isEnabled();
                         <th style="min-width:100px" class="nowrap">
                             <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'wd.title', $listDirn, $listOrder); ?>
                         </th>
-                        <th style="min-width:100px" class="nowrap">
-                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_WCENTER', 'wd.wcenter_title', $listDirn, $listOrder); ?>
-                        </th>
-                        <th style="min-width:100px" class="nowrap">
-                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_TINTERVAL', 'wd.tinterval_title', $listDirn, $listOrder); ?>
-                        </th>
-                        <th width="10%" class="nowrap hidden-phone">
+                        <th width="5%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'wd.access', $listDirn, $listOrder); ?>
                         </th>
                         <?php if ($assoc) : ?>
@@ -85,20 +79,14 @@ $assoc = JLanguageAssociations::isEnabled();
                                 <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_ASSOCIATION', 'association', $listDirn, $listOrder); ?>
                             </th>
                         <?php endif; ?>
-                        <th width="10%" class="nowrap hidden-phone">
+                        <th width="5%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'JAUTHOR', 'wd.created_by', $listDirn, $listOrder); ?>
                         </th>
-                        <th width="10%" class="nowrap hidden-phone">
+                        <th width="5%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_LANGUAGE', 'language', $listDirn, $listOrder); ?>
                         </th>
-                        <th width="10%" class="nowrap hidden-phone">
+                        <th width="5%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_DATE_'.strtoupper($orderingColumn), 'wd.'.$orderingColumn, $listDirn, $listOrder); ?>
-                        </th>
-                        <th width="10%" class="nowrap hidden-phone">
-                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_LATEST_LOG_DATE', 'wd.latest_log_date', $listDirn, $listOrder); ?>
-                        </th>
-                        <th width="10%" class="nowrap hidden-phone">
-                            <?php echo JHtml::_('searchtools.sort', 'COM_LOGMONITER_HEADING_NEXT_DUE_DATE', 'wd.next_due_date', $listDirn, $listOrder); ?>
                         </th>
                         <th width="1%" class="nowrap hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_HITS', 'wd.hits', $listDirn, $listOrder); ?>
@@ -176,19 +164,31 @@ $assoc = JLanguageAssociations::isEnabled();
                                 <div class="small">
                                     <?php echo JText::_('JCATEGORY').': '.$this->escape($item->category_title); ?>
                                 </div>
-                                <div class="small info">
+                                <div class="small">
                                     <?php echo JText::_('COM_LOGMONITER_INSET').': '.$this->escape($item->inset_title); ?>
                                 </div>
-                                <div class="small message">
+                                <div class="small">
                                     <?php echo JText::_('COM_LOGMONITER_BPRINT').': '.$this->escape($item->bprint_title); ?>
                                 </div>
+                                <div class="small">
+                                    <?php echo JText::_('COM_LOGMONITER_WCENTER').': '.$this->escape($item->wcenter_title); ?>
+                                </div>
+                                <div class="small">
+                                    <?php echo JText::_('COM_LOGMONITER_TINTERVAL').': '.$this->escape($item->tinterval_title); ?>
+                                </div>
+                                <div class="small">
+                                    <?php
+                                        $date = $item->latest_log_date;
+                                        echo $date > 0 ? JText::_('COM_LOGMONITER_LATEST_LOG_DATE').': '.JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : JText::_('COM_LOGMONITER_LATEST_LOG_DATE').': '.'-';
+                                    ?>
+                                </div>
+                                <div class="small">
+                                    <?php
+                                            $date = $item->next_due_date;
+                                            echo $date > 0 ? JText::_('COM_LOGMONITER_NEXT_DUE_DATE').': '.JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : JText::_('COM_LOGMONITER_NEXT_DUE_DATE').': '.'-';
+                                        ?>
+                                    </div>
                             </div>
-                        </td>
-						<td class="small hidden-phone">
-                            <?php echo $this->escape($item->wcenter_title); ?>
-                        </td>
-						<td class="small hidden-phone">
-                            <?php echo $this->escape($item->tinterval_title); ?>
                         </td>
                         <td class="small hidden-phone">
                             <?php echo $this->escape($item->access_level); ?>
@@ -216,18 +216,6 @@ $assoc = JLanguageAssociations::isEnabled();
                         <td class="nowrap small hidden-phone">
                             <?php
                             $date = $item->{$orderingColumn};
-                            echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : '-';
-                            ?>
-                        </td>
-                        <td class="nowrap small hidden-phone">
-                            <?php
-                            $date = $item->latest_log_date;
-                            echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : '-';
-                            ?>
-                        </td>
-                        <td class="nowrap small hidden-phone">
-                            <?php
-                            $date = $item->next_due_date;
                             echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : '-';
                             ?>
                         </td>

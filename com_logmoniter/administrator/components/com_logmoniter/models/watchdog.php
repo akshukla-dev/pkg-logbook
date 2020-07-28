@@ -150,13 +150,15 @@ class LogmoniterModelWatchdog extends JModelAdmin
     {
         if (!empty($record->id)) {
             if ($record->state != -2) {
-                return false;
+                return;
             }
 
-            return JFactory::getUser()->authorise('core.delete', 'com_logmoniter.watchdog.'.(int) $record->id);
-        }
+            if ($record->catid) {
+                return JFactory::getUser()->authorise('core.delete', 'com_logmoniter.category.'.(int) $record->catid);
+            }
 
-        return false;
+            return parent::canDelete($record);
+        }
     }
 
     /**
@@ -170,19 +172,10 @@ class LogmoniterModelWatchdog extends JModelAdmin
      */
     protected function canEditState($record)
     {
-        $user = JFactory::getUser();
-
-        // Check for existing watchdog.
-        if (!empty($record->id)) {
-            return $user->authorise('core.edit.state', 'com_logmoniter.watchdog.'.(int) $record->id);
-        }
-
-        // New watchdog, so check against the category.
         if (!empty($record->catid)) {
-            return $user->authorise('core.edit.state', 'com_logmoniter.category.'.(int) $record->catid);
+            return JFactory::getUser()->authorise('core.edit.state', 'com_logmoniter.category.'.(int) $record->catid);
         }
 
-        // Default to component settings if neither watchdog nor category known.
         return parent::canEditState($record);
     }
 
@@ -262,24 +255,24 @@ class LogmoniterModelWatchdog extends JModelAdmin
             $registry = new Registry($item->metadata);
             $item->metadata = $registry->toArray();
 
+            // Load associated content items
+            $assoc = JLanguageAssociations::isEnabled();
+
+            if ($assoc) {
+                $item->associations = array();
+
+                if ($item->id != null) {
+                    $associations = JLanguageAssociations::getAssociations('com_logmoniter', '#__logbook_watchdogs', 'com_logmoniter.item', $item->id);
+
+                    foreach ($associations as $tag => $association) {
+                        $item->associations[$tag] = $association->id;
+                    }
+                }
+            }
+
             if (!empty($item->id)) {
                 $item->tags = new JHelperTags();
                 $item->tags->getTagIds($item->id, 'com_logmoniter.watchdog');
-            }
-        }
-
-        // Load associated content items
-        $assoc = JLanguageAssociations::isEnabled();
-
-        if ($assoc) {
-            $item->associations = array();
-
-            if ($item->id != null) {
-                $associations = JLanguageAssociations::getAssociations('com_logmoniter', '#__logbook_watchdogs', 'com_logmoniter.item', $item->id);
-
-                foreach ($associations as $tag => $association) {
-                    $item->associations[$tag] = $association->id;
-                }
             }
         }
 
@@ -307,13 +300,8 @@ class LogmoniterModelWatchdog extends JModelAdmin
 
         // Determine correct permissions to check.
         if ($this->getState('watchdog.id')) {
-            $id = $this->getState('watchdog.id');
-
             // Existing record. Can only edit in selected categories.
             $form->setFieldAttribute('catid', 'action', 'core.edit');
-
-            // Existing record. Can only edit own watchdogs in selected categories.
-            $form->setFieldAttribute('catid', 'action', 'core.edit.own');
         } else {
             // New record. Can only create in selected categories.
             $form->setFieldAttribute('catid', 'action', 'core.create');
