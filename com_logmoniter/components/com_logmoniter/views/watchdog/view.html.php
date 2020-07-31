@@ -187,7 +187,7 @@ class LogmoniterViewWatchdog extends JViewLegacy
         if ($menu) {
             $this->params->def('page_heading', $this->params->get('page_title', $menu->title));
         } else {
-            $this->params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
+            $this->params->def('page_heading', JText::_('JGLOBAL_WATCHDOGS'));
         }
 
         $title = $this->params->get('page_title', '');

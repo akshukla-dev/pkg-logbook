@@ -47,8 +47,11 @@ class LogmoniterViewMoniter extends JViewLegacy
         JPluginHelper::importPlugin('content');
 
         foreach ($items as $item) {
+            $item->slug = $item->alias ? ($item->id.':'.$item->alias) : $item->id;
             $item->catslug = $item->category_alias ? ($item->catid.':'.$item->category_alias) : $item->catid;
             $item->parent_slug = $item->parent_alias ? ($item->parent_id.':'.$item->parent_alias) : $item->parent_id;
+
+            JFactory::getApplication()->enqueueMessage('Moniter view .html. php item slug ; '.$item->slug);
 
             // No link for ROOT category
             if ($item->parent_alias === 'root') {
@@ -75,7 +78,7 @@ class LogmoniterViewMoniter extends JViewLegacy
 
         // Month Field
         $months = array(
-            '' => JText::_('COM_CONTENT_MONTH'),
+            '' => JText::_('COM_LOGMONITER_MONTH'),
             '01' => JText::_('JANUARY_SHORT'),
             '02' => JText::_('FEBRUARY_SHORT'),
             '03' => JText::_('MARCH_SHORT'),
@@ -208,7 +211,7 @@ class LogmoniterViewMoniter extends JViewLegacy
         if ($menu) {
             $this->params->def('page_heading', $this->params->get('page_title', $menu->title));
         } else {
-            $this->params->def('page_heading', JText::_('JGLOBAL_ARTICLES'));
+            $this->params->def('page_heading', JText::_('JGLOBAL_WATCHDOGS'));
         }
 
         $title = $this->params->get('page_title', '');

@@ -44,20 +44,20 @@
 		<field
 			name="info_block_position"
 			type="list"
-			label="COM_CONTENT_FIELD_INFOBLOCK_POSITION_LABEL"
-			description="COM_CONTENT_FIELD_INFOBLOCK_POSITION_DESC"
+			label="COM_LOGMONITER_FIELD_INFOBLOCK_POSITION_LABEL"
+			description="COM_LOGMONITER_FIELD_INFOBLOCK_POSITION_DESC"
 			default="0"
 			>
-			<option value="0">COM_CONTENT_FIELD_OPTION_ABOVE</option>
-			<option value="1">COM_CONTENT_FIELD_OPTION_BELOW</option>
-			<option value="2">COM_CONTENT_FIELD_OPTION_SPLIT</option>
+			<option value="0">COM_LOGMONITER_FIELD_OPTION_ABOVE</option>
+			<option value="1">COM_LOGMONITER_FIELD_OPTION_BELOW</option>
+			<option value="2">COM_LOGMONITER_FIELD_OPTION_SPLIT</option>
 		</field>
 
 		<field
 			name="info_block_show_title"
 			type="radio"
-			label="COM_CONTENT_FIELD_INFOBLOCK_TITLE_LABEL"
-			description="COM_CONTENT_FIELD_INFOBLOCK_TITLE_DESC"
+			label="COM_LOGMONITER_FIELD_INFOBLOCK_TITLE_LABEL"
+			description="COM_LOGMONITER_FIELD_INFOBLOCK_TITLE_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
 			>

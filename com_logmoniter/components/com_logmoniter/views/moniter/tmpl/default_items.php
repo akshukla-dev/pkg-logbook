@@ -55,9 +55,9 @@ $params = $this->params;
             );
         ?>
         <?php // if ($useDefList && ($info == 0 || $info == 2)) :?>
-            <div class="article-info message">
-                <dl class="article-info">
-                <dt class="article-info-term">
+            <div class="watchdog-info message">
+                <dl class="watchdog-info">
+                <dt class="watchdog-info-term">
                     <?php echo JText::_('COM_LOGMONITER_WATCHDOG_INFO'); ?>
                 </dt>
 
@@ -203,9 +203,9 @@ $params = $this->params;
         <?php echo $item->event->beforeDisplayContent; ?>
 		<!--
         <?php /* if ($useDefList && ($info == 1 || $info == 2)) : ?>
-            <div class="article-info message">
-                <dl class="article-info">
-                <dt class="article-info-term"><?php echo JText::_('COM_LOGMONITER_WATCHDOG_INFO'); ?></dt>
+            <div class="watchdog-info message">
+                <dl class="watchdog-info">
+                <dt class="watchdog-info-term"><?php echo JText::_('COM_LOGMONITER_WATCHDOG_INFO'); ?></dt>
 
                 <?php if ($info == 1) : ?>
                     <?php if ($params->get('show_parent_category') && !empty($item->parent_slug)) : ?>
