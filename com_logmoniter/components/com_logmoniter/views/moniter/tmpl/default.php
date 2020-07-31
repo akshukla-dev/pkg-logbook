@@ -79,10 +79,10 @@ $assoc = JLanguageAssociations::isEnabled();
                                         <a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_logmoniter&view=watchdog&id='.$item->id); ?>" title="<?php echo JText::_('COM_LOGMONITER_VIEW_WATCHDOG'); ?>">
                                             <?php echo $this->escape($item->title); ?>
                                         </a>
-                                        <div class="badge badge-info">
+                                        <div class="badge badge-success">
                                             <?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_INSET').': '.$this->escape($item->inset_title); ?>
                                         </div>
-                                        <div class="badge badge-waring">
+                                        <div class="badge badge-danger">
                                             <?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_BPRINT').': '.$this->escape($item->bprint_title); ?>
                                         </div>
                                         <div class="badge badge-info">
