@@ -12,7 +12,7 @@
 			label="JGLOBAL_FIELD_LAYOUT_LABEL"
 			description="JGLOBAL_FIELD_LAYOUT_DESC"
 			menuitems="true"
-			extension="com_content"
+			extension="com_logmoniter"
 			view="watchdog"
 		/>
 
@@ -485,6 +485,18 @@
 		description="COM_LOGMONITER_CONFIG_LIST_SETTINGS_DESC"
 		addfieldpath="/administrator/components/com_logmoniter/models/fields"
 	>
+
+		<field
+			name="list_show_author"
+			type="list"
+			label="JGLOBAL_LIST_AUTHOR_LABEL"
+			description="JGLOBAL_LIST_AUTHOR_DESC"
+			class="chzn-color"
+			default="1"
+		>
+			<option value="0">JHIDE</option>
+			<option value="1">JSHOW</option>
+		</field>
 
 		<field
 			name="show_pagination_limit"

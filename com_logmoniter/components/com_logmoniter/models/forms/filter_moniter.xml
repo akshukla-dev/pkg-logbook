@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addrulepath="/administrator/components/com_logmoniter/models/rules">
+	<fieldset addfieldpath="/administrator/components/com_logmoniter/models/fields">
+		<fields name="filter">
+			<field
+				name="search"
+				type="text"
+				label="COM_LOGMONITER_MODAL_FILTER_SEARCH_LABEL"
+				description="COM_LOGMONITER_MODAL_FILTER_SEARCH_DESC"
+				hint="JSEARCH_FILTER"
+				class="js-stools-search-string"
+			/>
+
+			<field
+				name="wcenter_id"
+				type="logworkcenters"
+				label="COM_LOGMONITER_FIELD_WCENTER_LIST_LABEL"
+				description="COM_LOGMONITER_FIELD_WCENTER_LIST_DESC"
+				onchange="this.form.submit();"
+				>
+				<option value="">COM_LOGMONITER_OPTION_SELECT_WCENTER</option>
+			</field>
+
+			<field
+				name="inset_id"
+				type="loginstructionsets"
+				label="COM_LOGMONITER_FIELD_INSET_LIST_LABEL"
+				description="COM_LOGMONITER_FIELD_INSET_LIST_DESC"
+				onchange="this.form.submit();"
+				>
+				<option value="">COM_LOGMONITER_OPTION_SELECT_INSET</option>
+			</field>
+
+			<field
+				name="bprint_id"
+				type="logblueprints"
+				label="COM_LOGMONITER_FIELD_BPRINT_LIST_LABEL"
+				description="COM_LOGMONITER_FIELD_BPRINT_LIST_DESC"
+				onchange="this.form.submit();"
+				>
+				<option value="">COM_LOGMONITER_OPTION_SELECT_BPRINT</option>
+			</field>
+
+			<field
+				name="tinterval_id"
+				type="logtimeintervals"
+				label="COM_LOGMONITER_FIELD_TINTERVAL_LIST_LABEL"
+				description="COM_LOGMONITER_FIELD_TINTERVAL_LIST_DESC"
+				onchange="this.form.submit();"
+				>
+				<option value="">COM_LOGMONITER_OPTION_SELECT_TINTERVAL</option>
+			</field>
+
+			<field
+				name="published"
+				type="status"
+				label="JOPTION_SELECT_PUBLISHED"
+				description="JOPTION_SELECT_PUBLISHED_DESC"
+				statuses="0,1"
+				onchange="this.form.submit();"
+			>
+				<option value="">JOPTION_SELECT_PUBLISHED</option>
+			</field>
+		</fields>
+	</fieldset>
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="COM_LOGMONITER_LIST_FULL_ORDERING"
+			description="COM_LOGMONITER_LIST_FULL_ORDERING_DESC"
+			onchange="this.form.submit();"
+			default="wd.title ASC"
+			>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="wd.state ASC">JSTATUS_ASC</option>
+			<option value="wd.state DESC">JSTATUS_DESC</option>
+			<option value="wd.title ASC">JGLOBAL_TITLE_ASC</option>
+			<option value="wd.title DESC">JGLOBAL_TITLE_DESC</option>
+			<option value="category_title ASC">JCATEGORY_ASC</option>
+			<option value="category_title DESC">JCATEGORY_DESC</option>
+			<option value="wcenter_title ASC">COM_LOGMONITER_WCENTER_ASC</option>
+			<option value="wcenter_title DESC">COM_LOGMONITER_WCENTER_DESC</option>
+			<option value="inset_title ASC">COM_LOGMONITER_INSET_ASC</option>
+			<option value="inset_title DESC">COM_LOGMONITER_INSET_DESC</option>
+			<option value="bprint_title ASC">COM_LOGMONITER_BPRINT_ASC</option>
+			<option value="bprint_title DESC">COM_LOGMONITER_BPRINT_DESC</option>
+			<option value="tinterval_title ASC">COM_LOGMONITER_TINTERVAL_ASC</option>
+			<option value="tinterval_title DESC">COM_LOGMONITER_TINTERVAL_DESC</option>
+			<option value="wd.created ASC">JDATE_ASC</option>
+			<option value="wd.created DESC">JDATE_DESC</option>
+			<option value="wd.latest_log_date ASC">COM_LOGMONITER_LATEST_LOG_DATE_ASC</option>
+			<option value="wd.latest_log_date DESC">COM_LOGMONITER_LATEST_LOG_DATE_DESC</option>
+			<option value="wd.next_due_date ASC">COM_LOGMONITER_NEXT_DUE_DATE_ASC</option>
+			<option value="wd.next_due_date DESC">COM_LOGMONITER_NEXT_DUE_DATE_DESC</option>
+			<option value="wd.hits ASC">JGLOBAL_HITS_ASC</option>
+			<option value="wd.hits DESC">JGLOBAL_HITS_DESC</option>
+			<option value="wd.logs ASC">COM_LOGMONITER_LOG_COUNT_ASC</option>
+			<option value="wd.logs DESC">COM_LOGMONITER_LOG_COUNT_DESC</option>
+
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			label="COM_LOGMONITER_LIST_LIMIT"
+			description="COM_LOGMONITER_LIST_LIMIT_DESC"
+			class="inputbox input-mini"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>
