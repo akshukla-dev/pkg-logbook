@@ -30,7 +30,7 @@ CREATE TABLE `#__logbook_watchdogs` (
     `created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ,
     `modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ,
     `modified_by` INT(10) UNSIGNED NOT NULL DEFAULT 0 ,
-		`attribs` TEXT NOT NULL ,
+		`params` TEXT NOT NULL ,
 		`metakey` TEXT NOT NULL ,
 		`metadesc` TEXT NOT NULL ,
 		`metadata` TEXT NOT NULL ,

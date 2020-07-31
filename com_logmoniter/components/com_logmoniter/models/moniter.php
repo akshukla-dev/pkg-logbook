@@ -65,7 +65,7 @@ class LogmoniterModelMoniter extends LogmoniterModelWatchdogs
         // No category ordering
         $secondary = LogmoniterHelperQuery::orderbySecondary($watchdogOrderby, $watchdogOrderDate);
 
-        $this->setState('list.ordering', $secondary.', wd.created DESC');
+        $this->setState('list.ordering', $secondary.', wd.next_due_date DESC');
         $this->setState('list.direction', '');
     }
 
@@ -213,6 +213,82 @@ class LogmoniterModelMoniter extends LogmoniterModelWatchdogs
             ->where('(publish_down = '.$nullDate.' OR publish_down >= '.$nowDate.')')
             ->order('1 ASC');
 
+        $db->setQuery($query);
+
+        return $db->loadColumn();
+    }
+
+    /**
+     * Gets the Work Centers.
+     *
+     * @return array
+     *
+     * @since    3.6.0
+     */
+    public function getWcenters()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+        $query->select('id, title')
+            ->from($db->qn('#__logbook_workcenters'))
+            ->order('title ASC');
+        $db->setQuery($query);
+
+        return $db->loadObjectList();
+    }
+
+    /**
+     * Gets the Instructionsets.
+     *
+     * @return array
+     *
+     * @since    3.6.0
+     */
+    public function getInsets()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+        $query->select('id, title')
+            ->from($db->qn('#__logbook_instructionsets'))
+            ->order('title ASC');
+        $db->setQuery($query);
+
+        return $db->loadObjectList();
+    }
+
+    /**
+     * Gets the Blueprints.
+     *
+     * @return array
+     *
+     * @since    3.6.0
+     */
+    public function getBprints()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->qn('title'))
+            ->from($db->qn('#__logbook_blueprints'))
+            ->order('id ASC');
+        $db->setQuery($query);
+
+        return $db->loadColumn();
+    }
+
+    /**
+     * Gets the time Intervals.
+     *
+     * @return array
+     *
+     * @since    3.6.0
+     */
+    public function getTintervals()
+    {
+        $db = $this->getDbo();
+        $query = $db->getQuery(true);
+        $query->select($db->qn('title'))
+            ->from($db->qn('#__logbook_timeintervals'))
+            ->order('id ASC');
         $db->setQuery($query);
 
         return $db->loadColumn();

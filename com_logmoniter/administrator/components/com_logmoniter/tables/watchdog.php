@@ -19,7 +19,7 @@ class LogmoniterTableWatchdog extends JTable
      *
      * @since  3.4
      */
-    protected $_jsonEncode = array('attribs', 'metadata');
+    protected $_jsonEncode = array('params', 'metadata');
 
     /**
      * Constructor.
@@ -31,6 +31,9 @@ class LogmoniterTableWatchdog extends JTable
     public function __construct(&$db)
     {
         parent::__construct('#__logbook_watchdogs', 'id', $db);
+
+        // Set the published column alias
+        $this->setColumnAlias('published', 'state');
 
         JTableObserverTags::createObserver($this, array('typeAlias' => 'com_logmoniter.watchdog'));
         JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_logmoniter.watchdog'));

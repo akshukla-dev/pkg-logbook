@@ -15,14 +15,14 @@ JHtml::_('behavior.keepalive');
 JHtml::_('formbehavior.chosen', '#jform_catid', null, array('disable_search_threshold' => 0));
 JHtml::_('formbehavior.chosen', 'select');
 
-// Create shortcut to parameters.
-$params = clone $this->state->get('params');
-$params->merge(new Registry($this->item->attribs));
-
 $app = JFactory::getApplication();
 $input = $app->input;
 
 $assoc = JLanguageAssociations::isEnabled();
+
+// Fieldsets to not automatically render by /layouts/joomla/edit/params.php
+$this->ignore_fieldsets = array('details', 'item_associations', 'jmetadata');
+
 
 JFactory::getDocument()->addScriptDeclaration('
     Joomla.submitbutton = function(task)
@@ -70,6 +70,8 @@ $tmpl = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=comp
             </div>
         </div>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
+
+		<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
         <?php if (!$isModal && $assoc) : ?>
             <?php echo JHtml::_('bootstrap.addTab', 'myTab', 'associations', JText::_('JGLOBAL_FIELDSET_ASSOCIATIONS')); ?>

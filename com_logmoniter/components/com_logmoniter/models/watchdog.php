@@ -87,7 +87,7 @@ class LogmoniterModelWatchdog extends JModelItem
                             // Use created if publish_up is 0
                             'CASE WHEN wd.publish_up = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.publish_up END as publish_up,'.
                             'wd.modified_by, wd.checked_out, wd.checked_out_time, wd.publish_down, '.
-                            'wd.publish_down, wd.attribs, wd.metadata, wd.metakey, wd.metadesc, wd.access, '.
+                            'wd.publish_down, wd.params, wd.metadata, wd.metakey, wd.metadesc, wd.access, '.
                             'wd.hits, wd.log_count, wd.language, wd.version, wd.ordering'
                         )
                     );
@@ -161,7 +161,7 @@ class LogmoniterModelWatchdog extends JModelItem
                 }
 
                 // Convert parameter fields to objects.
-                $registry = new Registry($data->attribs);
+                $registry = new Registry($data->params);
 
                 $data->params = clone $this->getState('params');
                 $data->params->merge($registry);

@@ -16,7 +16,7 @@
 				name="asset_id"
 				type="hidden"
 				filter="unset"
-			/>
+		/>
 
 		<field
 				name="title"

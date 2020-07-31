@@ -25,11 +25,11 @@ class LogbookController extends JControllerLegacy
     {
         $this->input = JFactory::getApplication()->input;
 
-        // Article frontpage Editor pagebreak proxying:
+        // Watchdog frontpage Editor pagebreak proxying:
         if ($this->input->get('view') === 'log' && $this->input->get('layout') === 'pagebreak') {
             $config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;
         }
-        // Article frontpage Editor log proxying:
+        // Watchdog frontpage Editor log proxying:
         elseif ($this->input->get('view') === 'logs' && $this->input->get('layout') === 'modal') {
             JHtml::_('stylesheet', 'system/adminlist.css', array('version' => 'auto', 'relative' => true));
             $config['base_path'] = JPATH_COMPONENT_ADMINISTRATOR;

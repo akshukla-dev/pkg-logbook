@@ -5,7 +5,7 @@
  */
 defined('_JEXEC') or die;
 
-$fieldSets = $this->form->getFieldsets('attribs'); ?>
+$fieldSets = $this->form->getFieldsets('params'); ?>
 <?php foreach ($fieldSets as $name => $fieldSet) : ?>
     <div class="tab-pane" id="params-<?php echo $name; ?>">
     <?php foreach ($this->form->getFieldset($name) as $field) : ?>

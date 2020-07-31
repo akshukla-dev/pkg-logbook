@@ -22,6 +22,11 @@ class LogmoniterViewMoniter extends JViewLegacy
 
     protected $years = null;
 
+    protected $wcenters = null;
+    protected $insets = null;
+    protected $bprints = null;
+    protected $tintervals = null;
+
     /**
      * Execute and display a template script.
      *
@@ -111,6 +116,61 @@ class LogmoniterViewMoniter extends JViewLegacy
             array('list.attr' => 'size="1" class="inputbox"', 'list.select' => $state->get('filter.year'))
         );
 
+        //Work Center field
+        $this->wcenters = $this->getModel()->getWcenters();
+        $wcenters = array();
+        $wcenters[] = JHtml::_('select.option', null, JText::_('COM_LOGMONITER_WCENTER'));
+        foreach ($this->wcenters as $i => $wcenter) {
+            $wcenters[] = JHtml::_('select.option', $wcenter->id, $wcenter->title);
+        }
+
+        $form->wcenterField = JHtml::_(
+            'select.genericlist',
+            $wcenters,
+            'wcenter',
+            array('list.attr' => 'size="1" class="inputbox"', 'list.select' => $state->get('filter.wcenter'))
+        );
+
+        //INSET field
+        $this->insets = $this->getModel()->getInsets();
+        $insets = array();
+        $insets[] = JHtml::_('select.option', null, JText::_('COM_LOGMONITER_INSET'));
+        foreach ($this->insets as $i => $inset) {
+            $insets[] = JHtml::_('select.option', $inset->id, $inset->title);
+        }
+        $form->insetField = JHtml::_(
+            'select.genericlist',
+            $insets,
+            'inset',
+            array('list.attr' => 'size="1" class="inputbox span8"', 'list.select' => $state->get('filter.inset'))
+        );
+        //Blueprints field
+        $this->bprints = $this->getModel()->getBprints();
+        $bprints = array();
+        $bprints[] = JHtml::_('select.option', null, JText::_('COM_LOGMONITER_BPRINT'));
+        foreach ($this->bprints as $i => $bprint) {
+            $bprints[] = JHtml::_('select.option', $bprint->id, $bprint->title);
+        }
+        $form->bprintField = JHtml::_(
+            'select.genericlist',
+            $bprints,
+            'bprint',
+            array('list.attr' => 'size="1" class="inputbox span8"', 'list.select' => $state->get('filter.bprint'))
+        );
+        //Tinterval field
+        $this->tintervals = $this->getModel()->getTintervals();
+        $tintervals = array();
+        $tintervals[] = JHtml::_('select.option', null, JText::_('COM_LOGMONITER_TINTERVAL'));
+        foreach ($this->tintervals as $i => $tinterval) {
+            $tintervals[] = JHtml::_('select.option', $tinterval->id, $tinterval->title);
+        }
+        $form->tintervalField = JHtml::_(
+            'select.genericlist',
+            $tintervals,
+            'tinterval',
+            array('list.attr' => 'size="1" class="inputbox"', 'list.select' => $state->get('filter.tinterval'))
+        );
+
         // Escape strings for HTML output
         $this->pageclass_sfx = htmlspecialchars($params->get('pageclass_sfx'));
 
@@ -122,6 +182,10 @@ class LogmoniterViewMoniter extends JViewLegacy
         $this->pagination = &$pagination;
         $this->pagination->setAdditionalUrlParam('month', $state->get('filter.month'));
         $this->pagination->setAdditionalUrlParam('year', $state->get('filter.year'));
+        $this->pagination->setAdditionalUrlParam('wcenter', $state->get('filter.wcenter'));
+        $this->pagination->setAdditionalUrlParam('inset', $state->get('filter.inset'));
+        $this->pagination->setAdditionalUrlParam('bprint', $state->get('filter.bprint'));
+        $this->pagination->setAdditionalUrlParam('tinterval', $state->get('filter.tinterval'));
 
         $this->_prepareDocument();
 

@@ -104,14 +104,14 @@ $onclick = $this->escape($function);
                             <span class="<?php echo $iconStates[$this->escape($item->state)]; ?>" aria-hidden="true"></span>
                         </td>
                         <td>
-                            <?php $attribs = 'data-function="'.$this->escape($onclick).'"'
+                            <?php $params = 'data-function="'.$this->escape($onclick).'"'
                                 .' data-id="'.$item->id.'"'
                                 .' data-title="'.$this->escape(addslashes($item->title)).'"'
                                 .' data-cat-id="'.$this->escape($item->catid).'"'
-                                .' data-uri="'.$this->escape(LogmoniterHelperRoute::getArticleRoute($item->id, $item->catid, $item->language)).'"'
+                                .' data-uri="'.$this->escape(LogmoniterHelperRoute::getWatchdogRoute($item->id, $item->catid, $item->language)).'"'
                                 .' data-language="'.$this->escape($lang).'"';
                             ?>
-                            <a class="select-link" href="javascript:void(0)" <?php echo $attribs; ?>>
+                            <a class="select-link" href="javascript:void(0)" <?php echo $params; ?>>
                                 <?php echo $this->escape($item->title); ?>
                             </a>
                             <div class="small">

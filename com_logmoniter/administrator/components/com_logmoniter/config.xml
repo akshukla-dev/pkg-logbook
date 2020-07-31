@@ -7,6 +7,16 @@
 		addfieldpath="/administrator/components/com_logmoniter/models/fields"
 	>
 		<field
+			name="watchdog_layout"
+			type="componentlayout"
+			label="JGLOBAL_FIELD_LAYOUT_LABEL"
+			description="JGLOBAL_FIELD_LAYOUT_DESC"
+			menuitems="true"
+			extension="com_content"
+			view="watchdog"
+		/>
+
+		<field
 			name="show_title"
 			type="radio"
 			label="JGLOBAL_SHOW_TITLE_LABEL"
@@ -34,68 +44,20 @@
 		<field
 			name="info_block_position"
 			type="list"
-			label="COM_LOGMONITER_FIELD_INFOBLOCK_POSITION_LABEL"
-			description="COM_LOGMONITER_FIELD_INFOBLOCK_POSITION_DESC"
+			label="COM_CONTENT_FIELD_INFOBLOCK_POSITION_LABEL"
+			description="COM_CONTENT_FIELD_INFOBLOCK_POSITION_DESC"
 			default="0"
 			>
-			<option value="0">COM_LOGMONITER_FIELD_OPTION_ABOVE</option>
-			<option value="1">COM_LOGMONITER_FIELD_OPTION_BELOW</option>
-			<option value="2">COM_LOGMONITER_FIELD_OPTION_SPLIT</option>
+			<option value="0">COM_CONTENT_FIELD_OPTION_ABOVE</option>
+			<option value="1">COM_CONTENT_FIELD_OPTION_BELOW</option>
+			<option value="2">COM_CONTENT_FIELD_OPTION_SPLIT</option>
 		</field>
 
 		<field
 			name="info_block_show_title"
 			type="radio"
-			label="COM_LOGMONITER_FIELD_INFOBLOCK_TITLE_LABEL"
-			description="COM_LOGMONITER_FIELD_INFOBLOCK_TITLE_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_wcenter"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_WCENTER_LABEL"
-			description="COM_LOGMONITER_SHOW_WCENTER_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_inset"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_INSET_LABEL"
-			description="COM_LOGMONITER_SHOW_INSET_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_bprint"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_BPRINT_LABEL"
-			description="COM_LOGMONITER_SHOW_BPRINT_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_tinterval"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_TINTERVAL_LABEL"
-			description="COM_LOGMONITER_SHOW_TINTERVAL_DESC"
+			label="COM_CONTENT_FIELD_INFOBLOCK_TITLE_LABEL"
+			description="COM_CONTENT_FIELD_INFOBLOCK_TITLE_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
 			>
@@ -185,7 +147,7 @@
 		</field>
 
 		<field
-			name="spacer3"
+			name="spacer2"
 			type="spacer"
 			hr="true"
 		/>
@@ -213,30 +175,6 @@
 			>
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
-		</field>
-
-		<field
-			name="show_latest_log_date"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_LATEST_LOG_DATE_LABEL"
-			description="COM_LOGMONITER_SHOW_LATEST_LOG_DATE_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_next_due_date"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_NEXT_DUE_DATE_LABEL"
-			description="COM_LOGMONITER_SHOW_NEXT_DUE_DATE_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
 		</field>
 
 		<field
@@ -301,64 +239,16 @@
 		</field>
 
 		<field
-			name="spacer2"
+			name="spacer3"
 			type="spacer"
 			hr="true"
 		/>
-
-		<field
-			name="show_icons"
-			type="radio"
-			label="JGLOBAL_SHOW_ICONS_LABEL"
-			description="JGLOBAL_SHOW_ICONS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_print_icon"
-			type="radio"
-			label="JGLOBAL_SHOW_PRINT_ICON_LABEL"
-			description="JGLOBAL_SHOW_PRINT_ICON_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_email_icon"
-			type="radio"
-			label="JGLOBAL_SHOW_EMAIL_ICON_LABEL"
-			description="JGLOBAL_SHOW_EMAIL_ICON_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
 
 		<field
 			name="show_hits"
 			type="radio"
 			label="JGLOBAL_SHOW_HITS_LABEL"
 			description="JGLOBAL_SHOW_HITS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_logs"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_LOGS_LABEL"
-			description="COM_LOGMONITER_SHOW_LOGS_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
 			>
@@ -377,36 +267,13 @@
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
-    </fieldset>
-
-	<fieldset
-		name="editinglayout"
-		label="COM_LOGMONITER_EDITING_LAYOUT"
-		description="COM_LOGMONITER_CONFIG_EDITOR_LAYOUT"
-	>
-		<field
-			name="show_publishing_options"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_PUBLISHING_OPTIONS_LABEL"
-			description="COM_LOGMONITER_SHOW_PUBLISHING_OPTIONS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
 
 		<field
-			name="show_watchdog_options"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_WATCHDOG_OPTIONS_LABEL"
-			description="COM_LOGMONITER_SHOW_WATCHDOG_OPTIONS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
+			name="spacer4"
+			type="spacer"
+			hr="true"
+		/>
+
 
 		<field
 			name="save_history"
@@ -429,35 +296,14 @@
 			default="10"
 			showon="save_history:1"
 		/>
-	</fieldset>
+
+    </fieldset>
 
 	<fieldset
 		name="category"
 		label="JCATEGORY"
 		description="COM_LOGMONITER_CONFIG_CATEGORY_SETTINGS_DESC"
 	>
-
-		<field
-			name="category_layout"
-			type="componentlayout"
-			label="JGLOBAL_FIELD_LAYOUT_LABEL"
-			description="JGLOBAL_FIELD_LAYOUT_DESC"
-			menuitems="true"
-			extension="com_logmoniter"
-			view="category"
-		/>
-
-		<field
-			name="show_category_heading_title_text"
-			type="radio"
-			label="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_LABEL"
-			description="JGLOBAL_SHOW_CATEGORY_HEADING_TITLE_TEXT_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
 
 		<field
 			name="show_category_title"
@@ -472,7 +318,7 @@
 		</field>
 
 		<field
-			name="show_description"
+			name="show_category_description"
 			type="radio"
 			label="JGLOBAL_SHOW_CATEGORY_DESCRIPTION_LABEL"
 			description="JGLOBAL_SHOW_CATEGORY_DESCRIPTION_DESC"
@@ -524,18 +370,6 @@
 		</field>
 
 		<field
-			name="show_no_watchdogs"
-			type="radio"
-			label="COM_LOGMONITER_NO_WATCHDOGS_LABEL"
-			description="COM_LOGMONITER_NO_WATCHDOGS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
 			name="show_subcat_desc"
 			type="radio"
 			label="JGLOBAL_SHOW_SUBCATEGORIES_DESCRIPTION_LABEL"
@@ -548,7 +382,7 @@
 		</field>
 
 		<field
-			name="show_cat_num_watchdogs"
+			name="show_cat_num_items"
 			type="radio"
 			label="COM_LOGMONITER_NUMBER_CATEGORY_ITEMS_LABEL"
 			description="COM_LOGMONITER_NUMBER_CATEGORY_ITEMS_DESC"
@@ -632,7 +466,7 @@
 		</field>
 
 		<field
-			name="show_cat_num_watchdogs_cat"
+			name="show_cat_num_items_cat"
 			type="radio"
 			label="COM_LOGMONITER_NUMBER_CATEGORY_ITEMS_LABEL"
 			description="COM_LOGMONITER_NUMBER_CATEGORY_ITEMS_DESC"
@@ -665,6 +499,30 @@
 		</field>
 
 		<field
+			name="show_pagination"
+			type="list"
+			default="2"
+			label="JGLOBAL_PAGINATION_LABEL"
+			description="JGLOBAL_PAGINATION_DESC"
+			>
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+			<option value="2">JGLOBAL_AUTO</option>
+		</field>
+
+		<field
+			name="show_pagination_results"
+			type="radio"
+			class="btn-group btn-group-yesno"
+			default="1"
+			label="JGLOBAL_PAGINATION_RESULTS_LABEL"
+			description="JGLOBAL_PAGINATION_RESULTS_DESC"
+			>
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+		</field>
+
+		<field
 			name="filter_field"
 			type="list"
 			label="JGLOBAL_FILTER_FIELD_LABEL"
@@ -672,11 +530,8 @@
 			default="hide"
 		>
 			<option value="hide">JHIDE</option>
-			<option value="title">JGLOBAL_TITLE</option>
-			<option value="author">JAUTHOR</option>
-			<option value="hits">JGLOBAL_HITS</option>
-			<option value="logs">COM_LOGMONITER_LOGS</option>
-			<option value="tag">JTAG</option>
+			<option value="1">JSHOW</option>
+
 		</field>
 
 		<field
@@ -722,113 +577,6 @@
 			description="JGLOBAL_LIST_HITS_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
-		>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="list_show_logs"
-			type="radio"
-			label="COM_LOGMONITER_SHOW_LOGS_LABEL"
-			description="COM_LOGMONITER_SHOW_LOGS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-		>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="list_show_author"
-			type="radio"
-			label="JGLOBAL_LIST_AUTHOR_LABEL"
-			description="JGLOBAL_LIST_AUTHOR_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-		>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-	</fieldset>
-
-	<fieldset
-		name="shared"
-		label="COM_LOGMONITER_SHARED_LABEL"
-		description="COM_LOGMONITER_SHARED_DESC"
-	>
-
-		<field
-			name="orderby_pri"
-			type="list"
-			label="JGLOBAL_CATEGORY_ORDER_LABEL"
-			description="JGLOBAL_CATEGORY_ORDER_DESC"
-			default="none"
-		>
-			<option value="none">JGLOBAL_NO_ORDER</option>
-			<option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
-			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
-			<option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
-		</field>
-
-		<field
-			name="orderby_sec"
-			type="list"
-			label="COM_LOGMONITER_WATCHDOG_ORDER_LABEL"
-			description="JGLOBAL_WATCHDOG_ORDER_DESC"
-			default="rdate"
-		>
-			<option value="rdate">JGLOBAL_MOST_RECENT_FIRST</option>
-			<option value="date">JGLOBAL_OLDEST_FIRST</option>
-			<option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
-			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
-			<option value="author">JGLOBAL_AUTHOR_ALPHABETICAL</option>
-			<option value="rauthor">JGLOBAL_AUTHOR_REVERSE_ALPHABETICAL</option>
-			<option value="hits">JGLOBAL_MOST_HITS</option>
-			<option value="rhits">JGLOBAL_LEAST_HITS</option>
-			<option value="logs">COM_LOGMONITER_MOST_LOGS</option>
-			<option value="rlogs">COM_LOGMONITER_LEAST_LOGS</option>
-			<option value="order">JGLOBAL_WATCHDOG_MANAGER_ORDER</option>
-			<option value="rorder">JGLOBAL_WATCHDOG_MANAGER_REVERSE_ORDER</option>
-
-		</field>
-
-		<field
-			name="order_date"
-			type="list"
-			label="JGLOBAL_ORDERING_DATE_LABEL"
-			description="JGLOBAL_ORDERING_DATE_DESC"
-			showon="orderby_sec:rdate,date"
-			default="published"
-			>
-			<option value="created">JGLOBAL_CREATED</option>
-			<option value="modified">JGLOBAL_MODIFIED</option>
-			<option value="published">JPUBLISHED</option>
-			<option value="latest_log_date">COM_LOGMONITER_LATEST_LOG_DATE</option>
-			<option value="next_due_date">COM_LOGMONITER_SHOW_NEXT_DUE_DATE</option>
-
-		</field>
-
-		<field
-			name="show_pagination"
-			type="list"
-			label="JGLOBAL_PAGINATION_LABEL"
-			description="JGLOBAL_PAGINATION_DESC"
-			default="2"
-			>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-			<option value="2">JGLOBAL_AUTO</option>
-		</field>
-
-		<field
-			name="show_pagination_results"
-			type="radio"
-			label="JGLOBAL_PAGINATION_RESULTS_LABEL"
-			description="JGLOBAL_PAGINATION_RESULTS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			showon="show_pagination:1,2"
 		>
 			<option value="1">JSHOW</option>
 			<option value="0">JHIDE</option>

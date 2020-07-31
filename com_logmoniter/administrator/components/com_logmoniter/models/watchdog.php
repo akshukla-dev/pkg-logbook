@@ -43,99 +43,6 @@ class LogmoniterModelWatchdog extends JModelAdmin
      */
     protected $associationsContext = 'com_logmoniter.item';
 
-    /**
-     * Batch copy items to a new category or current.
-     *
-     * @param int   $value    the new category
-     * @param array $pks      an array of row IDs
-     * @param array $contexts an array of item contexts
-     *
-     * @return mixed an array of new IDs on success, boolean false on failure
-     *
-     * @since   11.1
-     */
-    protected function batchCopy($value, $pks, $contexts)
-    {
-        $categoryId = (int) $value;
-
-        $newIds = array();
-
-        if (!$this->checkCategoryId($categoryId)) {
-            return false;
-        }
-
-        // Parent exists so we let's proceed
-        while (!empty($pks)) {
-            // Pop the first ID off the stack
-            $pk = array_shift($pks);
-
-            $this->table->reset();
-
-            // Check that the row actually exists
-            if (!$this->table->load($pk)) {
-                if ($error = $this->table->getError()) {
-                    // Fatal error
-                    $this->setError($error);
-
-                    return false;
-                } else {
-                    // Not fatal error
-                    $this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
-                    continue;
-                }
-            }
-
-            // Alter the title & alias
-            $data = $this->generateNewTitle($categoryId, $this->table->alias, $this->table->title);
-            $this->table->title = $data['0'];
-            $this->table->alias = $data['1'];
-
-            // Reset the ID because we are making a copy
-            $this->table->id = 0;
-
-            // Reset hits because we are making a copy
-            $this->table->hits = 0;
-
-            // Reset logs because we are making a copy
-            $this->table->log_count = 0;
-
-            // Unpublish because we are making a copy
-            $this->table->state = 0;
-
-            // New category ID
-            $this->table->catid = $categoryId;
-
-            // TODO: Deal with ordering?
-            // $table->ordering	= 1;
-
-            // Check the row.
-            if (!$this->table->check()) {
-                $this->setError($this->table->getError());
-
-                return false;
-            }
-
-            $this->createTagsHelper($this->tagsObserver, $this->type, $pk, $this->typeAlias, $this->table);
-
-            // Store the row.
-            if (!$this->table->store()) {
-                $this->setError($this->table->getError());
-
-                return false;
-            }
-
-            // Get the new item ID
-            $newId = $this->table->get('id');
-
-            // Add the new ID to the array
-            $newIds[$pk] = $newId;
-        }
-
-        // Clean the cache
-        $this->cleanCache();
-
-        return $newIds;
-    }
 
     /**
      * Method to test whether a record can be deleted.
@@ -247,9 +154,6 @@ class LogmoniterModelWatchdog extends JModelAdmin
     public function getItem($pk = null)
     {
         if ($item = parent::getItem($pk)) {
-            // Convert the params field to an array.
-            $registry = new Registry($item->attribs);
-            $item->attribs = $registry->toArray();
 
             // Convert the metadata field to an array.
             $registry = new Registry($item->metadata);
@@ -366,7 +270,7 @@ class LogmoniterModelWatchdog extends JModelAdmin
      * @see     JFilterInput
      * @since   3.7.0
      */
-    public function validate($form, $data, $group = null)
+    /*public function validate($form, $data, $group = null)
     {
         // Don't allow to change the users if not allowed to access com_users.
         if (JFactory::getApplication()->isClient('administrator') && !JFactory::getUser()->authorise('core.manage', 'com_users')) {
@@ -393,18 +297,9 @@ class LogmoniterModelWatchdog extends JModelAdmin
      */
     public function save($data)
     {
-        $input = JFactory::getApplication()->input;
-        $filter = JFilterInput::getInstance();
+		$app = JFactory::getApplication();
 
-        if (isset($data['metadata']) && isset($data['metadata']['author'])) {
-            $data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-        }
-
-        if (isset($data['created_by_alias'])) {
-            $data['created_by_alias'] = $filter->clean($data['created_by_alias'], 'TRIM');
-        }
-
-        JLoader::register('CategoriesHelper', JPATH_ADMINISTRATOR.'/components/com_categories/helpers/categories.php');
+		JLoader::register('CategoriesHelper', JPATH_ADMINISTRATOR . '/components/com_categories/helpers/categories.php');
 
         // Cast catid to integer for comparison
         $catid = (int) $data['catid'];
@@ -428,49 +323,44 @@ class LogmoniterModelWatchdog extends JModelAdmin
         }
 
         // Alter the title for save as copy
-        if ($input->get('task') == 'save2copy') {
-            $origTable = clone $this->getTable();
-            $origTable->load($input->getInt('id'));
-
-            if ($data['title'] == $origTable->title) {
-                list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
-                $data['title'] = $title;
-                $data['alias'] = $alias;
-            } else {
-                if ($data['alias'] == $origTable->alias) {
-                    $data['alias'] = '';
-                }
-            }
-
-            $data['state'] = 0;
-        }
-
-        // Automatic handling of alias for empty fields
-        if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (!isset($data['id']) || (int) $data['id'] == 0)) {
-            if ($data['alias'] == null) {
-                if (JFactory::getConfig()->get('unicodeslugs') == 1) {
-                    $data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['title']);
-                } else {
-                    $data['alias'] = JFilterOutput::stringURLSafe($data['title']);
-                }
-
-                $table = JTable::getInstance('Watchdog', 'LogmoniterTable');
-
-                if ($table->load(array('alias' => $data['alias'], 'catid' => $data['catid']))) {
-                    $msg = JText::_('COM_LOGMONITER_SAVE_WARNING');
-                }
-
-                list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
-                $data['alias'] = $alias;
-
-                if (isset($msg)) {
-                    JFactory::getApplication()->enqueueMessage($msg, 'warning');
-                }
-            }
+        if ($app->input->get('task') == 'save2copy') {
+            list($name, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
+			$data['title']	= $name;
+			$data['alias']	= $alias;
+			$data['state']	= 0;
         }
 
         return parent::save($data);
-    }
+	}
+
+	/**
+	 * Method to change the title & alias.
+	 *
+	 * @param   integer  $category_id  The id of the parent.
+	 * @param   string   $alias        The alias.
+	 * @param   string   $name         The title.
+	 *
+	 * @return  array  Contains the modified title and alias.
+	 *
+	 * @since   3.1
+	 */
+	protected function generateNewTitle($category_id, $alias, $name)
+	{
+		// Alter the title & alias
+		$table = $this->getTable();
+
+		while ($table->load(array('alias' => $alias, 'catid' => $category_id)))
+		{
+			if ($name == $table->title)
+			{
+				$name = JString::increment($name);
+			}
+
+			$alias = JString::increment($alias, 'dash');
+		}
+
+		return array($name, $alias);
+	}
 
     /**
      * A protected method to get a set of ordering conditions.

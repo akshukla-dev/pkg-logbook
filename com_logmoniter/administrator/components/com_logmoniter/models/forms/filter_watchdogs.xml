@@ -33,7 +33,7 @@
 
 		<field
 			name="inset_id"
-			type="logworkcenters"
+			type="loginstructionsets"
 			label="COM_LOGMONITER_FILTER_INSET_LABEL"
 			description="COM_LOGMONITER_FILTER_INSET_DESC"
 			onchange="this.form.submit();"

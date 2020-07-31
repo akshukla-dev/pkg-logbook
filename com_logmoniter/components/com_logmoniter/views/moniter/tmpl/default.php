@@ -20,25 +20,25 @@ JHtml::_('behavior.caption');
 <form id="adminForm" action="<?php echo JRoute::_('index.php'); ?>" method="post" class="form-inline">
     <fieldset class="filters">
     <div class="filter-search">
-        <?php if ($this->params->get('filter_field') !== 'hide') : ?>
+        <?php //if ($this->params->get('filter_field') !== 'hide') :?>
         <label class="filter-search-lbl element-invisible" for="filter-search"><?php echo JText::_('COM_LOGMONITER_TITLE_FILTER_LABEL').'&#160;'; ?></label>
         <input type="text" name="filter-search" id="filter-search" value="<?php echo $this->escape($this->filter); ?>" class="inputbox span2" onchange="document.getElementById('adminForm').submit();" placeholder="<?php echo JText::_('COM_LOGMONITER_TITLE_FILTER_LABEL'); ?>" />
-        <?php endif; ?>
-        <div class="container">
+        <?php //endif;?>
+        <div>
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php //echo $this->form->renderField('logworkcenters');?>
+                    <?php echo $this->form->wcenterField; ?>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php //echo $this->form->renderField('loginstructionsets');?>
+                    <?php echo $this->form->insetField; ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php //echo $this->form->renderField('logblueprints');?>
+                    <?php echo $this->form->bprintField; ?>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <?php //echo $this->form->renderField('logtimeintervals');?>
+                    <?php echo $this->form->tintervalField; ?>
                 </div>
             </div>
             <div class="row">
@@ -46,7 +46,9 @@ JHtml::_('behavior.caption');
                 <?php echo $this->form->yearField; ?>
                 <?php echo $this->form->limitField; ?>
             </div>
-            <button type="submit" class="btn btn-primary" style="horizontal-align: right;"><?php echo JText::_('JGLOBAL_FILTER_BUTTON'); ?></button>
+            <div class="row">
+                <button type="submit" class="btn btn-primary" style="horizontal-align: right;"><?php echo JText::_('JGLOBAL_FILTER_BUTTON'); ?></button>
+            </div>
         </div>
         <input type="hidden" name="view" value="moniter" />
         <input type="hidden" name="option" value="com_logmoniter" />

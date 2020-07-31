@@ -35,7 +35,7 @@ class JFormFieldModal_Watchdog extends JFormField
         $allowSelect = ((string) $this->element['select'] != 'false');
 
         // Load language
-        JFactory::getLanguage()->load('com_logmoniter', JPATH_ADMINISTRATOR);
+        JFactory::getLanguage()->load('com_watchdog', JPATH_ADMINISTRATOR);
 
         // The active watchdog id field.
         $value = (int) $this->value > 0 ? (int) $this->value : '';
@@ -57,10 +57,10 @@ class JFormFieldModal_Watchdog extends JFormField
 
             if (!isset($scriptSelect[$this->id])) {
                 JFactory::getDocument()->addScriptDeclaration('
-                function jSelectWatchdog_'.$this->id."(id, title, catid, object, url, language) {
-                    window.processModalSelect('Watchdog', '".$this->id."', id, title, catid, object, url, language);
-                }
-                ");
+				function jSelectWatchdog_'.$this->id."(id, title, catid, object, url, language) {
+					window.processModalSelect('Watchdog', '".$this->id."', id, title, catid, object, url, language);
+				}
+				");
                 $scriptSelect[$this->id] = true;
             }
         }

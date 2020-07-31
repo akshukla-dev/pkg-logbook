@@ -9,7 +9,7 @@
 defined('_JEXEC') or die;
 
 /**
- * HTML Article View class for the Content component.
+ * HTML Watchdog View class for the Content component.
  *
  * @since  1.5
  */

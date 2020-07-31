@@ -82,46 +82,39 @@ class LogmoniterViewWatchdog extends JViewLegacy
     protected function addToolbar()
     {
         JFactory::getApplication()->input->set('hidemainmenu', true);
+
         $user = JFactory::getUser();
-        $userId = $user->id;
         $isNew = ($this->item->id == 0);
-        $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
+        $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
 
         // Since we don't track these assets at the item level, use the category id.
         $canDo = JHelperContent::getActions('com_logmoniter', 'category', $this->item->catid);
 
-        JToolbarHelper::title(
-            JText::_('COM_LOGMONITER_PAGE_'.($checkedOut ? 'VIEW_WATCHDOG' : ($isNew ? 'ADD_WATCHDOG' : 'EDIT_WATCHDOG'))),
-            'pencil-2 watchdog-add'
-        );
+        JToolbarHelper::title($isNew ? JText::_('COM_LOGMONITER_MANAGER_WATCHDOG_NEW') : JText::_('COM_LOGMONITER_MANAGER_WATCHDOG_EDIT'), 'stack watchdogs');
 
-        // For new records, check the create permission.
-        if ($isNew && (count($user->getAuthorisedCategories('com_logmoniter', 'core.create')) > 0)) {
+        // If not checked out, can save the item.
+        if (!$checkedOut && ($canDo->get('core.edit')||(count($user->getAuthorisedCategories('com_logmoniter', 'core.create')))))
+        {
             JToolbarHelper::apply('watchdog.apply');
             JToolbarHelper::save('watchdog.save');
+        }
+        if (!$checkedOut && (count($user->getAuthorisedCategories('com_logmoniter', 'core.create'))))
+        {
             JToolbarHelper::save2new('watchdog.save2new');
+        }
+        // If an existing item, can save to a copy.
+        if (!$isNew && (count($user->getAuthorisedCategories('com_logmoniter', 'core.create')) > 0))
+        {
+            JToolbarHelper::save2copy('watchdog.save2copy');
+        }
+        if (empty($this->item->id))
+        {
             JToolbarHelper::cancel('watchdog.cancel');
-        } else {
-            // Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
-            $itemEditable = $canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId);
-
-            // Can't save the record if it's checked out and editable
-            if (!$checkedOut && $itemEditable) {
-                JToolbarHelper::apply('watchdog.apply');
-                JToolbarHelper::save('watchdog.save');
-
-                // We can save this record, but check the create permission to see if we can return to make a new one.
-                if ($canDo->get('core.create')) {
-                    JToolbarHelper::save2new('watchdog.save2new');
-                }
-            }
-
-            // If checked out, we can still save
-            if ($canDo->get('core.create')) {
-                JToolbarHelper::save2copy('watchdog.save2copy');
-            }
-
-            if (JComponentHelper::isEnabled('com_contenthistory') && $this->state->params->get('save_history', 0) && $itemEditable) {
+        }
+        else
+        {
+            if ($this->state->params->get('save_history', 0) && $user->authorise('core.edit'))
+            {
                 JToolbarHelper::versions('com_logmoniter.watchdog', $this->item->id);
             }
 
@@ -129,6 +122,6 @@ class LogmoniterViewWatchdog extends JViewLegacy
         }
 
         JToolbarHelper::divider();
-        JToolbarHelper::help('JHELP_LOGMONITER_WATCHDOG_MANAGER_EDIT');
+        JToolbarHelper::help('JHELP_COMPONENTS_WATCHDOGS_LINKS_EDIT');
     }
 }

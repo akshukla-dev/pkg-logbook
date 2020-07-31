@@ -1,198 +1,89 @@
 <?php
 /**
+ * @package     Joomla.Site
+ *
+ *
  * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('_JEXEC') or die;
 
-use Joomla\Registry\Registry;
-
 /**
- * Logmoniter Component HTML Helper.
+ * Watchdog Component HTML Helper.
  *
  * @since  1.5
  */
-abstract class JHtmlIcon
+class JHtmlIcon
 {
     /**
-     * Method to generate a link to the create item page for the given category.
+     * Create a link to create a new watchdog
      *
-     * @param object   $category The category information
-     * @param Registry $params   The item parameters
-     * @param array    $attribs  Optional attributes for the link
-     * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
+     * @param   mixed  $watchdog  Unused
+     * @param   mixed  $params   Unused
      *
-     * @return string The HTML markup for the create item link
+     * @return  string
      */
-    public static function create($category, $params, $attribs = array(), $legacy = false)
+    public static function create($watchdog, $params)
     {
+        JHtml::_('bootstrap.tooltip');
+
         $uri = JUri::getInstance();
+        $url = JRoute::_(LogmoniterHelperRoute::getFormRoute(0, base64_encode($uri)));
+        $text = JHtml::_('image', 'system/new.png', JText::_('JNEW'), null, true);
+        $button = JHtml::_('link', $url, $text);
 
-        $url = 'index.php?option=com_logmoniter&task=watchdog.add&return='.base64_encode($uri).'&wd_id=0&catid='.$category->id;
-
-        $text = JLayoutHelper::render('joomla.content.icons.create', array('params' => $params, 'legacy' => $legacy));
-
-        // Add the button classes to the attribs array
-        if (isset($attribs['class'])) {
-            $attribs['class'] .= ' btn btn-primary';
-        } else {
-            $attribs['class'] = 'btn btn-primary';
-        }
-
-        $button = JHtml::_('link', JRoute::_($url), $text, $attribs);
-
-        $output = '<span class="hasTooltip" title="'.JHtml::_('tooltipText', 'COM_LOGMONITER_CREATE_WATCHDOG').'">'.$button.'</span>';
-
-        return $output;
+        return '<span class="hasTooltip" title="' . JHtml::tooltipText('COM_LOGMONITER_FORM_CREATE_WATCHDOG') . '">' . $button . '</span>';
     }
 
     /**
-     * Method to generate a link to the email item page for the given watchdog.
+     * Create a link to edit an existing watchdog
      *
-     * @param object   $watchdog The watchdog information
-     * @param Registry $params   The item parameters
-     * @param array    $attribs  Optional attributes for the link
-     * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
+     * @param   object                     $watchdog  Watchdog data
+     * @param   \Joomla\Registry\Registry  $params   Item params
+     * @param   array                      $attribs  Unused
      *
-     * @return string The HTML markup for the email item link
+     * @return  string
      */
-    public static function email($watchdog, $params, $attribs = array(), $legacy = false)
+    public static function edit($watchdog, $params, $attribs = array())
     {
-        JLoader::register('MailtoHelper', JPATH_SITE.'/components/com_mailto/helpers/mailto.php');
-
-        $uri = JUri::getInstance();
-        $base = $uri->toString(array('scheme', 'host', 'port'));
-        $template = JFactory::getApplication()->getTemplate();
-        $link = $base.JRoute::_(LogmoniterHelperRoute::getWatchdogRoute($watchdog->slug, $watchdog->catid, $watchdog->language), false);
-        $url = 'index.php?option=com_mailto&tmpl=component&template='.$template.'&link='.MailtoHelper::addLink($link);
-
-        $status = 'width=400,height=350,menubar=yes,resizable=yes';
-
-        $text = JLayoutHelper::render('joomla.content.icons.email', array('params' => $params, 'legacy' => $legacy));
-
-        $attribs['title'] = JText::_('JGLOBAL_EMAIL_TITLE');
-        $attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
-        $attribs['rel'] = 'nofollow';
-
-        return JHtml::_('link', JRoute::_($url), $text, $attribs);
-    }
-
-    /**
-     * Display an edit icon for the watchdog.
-     *
-     * This icon will not display in a popup window, nor if the watchdog is trashed.
-     * Edit access checks must be performed in the calling code.
-     *
-     * @param object   $watchdog The watchdog information
-     * @param Registry $params   The item parameters
-     * @param array    $attribs  Optional attributes for the link
-     * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
-     *
-     * @return string the HTML for the watchdog edit icon
-     *
-     * @since   1.6
-     */
-    public static function edit($watchdog, $params, $attribs = array(), $legacy = false)
-    {
-        $user = JFactory::getUser();
         $uri = JUri::getInstance();
 
-        // Ignore if in a popup window.
-        if ($params && $params->get('popup')) {
+        if ($params && $params->get('popup'))
+        {
             return;
         }
 
-        // Ignore if the state is negative (trashed).
-        if ($watchdog->state < 0) {
+        if ($watchdog->state < 0)
+        {
             return;
         }
 
-        // Show checked_out icon if the watchdog is checked out by a different user
-        if (property_exists($watchdog, 'checked_out')
-            && property_exists($watchdog, 'checked_out_time')
-            && $watchdog->checked_out > 0
-            && $watchdog->checked_out != $user->get('id')) {
-            $checkoutUser = JFactory::getUser($watchdog->checked_out);
-            $date = JHtml::_('date', $watchdog->checked_out_time);
-            $tooltip = JText::_('JLIB_HTML_CHECKED_OUT').' :: '.JText::sprintf('COM_CONTENT_CHECKED_OUT_BY', $checkoutUser->name)
-                .' <br /> '.$date;
+        JHtml::_('bootstrap.tooltip');
 
-            $text = JLayoutHelper::render('joomla.content.icons.edit_lock', array('tooltip' => $tooltip, 'legacy' => $legacy));
+        $url	= LogmoniterHelperRoute::getFormRoute($watchdog->id, base64_encode($uri));
+        $icon	= $watchdog->state ? 'edit.png' : 'edit_unpublished.png';
+        $text	= JHtml::_('image', 'system/' . $icon, JText::_('JGLOBAL_EDIT'), null, true);
 
-            $output = JHtml::_('link', '#', $text, $attribs);
-
-            return $output;
-        }
-
-        $contentUrl = LogmoniterHelperRoute::getWatchdogRoute($watchdog->slug, $watchdog->catid, $watchdog->language);
-        $url = $contentUrl.'&task=watchdog.edit&wd_id='.$watchdog->id.'&return='.base64_encode($uri);
-
-        if ($watchdog->state == 0) {
+        if ($watchdog->state == 0)
+        {
             $overlib = JText::_('JUNPUBLISHED');
-        } else {
+        }
+        else
+        {
             $overlib = JText::_('JPUBLISHED');
         }
 
         $date = JHtml::_('date', $watchdog->created);
-        $author = $watchdog->created_by_alias ?: $watchdog->author;
+        $author = $watchdog->created_by_alias ? $watchdog->created_by_alias : $watchdog->author;
 
         $overlib .= '&lt;br /&gt;';
         $overlib .= $date;
         $overlib .= '&lt;br /&gt;';
-        $overlib .= JText::sprintf('COM_CONTENT_WRITTEN_BY', htmlspecialchars($author, ENT_COMPAT, 'UTF-8'));
+        $overlib .= htmlspecialchars($author, ENT_COMPAT, 'UTF-8');
 
-        $text = JLayoutHelper::render('joomla.content.icons.edit', array('watchdog' => $watchdog, 'overlib' => $overlib, 'legacy' => $legacy));
+        $button = JHtml::_('link', JRoute::_($url), $text);
 
-        $attribs['title'] = JText::_('JGLOBAL_EDIT_TITLE');
-        $output = JHtml::_('link', JRoute::_($url), $text, $attribs);
-
-        return $output;
-    }
-
-    /**
-     * Method to generate a popup link to print an watchdog.
-     *
-     * @param object   $watchdog The watchdog information
-     * @param Registry $params   The item parameters
-     * @param array    $attribs  Optional attributes for the link
-     * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
-     *
-     * @return string The HTML markup for the popup link
-     */
-    public static function print_popup($watchdog, $params, $attribs = array(), $legacy = false)
-    {
-        $app = JFactory::getApplication();
-        $input = $app->input;
-        $request = $input->request;
-
-        $url = LogmoniterHelperRoute::getWatchdogRoute($watchdog->slug, $watchdog->catid, $watchdog->language);
-        $url .= '&tmpl=component&print=1&layout=default&page='.@$request->limitstart;
-
-        $status = 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
-
-        $text = JLayoutHelper::render('joomla.content.icons.print_popup', array('params' => $params, 'legacy' => $legacy));
-
-        $attribs['title'] = JText::sprintf('JGLOBAL_PRINT_TITLE', htmlspecialchars($watchdog->title, ENT_QUOTES, 'UTF-8'));
-        $attribs['onclick'] = "window.open(this.href,'win2','".$status."'); return false;";
-        $attribs['rel'] = 'nofollow';
-
-        return JHtml::_('link', JRoute::_($url), $text, $attribs);
-    }
-
-    /**
-     * Method to generate a link to print an watchdog.
-     *
-     * @param object   $watchdog Not used, @deprecated for 4.0
-     * @param Registry $params   The item parameters
-     * @param array    $attribs  Not used, @deprecated for 4.0
-     * @param bool     $legacy   True to use legacy images, false to use icomoon based graphic
-     *
-     * @return string The HTML markup for the popup link
-     */
-    public static function print_screen($watchdog, $params, $attribs = array(), $legacy = false)
-    {
-        $text = JLayoutHelper::render('joomla.content.icons.print_screen', array('params' => $params, 'legacy' => $legacy));
-
-        return '<a href="#" onclick="window.print();return false;">'.$text.'</a>';
+        return '<span class="hasTooltip" title="' . JHtml::tooltipText('COM_LOGMONITER_EDIT') . ' :: ' . $overlib . '">' . $button . '</span>';
     }
 }
