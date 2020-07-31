@@ -82,10 +82,10 @@ $assoc = JLanguageAssociations::isEnabled();
                                         <div class="badge badge-success">
                                             <?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_INSET').': '.$this->escape($item->inset_title); ?>
                                         </div>
-                                        <div class="badge badge-danger">
+                                        <div class="badge badge-info">
                                             <?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_BPRINT').': '.$this->escape($item->bprint_title); ?>
                                         </div>
-                                        <div class="badge badge-info">
+                                        <div class="badge badge-danger">
                                             <?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_TINTERVAL').': '.$this->escape($item->tinterval_title); ?>
                                         </div>
                                         <div class="badge badge-warning">
