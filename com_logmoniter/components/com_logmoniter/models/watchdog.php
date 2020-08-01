@@ -1,14 +1,16 @@
 <?php
 /**
- * @copyright Copyright (c)2020 Amit Kumar Shukla
- * @license GNU General Public License version 3, or later
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die; //No direct access to this file.
+defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
 
+JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.'/tables');
+
 /**
- * Logmoniter Component Watchdog Model.
+ * Logmoniter Component Model for a Watchdog record.
  *
  * @since  1.5
  */
@@ -26,21 +28,21 @@ class LogmoniterModelWatchdog extends JModelItem
      *
      * Note. Calling getState in this method will result in recursion.
      *
+     *
      * @since   1.6
      */
     protected function populateState()
     {
         $app = JFactory::getApplication('site');
 
-        // Load state from the request.
+        // Load the object state.
         $pk = $app->input->getInt('id');
         $this->setState('watchdog.id', $pk);
 
-        //Load the global parameters of the component.
+        // Load the parameters.
         $params = $app->getParams();
         $this->setState('params', $params);
 
-        // TODO: Tune these values based on other permissions.
         $user = JFactory::getUser();
 
         if ((!$user->authorise('core.edit.state', 'com_logmoniter')) && (!$user->authorise('core.edit', 'com_logmoniter'))) {
@@ -52,11 +54,11 @@ class LogmoniterModelWatchdog extends JModelItem
     }
 
     /**
-     * Method to get watchdog data.
+     * Method to get an object.
      *
-     * @param int $pk the id of the watchdog
+     * @param int $id the id of the object to get
      *
-     * @return object|bool|JException Menu item data object on success, boolean false or JException instance on error
+     * @return mixed object on success, false on failure
      */
     public function getItem($pk = null)
     {
@@ -72,26 +74,8 @@ class LogmoniterModelWatchdog extends JModelItem
             try {
                 $db = $this->getDbo();
                 $query = $db->getQuery(true)
-                    ->select(
-                        $this->getState(
-                            'item.select',
-                            'wd.id, wd.asset_id, wd.title, wd.alias, wd.wcid, wd.isid, '.
-                            'wd.bpid, wd.tiid, wd.tiid, '.
-                            'wd.latest_log_date, wd.next_due_date, '.
-                            'wd.state, wd.catid, wd.created, wd.created_by, wd.created_by_alias, '.
-                            // Published/archived watchdog in archive category is treats as archive watchdog
-                            // If category is not published then force 0
-                            'CASE WHEN c.published = 2 AND wd.state > 0 THEN 2 WHEN c.published != 1 THEN 0 ELSE wd.state END as state,'.
-                            // Use created if modified is 0
-                            'CASE WHEN wd.modified = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.modified END as modified, '.
-                            // Use created if publish_up is 0
-                            'CASE WHEN wd.publish_up = '.$db->quote($db->getNullDate()).' THEN wd.created ELSE wd.publish_up END as publish_up,'.
-                            'wd.modified_by, wd.checked_out, wd.checked_out_time, wd.publish_down, '.
-                            'wd.publish_down, wd.params, wd.metadata, wd.metakey, wd.metadesc, wd.access, '.
-                            'wd.hits, wd.log_count, wd.language, wd.version, wd.ordering'
-                        )
-                    );
-                $query->from('#__logbook_watchdogs AS wd')
+                    ->select($this->getState('item.select', 'wd.*'))
+                    ->from('#__logbook_watchdogs AS wd')
                     ->where('wd.id = '.(int) $pk);
 
                 // Join on category table.
@@ -152,66 +136,32 @@ class LogmoniterModelWatchdog extends JModelItem
                 $data = $db->loadObject();
 
                 if (empty($data)) {
-                    return JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_WATCHDOG_NOT_FOUND'));
+                    JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_WATCHDOG_NOT_FOUND'));
                 }
 
                 // Check for published state if filter set.
                 if ((is_numeric($published) || is_numeric($archived)) && (($data->state != $published) && ($data->state != $archived))) {
-                    return JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_WATCHDOG_NOT_FOUND'));
+                    JError::raiseError(404, JText::_('COM_LOGMONITER_ERROR_WATCHDOG_NOT_FOUND'));
                 }
 
                 // Convert parameter fields to objects.
-                $registry = new Registry($data->params);
-
-                $data->params = clone $this->getState('params');
-                $data->params->merge($registry);
-
+                $data->params = new Registry($data->params);
                 $data->metadata = new Registry($data->metadata);
 
-                // Technically guest could edit an watchdog, but lets not check that to improve performance a little.
-                if (!$user->get('guest')) {
-                    $userId = $user->get('id');
-                    $asset = 'com_logmoniter.watchdog.'.$data->id;
-
-                    // Check general edit permission first.
-                    if ($user->authorise('core.edit', $asset)) {
-                        $data->params->set('access-edit', true);
-                    }
-
-                    // Now check if edit.own is available.
-                    elseif (!empty($userId) && $user->authorise('core.edit.own', $asset)) {
-                        // Check for a valid user and that they are the owner.
-                        if ($userId == $data->created_by) {
-                            $data->params->set('access-edit', true);
-                        }
-                    }
-                }
-
-                // Compute view access permissions.
+                // Compute access permissions.
                 if ($access = $this->getState('filter.access')) {
                     // If the access filter has been set, we already know this user can view.
                     $data->params->set('access-view', true);
                 } else {
                     // If no access filter is set, the layout takes some responsibility for display of limited information.
-                    $user = JFactory::getUser();
                     $groups = $user->getAuthorisedViewLevels();
-
-                    if ($data->catid == 0 || $data->category_access === null) {
-                        $data->params->set('access-view', in_array($data->access, $groups));
-                    } else {
-                        $data->params->set('access-view', in_array($data->access, $groups) && in_array($data->category_access, $groups));
-                    }
+                    $data->params->set('access-view', in_array($data->access, $groups) && in_array($data->category_access, $groups));
                 }
 
                 $this->_item[$pk] = $data;
             } catch (Exception $e) {
-                if ($e->getCode() == 404) {
-                    // Need to go thru the error handler to allow Redirect to work.
-                    JError::raiseError(404, $e->getMessage());
-                } else {
-                    $this->setError($e);
-                    $this->_item[$pk] = false;
-                }
+                $this->setError($e);
+                $this->_item[$pk] = false;
             }
         }
 
@@ -219,25 +169,34 @@ class LogmoniterModelWatchdog extends JModelItem
     }
 
     /**
-     * Increment the hit counter for the watchdog.
+     * Returns a reference to the a Table object, always creating it.
      *
-     * @param int $pk optional primary key of the watchdog to increment
+     * @param string $type   The table type to instantiate
+     * @param string $prefix A prefix for the table class name. Optional.
+     * @param array  $config Configuration array for model. Optional.
      *
-     * @return bool true if successful; false otherwise and internal error set
+     * @return JTable A database object
+     *
+     * @since   1.6
      */
-    public function hit($pk = 0)
+    public function getTable($type = 'Watchdog', $prefix = 'LogmoniterTable', $config = array())
     {
-        $input = JFactory::getApplication()->input;
-        $hitcount = $input->getInt('hitcount', 1);
+        return JTable::getInstance($type, $prefix, $config);
+    }
 
-        if ($hitcount) {
-            $pk = (!empty($pk)) ? $pk : (int) $this->getState('watchdog.id');
-
-            $table = JTable::getInstance('Watchdog', 'LogmoniterTable');
-            $table->load($pk);
-            $table->hit($pk);
+    /**
+     * Method to increment the hit counter for the watchdog.
+     *
+     * @param int $id optional ID of the watchdog
+     *
+     * @return bool True on success
+     */
+    public function hit($pk = null)
+    {
+        if (empty($pk)) {
+            $pk = $this->getState('watchdog.id');
         }
 
-        return true;
+        return $this->getTable('Watchdog', 'LogmoniterTable')->hit($pk);
     }
 }

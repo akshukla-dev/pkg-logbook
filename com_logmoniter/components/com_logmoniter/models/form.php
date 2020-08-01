@@ -42,6 +42,9 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
 
         //Retrieve a possible encoded return url from the url query.
         $return = $app->input->get('return', null, 'base64');
+        if (!JUri::isInternal(base64_decode($return))) {
+            $return = null;
+        }
         $this->setState('return_page', base64_decode($return));
 
         // Load the global parameters of the component.

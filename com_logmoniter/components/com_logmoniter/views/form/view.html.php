@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c)2017 Amit Kumar Shukla
+ * @copyright Copyright (c) Amit Kumar Shukla
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
  */
@@ -8,6 +8,11 @@
 // No direct access
 defined('_JEXEC') or die;
 
+/**
+ * HTML Watchdog View class for the Logmoniter component.
+ *
+ * @since  1.5
+ */
 class LogmoniterViewForm extends JViewLegacy
 {
     protected $form = null;
@@ -19,7 +24,6 @@ class LogmoniterViewForm extends JViewLegacy
     public function display($tpl = null)
     {
         $user = JFactory::getUser();
-        $app = JFactory::getApplication();
 
         //Redirect unregistered users to the login page.
         if ($user->guest) {
@@ -40,7 +44,7 @@ class LogmoniterViewForm extends JViewLegacy
             $authorised = $user->authorise('core.create', 'com_logmoniter') || count($user->getAuthorisedCategories('com_logmoniter', 'core.create'));
             $this->isNew = 1;
         } else { //Check if the user is allowed to edit this log.
-            $authorised = $this->item->params->get('access-edit');
+            $authorised = $user->authorise('core.edit', 'com_logmoniter.category.'.$this->item->catid);
         }
 
         if ($authorised !== true) {
@@ -50,10 +54,15 @@ class LogmoniterViewForm extends JViewLegacy
             return false;
         }
 
-        $this->item->tags = new JHelperTags();
+        if (!empty($this->item)) {
+            // Override the base weblink data with any data in the session.
+            $temp = (array) JFactory::getApplication()->getUserState('com_logmoniter.edit.watchdog.data', array());
 
-        if (!empty($this->item->id)) {
-            $this->item->tags->getItemTags('com_logmoniter.watchdog', $this->item->id);
+            foreach ($temp as $k => $v) {
+                $this->item->$k = $v;
+            }
+
+            $this->form->bind($this->item);
         }
 
         // Check for errors.
@@ -62,6 +71,13 @@ class LogmoniterViewForm extends JViewLegacy
 
             return false;
         }
+        //create shortcut for tags
+        $this->item->tags = new JHelperTags();
+
+        if (!empty($this->item->id)) {
+            $this->item->tags->getItemTags('com_logmoniter.watchdog', $this->item->id);
+        }
+
         // Create a shortcut to the parameters.
         $params = &$this->state->params;
 
@@ -97,13 +113,19 @@ class LogmoniterViewForm extends JViewLegacy
         // we need to get it from the menu item itself
         $menu = $menus->getActive();
 
+        if (empty($this->item->id)) {
+            $head = JText::_('COM_LOGMONITER_FORM_SUBMIT_WATCHDOG');
+        } else {
+            $head = JText::_('COM_LOGMONITER_FORM_EDIT_WATCHDOG');
+        }
+
         if ($menu) {
             $this->params->def('page_heading', $this->params->get('page_title', $menu->title));
         } else {
-            $this->params->def('page_heading', JText::_('COM_LOGMONITER_FORM_EDIT_LOG'));
+            $this->params->def('page_heading', $head);
         }
 
-        $title = $this->params->def('page_title', JText::_('COM_LOGMONITER_FORM_EDIT_LOG'));
+        $title = $this->params->def('page_title', $head);
 
         if ($app->get('sitename_pagetitles', 0) == 1) {
             $title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
@@ -112,9 +134,6 @@ class LogmoniterViewForm extends JViewLegacy
         }
 
         $this->document->setTitle($title);
-
-        $pathway = $app->getPathWay();
-        $pathway->addItem($title, '');
 
         if ($this->params->get('menu-meta_description')) {
             $this->document->setDescription($this->params->get('menu-meta_description'));

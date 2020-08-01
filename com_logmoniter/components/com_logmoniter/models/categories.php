@@ -1,18 +1,24 @@
 <?php
 /**
- * @copyright Copyright (c)2020 Amit Kumar Shukla
- * @license GNU General Public License version 3, or later
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die; //No direct access to this file.
+defined('_JEXEC') or die;
 
+/**
+ * This models supports retrieving lists of article categories.
+ *
+ * @since  1.6
+ */
 class LogmoniterModelCategories extends JModelList
 {
     /**
-     * Model context string.
+     * Context string for the model type.  This is used to handle uniqueness
+     * when dealing with the getStoreId() method and caching data structures.
      *
      * @var string
      */
-    public $_context = 'com_logmoniter.categories';
+    protected $context = 'com_logmoniter.categories';
 
     /**
      * The category context (allows other extensions to derived from this model).
@@ -29,6 +35,9 @@ class LogmoniterModelCategories extends JModelList
      * Method to auto-populate the model state.
      *
      * Note. Calling getState in this method will result in recursion.
+     *
+     * @param string $ordering  an optional ordering field
+     * @param string $direction an optional direction (asc|desc)
      *
      * @since   1.6
      */
@@ -71,7 +80,7 @@ class LogmoniterModelCategories extends JModelList
     }
 
     /**
-     * redefine the function an add some properties to make the styling more easy.
+     * Redefine the function and add some properties to make the styling more easy.
      *
      * @return mixed an array of data items on success, false on failure
      */
@@ -102,6 +111,11 @@ class LogmoniterModelCategories extends JModelList
         return $this->_items;
     }
 
+    /**
+     * Get the parent.
+     *
+     * @return mixed an array of data items on success, false on failure
+     */
     public function getParent()
     {
         if (!is_object($this->_parent)) {

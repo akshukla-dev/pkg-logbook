@@ -6,7 +6,6 @@
 defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
 
 /**
  * This models supports retrieving a category, the watchdogs associated with the category,
@@ -17,7 +16,7 @@ use Joomla\Utilities\ArrayHelper;
 class LogmoniterModelCategory extends JModelList
 {
     /**
-     * Category items data.
+     * Category items datwd.
      *
      * @var array
      */
@@ -108,63 +107,27 @@ class LogmoniterModelCategory extends JModelList
     protected function populateState($ordering = null, $direction = null)
     {
         $app = JFactory::getApplication('site');
-        $pk = $app->input->getInt('id');
+        $params = JComponentHelper::getParams('com_logmoniter');
 
-        $this->setState('category.id', $pk);
+        // List state information
+        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->get('list_limit'), 'uint');
+        $this->setState('list.limit', $limit);
 
-        // Load the parameters. Merge Global and Menu Item params into new object
-        $params = $app->getParams();
-        $menuParams = new Registry();
-
-        if ($menu = $app->getMenu()->getActive()) {
-            $menuParams->loadString($menu->params);
-        }
-
-        $mergedParams = clone $menuParams;
-        $mergedParams->merge($params);
-
-        $this->setState('params', $mergedParams);
-        $user = JFactory::getUser();
-
-        $asset = 'com_logmoniter';
-
-        if ($pk) {
-            $asset .= '.category.'.$pk;
-        }
-
-        if ((!$user->authorise('core.edit.state', $asset)) && (!$user->authorise('core.edit', $asset))) {
-            // Limit to published for people who can't edit or edit.state.
-            $this->setState('filter.published', 1);
-        } else {
-            $this->setState('filter.published', array(0, 1, 2));
-        }
-
-        // Process show_noauth parameter
-        if (!$params->get('show_noauth')) {
-            $this->setState('filter.access', true);
-        } else {
-            $this->setState('filter.access', false);
-        }
-
-        $itemid = $app->input->get('id', 0, 'int').':'.$app->input->get('Itemid', 0, 'int');
-
-        $value = $this->getUserStateFromRequest('com_logmoniter.category.filter.'.$itemid.'.tag', 'filter_tag', 0, 'int', false);
-        $this->setState('filter.tag', $value);
+        $limitstart = $app->input->get('limitstart', 0, 'uint');
+        $this->setState('list.start', $limitstart);
 
         // Optional filter text
-        $search = $app->getUserStateFromRequest('com_logmoniter.category.list.'.$itemid.'.filter-search', 'filter-search', '', 'string');
-        $this->setState('list.filter', $search);
+        $this->setState('list.filter', $app->input->getString('filter-search'));
 
-        // Filter.order
-        $orderCol = $app->getUserStateFromRequest('com_logmoniter.category.list.'.$itemid.'.filter_order', 'filter_order', '', 'string');
+        $orderCol = $app->input->get('filter_order', 'ordering');
 
         if (!in_array($orderCol, $this->filter_fields)) {
-            $orderCol = 'wd.ordering';
+            $orderCol = 'ordering';
         }
 
         $this->setState('list.ordering', $orderCol);
 
-        $listOrder = $app->getUserStateFromRequest('com_logmoniter.category.list.'.$itemid.'.filter_order_Dir', 'filter_order_Dir', '', 'cmd');
+        $listOrder = $app->input->get('filter_order_Dir', 'ASC');
 
         if (!in_array(strtoupper($listOrder), array('ASC', 'DESC', ''))) {
             $listOrder = 'ASC';
@@ -172,28 +135,23 @@ class LogmoniterModelCategory extends JModelList
 
         $this->setState('list.direction', $listOrder);
 
-        $this->setState('list.start', $app->input->get('limitstart', 0, 'uint'));
+        $id = $app->input->get('id', 0, 'int');
+        $this->setState('category.id', $id);
 
-        // Set limit for query. If list, use parameter. If blog, add blog parameters for limit.
+        $user = JFactory::getUser();
 
-        $limit = $app->getUserStateFromRequest('com_logmoniter.category.list.'.$itemid.'.limit', 'limit', $params->get('display_num'), 'uint');
+        if ((!$user->authorise('core.edit.state', 'com_logmoniter')) && (!$user->authorise('core.edit', 'com_logmoniter'))) {
+            // Limit to published for people who can't edit or edit.state.
+            $this->setState('filter.state', 1);
 
-        $this->setState('list.limit', $limit);
-
-        // Set the depth of the category query based on parameter
-        $showSubcategories = $params->get('show_subcategory_logmoniter', '0');
-
-        if ($showSubcategories) {
-            $this->setState('filter.max_category_levels', $params->get('show_subcategory_logmoniter', '1'));
-            $this->setState('filter.subcategories', true);
+            // Filter by start and end dates.
+            $this->setState('filter.publish_date', true);
         }
 
         $this->setState('filter.language', JLanguageMultilang::isEnabled());
 
-        $this->setState('layout', $app->input->getString('layout'));
-
-        // Set the featured watchdogs state
-        $this->setState('filter.featured', $params->get('show_featured'));
+        // Load the parameters.
+        $this->setState('params', $params);
     }
 
     /**
@@ -205,98 +163,120 @@ class LogmoniterModelCategory extends JModelList
      */
     public function getItems()
     {
-        $limit = $this->getState('list.limit');
+        // Invoke the parent getItems method to get the main list
+        $items = parent::getItems();
 
-        if ($this->_watchdogs === null && $category = $this->getCategory()) {
-            $model = JModelLegacy::getInstance('Watchdogs', 'LogmoniterModel', array('ignore_request' => true));
-            $model->setState('params', JFactory::getApplication()->getParams());
-            $model->setState('filter.category_id', $category->id);
-            $model->setState('filter.published', $this->getState('filter.published'));
-            $model->setState('filter.access', $this->getState('filter.access'));
-            $model->setState('filter.language', $this->getState('filter.language'));
-            $model->setState('filter.featured', $this->getState('filter.featured'));
-            $model->setState('list.ordering', $this->_buildLogmoniterOrderBy());
-            $model->setState('list.start', $this->getState('list.start'));
-            $model->setState('list.limit', $limit);
-            $model->setState('list.direction', $this->getState('list.direction'));
-            $model->setState('list.filter', $this->getState('list.filter'));
-            $model->setState('filter.tag', $this->getState('filter.tag'));
-
-            // Filter.subcategories indicates whether to include watchdogs from subcategories in the list or blog
-            $model->setState('filter.subcategories', $this->getState('filter.subcategories'));
-            $model->setState('filter.max_category_levels', $this->getState('filter.max_category_levels'));
-            $model->setState('list.links', $this->getState('list.links'));
-
-            if ($limit >= 0) {
-                $this->_watchdogs = $model->getItems();
-
-                if ($this->_watchdogs === false) {
-                    $this->setError($model->getError());
-                }
-            } else {
-                $this->_watchdogs = array();
+        // Convert the params field into an object, saving original in _params
+        foreach ($items as $item) {
+            if (!isset($this->_params)) {
+                $params = new Registry();
+                $params->loadString($item->params);
+                $item->params = $params;
             }
 
-            $this->_pagination = $model->getPagination();
+            // Get the tags
+            $item->tags = new JHelperTags();
+            $item->tags->getItemTags('com_logmoniter.watchdog', $item->id);
         }
 
-        return $this->_watchdogs;
+        return $items;
     }
 
     /**
-     * Build the orderby for the query.
+     * Method to get a JDatabaseQuery object for retrieving the data set from a database.
      *
-     * @return string $orderby portion of query
+     * @return JDatabaseQuery a JDatabaseQuery object to retrieve the data set
      *
-     * @since   1.5
+     * @since   1.6
      */
-    protected function _buildLogmoniterOrderBy()
+    protected function getListQuery()
     {
-        $app = JFactory::getApplication('site');
+        $groups = implode(',', JFactory::getUser()->getAuthorisedViewLevels());
+
+        // Create a new query object.
         $db = $this->getDbo();
-        $params = $this->state->params;
-        $itemid = $app->input->get('id', 0, 'int').':'.$app->input->get('Itemid', 0, 'int');
-        $orderCol = $app->getUserStateFromRequest('com_logmoniter.category.list.'.$itemid.'.filter_order', 'filter_order', '', 'string');
-        $orderDirn = $app->getUserStateFromRequest('com_logmoniter.category.list.'.$itemid.'.filter_order_Dir', 'filter_order_Dir', '', 'cmd');
-        $orderby = ' ';
+        $query = $db->getQuery(true);
 
-        if (!in_array($orderCol, $this->filter_fields)) {
-            $orderCol = null;
+        // Select required fields from the categories.
+        $query->select($this->getState('list.select', 'wd.*'))
+            ->from($db->quoteName('#__logbook_watchdogs').' AS wd')
+            ->where('wd.access IN ('.$groups.')');
+
+        // Filter by category.
+        if ($categoryId = $this->getState('category.id')) {
+            // Group by subcategory
+            if ($this->getState('category.group', 0)) {
+                $query->select('c.title AS category_title')
+                    ->where('c.parent_id = '.(int) $categoryId)
+                    ->join('LEFT', '#__categories AS c ON c.id = wd.catid')
+                    ->where('c.access IN ('.$groups.')');
+            } else {
+                $query->where('wd.catid = '.(int) $categoryId)
+                    ->join('LEFT', '#__categories AS c ON c.id = wd.catid')
+                    ->where('c.access IN ('.$groups.')');
+            }
+
+            // Filter by published category
+            $cpublished = $this->getState('filter.c.published');
+
+            if (is_numeric($cpublished)) {
+                $query->where('c.published = '.(int) $cpublished);
+            }
         }
 
-        if (!in_array(strtoupper($orderDirn), array('ASC', 'DESC', ''))) {
-            $orderDirn = 'ASC';
+        // Join over the users for the author and modified_by names.
+        $query->select("CASE WHEN wd.created_by_alias > ' ' THEN wd.created_by_alias ELSE ua.name END AS author")
+            ->select('ua.email AS author_email')
+            ->join('LEFT', '#__users AS ua ON ua.id = wd.created_by')
+            ->join('LEFT', '#__users AS uam ON uam.id = wd.modified_by');
+
+        // Filter by state
+        $state = $this->getState('filter.state');
+
+        if (is_numeric($state)) {
+            $query->where('wd.state = '.(int) $state);
         }
 
-        if ($orderCol && $orderDirn) {
-            $orderby .= $db->escape($orderCol).' '.$db->escape($orderDirn).', ';
+        // Do not show trashed links on the front-end
+        $query->where('wd.state != -2');
+
+        // Filter by start and end dates.
+        $nullDate = $db->quote($db->getNullDate());
+        $nowDate = $db->quote(JFactory::getDate()->toSql());
+
+        if ($this->getState('filter.publish_date')) {
+            $query->where('(wd.publish_up = '.$nullDate.' OR wd.publish_up <= '.$nowDate.')')
+                ->where('(wd.publish_down = '.$nullDate.' OR wd.publish_down >= '.$nowDate.')');
         }
 
-        $watchdogOrderby = $params->get('orderby_sec', 'rdate');
-        $watchdogOrderDate = $params->get('order_date');
-        $categoryOrderby = $params->def('orderby_pri', '');
-        $secondary = LogmoniterHelperQuery::orderbySecondary($watchdogOrderby, $watchdogOrderDate).', ';
-        $primary = LogmoniterHelperQuery::orderbyPrimary($categoryOrderby);
-
-        $orderby .= $primary.' '.$secondary.' wd.created ';
-
-        return $orderby;
-    }
-
-    /**
-     * Method to get a JPagination object for the data set.
-     *
-     * @return JPagination a JPagination object for the data set
-     *
-     * @since   3.0.1
-     */
-    public function getPagination()
-    {
-        if (empty($this->_pagination)) {
-            return null;
+        // Filter by language
+        if ($this->getState('filter.language')) {
+            $query->where('wd.language in ('.$db->quote(JFactory::getLanguage()->getTag()).','.$db->quote('*').')');
         }
 
-        return $this->_pagination;
+        // Filter by search in title
+        $search = $this->getState('list.filter');
+
+        if (!empty($search)) {
+            $search = $db->quote('%'.$db->escape($search, true).'%');
+            $query->where('(wd.title LIKE '.$search.')');
+        }
+
+        // If grouping by subcategory, add the subcategory list ordering clause.
+        if ($this->getState('category.group', 0)) {
+            $query->order(
+                $db->escape($this->getState('category.ordering', 'c.lft')).' '.
+                $db->escape($this->getState('category.direction', 'ASC'))
+            );
+        }
+
+        // Add the list ordering clause.
+        $query->order(
+            $db->escape($this->getState('list.ordering', 'wd.ordering')).' '.
+            $db->escape($this->getState('list.direction', 'ASC'))
+        );
+
+        return $query;
     }
 
     /**
@@ -309,29 +289,23 @@ class LogmoniterModelCategory extends JModelList
     public function getCategory()
     {
         if (!is_object($this->_item)) {
-            if (isset($this->state->params)) {
-                $params = $this->state->params;
-                $options = array();
-                $options['countItems'] = $params->get('show_cat_num_watchdogs', 1) || !$params->get('show_empty_categories_cat', 0);
-                $options['access'] = $params->get('check_access_rights', 1);
-            } else {
-                $options['countItems'] = 0;
+            $app = JFactory::getApplication();
+            $menu = $app->getMenu();
+            $active = $menu->getActive();
+            $params = new Registry();
+
+            if ($active) {
+                $params->loadString($active->params);
             }
+
+            $options = array();
+            $options['countItems'] = $params->get('show_cat_num_links_cat', 1)
+                || $params->get('show_empty_categories', 0);
 
             $categories = JCategories::getInstance('Logmoniter', $options);
             $this->_item = $categories->get($this->getState('category.id', 'root'));
 
-            // Compute selected asset permissions.
             if (is_object($this->_item)) {
-                $user = JFactory::getUser();
-                $asset = 'com_logmoniter.category.'.$this->_item->id;
-
-                // Check general create permission.
-                if ($user->authorise('core.create', $asset)) {
-                    $this->_item->getParams()->set('access-create', true);
-                }
-
-                // TODO: Why aren't we lazy loading the children and siblings?
                 $this->_children = $this->_item->getChildren();
                 $this->_parent = false;
 
@@ -411,17 +385,6 @@ class LogmoniterModelCategory extends JModelList
             $this->getCategory();
         }
 
-        // Order subcategories
-        if ($this->_children) {
-            $params = $this->getState()->get('params');
-
-            $orderByPri = $params->get('orderby_pri');
-
-            if ($orderByPri === 'alpha' || $orderByPri === 'ralpha') {
-                $this->_children = ArrayHelper::sortObjects($this->_children, 'title', ($orderByPri === 'alpha') ? 1 : (-1));
-            }
-        }
-
         return $this->_children;
     }
 
@@ -434,13 +397,12 @@ class LogmoniterModelCategory extends JModelList
      */
     public function hit($pk = 0)
     {
-        $input = JFactory::getApplication()->input;
-        $hitcount = $input->getInt('hitcount', 1);
+        $hitcount = JFactory::getApplication()->input->getInt('hitcount', 1);
 
         if ($hitcount) {
             $pk = (!empty($pk)) ? $pk : (int) $this->getState('category.id');
-
             $table = JTable::getInstance('Category', 'JTable');
+            $table->load($pk);
             $table->hit($pk);
         }
 

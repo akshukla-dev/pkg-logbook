@@ -13,6 +13,8 @@ JHtml::_('behavior.keepalive');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.calendar');
 JHtml::_('formbehavior.chosen', 'select');
+JHtml::_('behavior.modal', 'wd.modal_jform_contenthistory');
+
 $this->tab_name = 'com-logmoniter-form';
 
 // Create shortcut to parameters.
@@ -52,6 +54,7 @@ $params = $this->state->get('params');
           <?php echo $this->form->renderField('bpid'); ?>
           <?php echo $this->form->renderField('tiid'); ?>
           <?php echo $this->form->renderField('lwid'); ?>
+					<?php echo $this->form->renderField('next_due_date'); ?>
           <?php if ($this->user->authorise('core.edit.state', 'com_logmoniter.watchdog')) : ?>
             <?php echo $this->form->renderField('state'); ?>
           <?php endif; ?>
@@ -65,10 +68,6 @@ $params = $this->state->get('params');
           <?php echo $this->form->renderField('access'); ?>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
       <?php echo JHtml::_('bootstrap.endTabSet'); ?>
-
-      <input type="hidden" name="task" value="" />
-      <input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
-      <?php echo JHtml::_('form.token'); ?>
     </fieldset>
 
     <div class="btn-toolbar">
@@ -82,12 +81,14 @@ $params = $this->state->get('params');
           <span class="icon-cancel"></span><?php echo JText::_('JCANCEL'); ?>
         </button>
       </div>
+      <?php if ($params->get('save_history', 0)) : ?>
+        <div class="btn-group">
+          <?php echo $this->form->getInput('contenthistory'); ?>
+        </div>
+      <?php endif; ?>
     </div>
+    <input type="hidden" name="task" value="" />
+    <input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
+    <?php echo JHtml::_('form.token'); ?>
   </form>
 </div>
-
-<?php
-
-$doc = JFactory::getDocument();
-//Load the jQuery script(s).
-$doc->addScript(JURI::base().'administrator/components/com_logmoniter/js/watchdog.js');

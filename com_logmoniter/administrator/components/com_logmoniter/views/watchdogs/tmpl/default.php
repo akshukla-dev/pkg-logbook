@@ -179,13 +179,13 @@ $assoc = JLanguageAssociations::isEnabled();
                                 <div class="small">
                                     <?php
                                         $date = $item->latest_log_date;
-                                        echo $date > 0 ? JText::_('COM_LOGMONITER_LATEST_LOG_DATE').': '.JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : JText::_('COM_LOGMONITER_LATEST_LOG_DATE').': '.'-';
+                                        echo $date > 0 ? JText::_('COM_LOGMONITER_LATEST_LOG_DATE').': '.JHtml::_('date', $date, JText::_('DATE_FORMAT_LC3')) : JText::_('COM_LOGMONITER_LATEST_LOG_DATE').': '.'-';
                                     ?>
                                 </div>
                                 <div class="small">
                                     <?php
                                             $date = $item->next_due_date;
-                                            echo $date > 0 ? JText::_('COM_LOGMONITER_NEXT_DUE_DATE').': '.JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : JText::_('COM_LOGMONITER_NEXT_DUE_DATE').': '.'-';
+                                            echo $date > 0 ? JText::_('COM_LOGMONITER_NEXT_DUE_DATE').': '.JHtml::_('date', $date, JText::_('DATE_FORMAT_LC3')) : JText::_('COM_LOGMONITER_NEXT_DUE_DATE').': '.'-';
                                         ?>
                                     </div>
                             </div>
@@ -216,7 +216,7 @@ $assoc = JLanguageAssociations::isEnabled();
                         <td class="nowrap small hidden-phone">
                             <?php
                             $date = $item->{$orderingColumn};
-                            echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC4')) : '-';
+                            echo $date > 0 ? JHtml::_('date', $date, JText::_('DATE_FORMAT_LC3')) : '-';
                             ?>
                         </td>
                         <td class="hidden-phone center">
