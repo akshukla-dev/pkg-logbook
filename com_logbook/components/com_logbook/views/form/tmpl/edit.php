@@ -18,7 +18,10 @@ $this->ignore_fieldsets = array('jmetadata', 'item_associations');
 
 //Load the jQuery script(s).
 $doc = JFactory::getDocument();
-$doc->addScript(JURI::base().'administrator/components/com_logbook/js/log.js');
+$doc->addScript(JURI::root().'/media/com_logbook/js/log.js');
+
+// Fieldsets to not automatically render by /layouts/joomla/edit/params.php
+$this->ignore_fieldsets = array('details', 'item_associations', 'jmetadata');
 
 // Create shortcut to parameters.
 $params = $this->state->get('params');
@@ -34,22 +37,16 @@ $params = $this->state->get('params');
       alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
     }
   }
-  /*Logbook.closebutton = function(task){
-    if(task == 'log.close' & document.formvalidator.isValid(document.getElementById('adminForm'))){
-      // close log
-      Joomla.submitform(task);
-    }
-}
 </script>
 
 <div class="edit item-page<?php echo $this->pageclass_sfx; ?>">
   <?php if ($params->get('show_page_heading')) :?>
   <div class="page-header">
     <h1>
-      <?php echo $this->escape($params->get('page_heading'));?>
+      <?php echo $this->escape($params->get('page_heading')); ?>
     </h1>
   </div>
-  <?php endif;?>
+  <?php endif; ?>
 
   <form action="<?php echo JRoute::_('index.php?option=com_logbook&l_id='.(int) $this->item->id); ?>"
   method="post" name="adminForm" id="adminForm" enctype="multipart/form-data" class="form-validate form-vertical">
@@ -68,12 +65,7 @@ $params = $this->state->get('params');
       <div class="btn-group">
         <?php echo $this->form->getInput('contenthistory'); ?>
       </div>
-      <?php endif;?>
-      <div class="btn-group">
-        <button type="button" class="btn" onclick="Logbook.closebutton('log.close')">
-          <span class="icon-close"></span>&#160;<?php echo JText::_('JCLOSE'); ?>
-        </button>
-      </div>
+      <?php endif; ?>
     </div>
     <fieldset>
       <?php echo JHtml::_('bootstrap.startTabSet', $this->tab_name, array('active' => 'editor')); ?>
@@ -115,7 +107,7 @@ $params = $this->state->get('params');
           <?php echo $this->form->renderField('signatories'); ?>
           <?php echo $this->form->renderField('remarks'); ?>
         <?php echo JHtml::_('bootstrap.endTab'); ?>
-        <?php // echo JLayoutHelper::render('joomla.edit.params', $this); ?>
+        <?php // echo JLayoutHelper::render('joomla.edit.params', $this);?>
         <?php echo JHtml::_('bootstrap.addTab', $this->tab_name, 'OtherInfo', JText::_('COM_LOGBOOK_LOG_OTHERINFO')); ?>
           <?php echo $this->form->renderField('catid'); ?>
           <?php echo $this->form->renderField('tags'); ?>

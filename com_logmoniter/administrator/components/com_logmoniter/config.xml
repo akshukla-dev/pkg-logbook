@@ -20,7 +20,7 @@
 			name="show_title"
 			type="radio"
 			label="JGLOBAL_SHOW_TITLE_LABEL"
-			description="JGLOBAL_SHOW_TITLE_DESC"
+			description="COM_LOGMONITER_SHOW_TITLE_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
 			>

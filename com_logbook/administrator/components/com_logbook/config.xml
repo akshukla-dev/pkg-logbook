@@ -10,7 +10,7 @@
 			name="show_title"
 			type="radio"
 			label="JGLOBAL_SHOW_TITLE_LABEL"
-			description="JGLOBAL_SHOW_TITLE_DESC"
+			description="COM_LOGBOOK_SHOW_TITLE_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
 			>
@@ -82,18 +82,6 @@
 		</field>
 
 		<field
-			name="show_icons"
-			type="radio"
-			label="JGLOBAL_SHOW_ICONS_LABEL"
-			description="JGLOBAL_SHOW_ICONS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
 			name="spacer"
 			type="spacer"
 			hr="true"
@@ -162,31 +150,6 @@
 		/>
 
 		<field
-			name="show_author"
-			type="radio"
-			label="JGLOBAL_SHOW_AUTHOR_LABEL"
-			description="JGLOBAL_SHOW_AUTHOR_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="link_author"
-			type="radio"
-			label="JGLOBAL_LINK_AUTHOR_LABEL"
-			description="JGLOBAL_LINK_AUTHOR_DESC"
-			class="btn-group btn-group-yesno"
-			default="0"
-			showon="show_author:1"
-			>
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-
-		<field
 			name="show_create_date"
 			type="radio"
 			label="JGLOBAL_SHOW_CREATE_DATE_LABEL"
@@ -203,18 +166,6 @@
 			type="radio"
 			label="JGLOBAL_SHOW_MODIFY_DATE_LABEL"
 			description="JGLOBAL_SHOW_MODIFY_DATE_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_close_date"
-			type="radio"
-			label="COM_LOGBOOK_SHOW_CLOSED_DATE_LABEL"
-			description="COM_LOGBOOK_SHOW_CLOSED_DATE_DESC"
 			class="btn-group btn-group-yesno"
 			default="1"
 			>
@@ -260,60 +211,6 @@
 		</field>
 
 		<field
-			name="show_downloads"
-			type="radio"
-			label="JGLOBAL_SHOW_DOWNLOADS_LABEL"
-			description="JGLOBAL_SHOW_DOWNLOADS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_noauth"
-			type="radio"
-			label="JGLOBAL_SHOW_UNAUTH_LINKS_LABEL"
-			description="JGLOBAL_SHOW_UNAUTH_LINKS_DESC"
-			class="btn-group btn-group-yesno"
-			default="0"
-			>
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-	</fieldset>
-
-	<fieldset
-		name="editinglayout"
-	    label="COM_LOGBOOK_CONFIG_FORM_LAYOUT"
-	    description="COM_LOGBOOK_CONFIG_FORM_LAYOUT"
-	>
-	    <field
-			name="show_publishing_options"
-			type="radio"
-			label="COM_LOGBOOK_SHOW_PUBLISHING_OPTIONS_LABEL"
-			description="COM_LOGBOOK_SHOW_PUBLISHING_OPTIONS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="show_log_options"
-			type="radio"
-			label="COM_LOGBOOK_SHOW_LOG_OPTIONS_LABEL"
-			description="COM_LOGBOOK_SHOW_LOG_OPTIONS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-	    <field
 			name="save_history"
 			type="radio"
 			label="JGLOBAL_SAVE_HISTORY_OPTIONS_LABEL"
@@ -335,47 +232,18 @@
 			showon="save_history:1"
 		/>
 
-	    <field name="show_create_date"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="JGLOBAL_SHOW_CREATE_DATE_LABEL"
-		    description="COM_LOGBOOK_SHOW_CREATE_DATE_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field name="show_modify_date"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="JGLOBAL_SHOW_MODIFY_DATE_LABEL"
-		    description="COM_LOGBOOK_SHOW_MODIFY_DATE_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field name="show_publish_date"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="JGLOBAL_SHOW_PUBLISH_DATE_LABEL"
-		    description="COM_LOGBOOK_SHOW_PUBLISH_DATE_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field name="show_downloads"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="COM_LOGBOOK_FIELD_SHOW_DOWNLOADS_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_DOWNLOADS_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-    </fieldset>
-
+		<field
+			name="show_noauth"
+			type="radio"
+			label="JGLOBAL_SHOW_UNAUTH_LINKS_LABEL"
+			description="JGLOBAL_SHOW_UNAUTH_LINKS_DESC"
+			class="btn-group btn-group-yesno"
+			default="0"
+			>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+	</fieldset>
 
 	<fieldset
 		name="category"
@@ -578,6 +446,16 @@
 		description="COM_LOGBOOK_CONFIG_LIST_SETTINGS_DESC"
 		addfieldpath="/administrator/compponents/com_logmoniter/models/fields"
 	>
+		<field
+			name="filter_field"
+			type="radio"
+			label="JGLOBAL_FILTER_FIELD_LABEL"
+			description="JGLOBAL_FILTER_FIELD_DESC"
+			default="hide"
+		>
+			<option value="1">JSHOW</option>
+			<option value="hide">JHIDE</option>
+		</field>
 
 		<field
 			name="show_pagination_limit"
@@ -589,21 +467,6 @@
 			>
 			<option value="1">JSHOW</option>
 			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="filter_field"
-			type="list"
-			label="JGLOBAL_FILTER_FIELD_LABEL"
-			description="JGLOBAL_FILTER_FIELD_DESC"
-			default="hide"
-			>
-			<option value="hide">JHIDE</option>
-			<option value="title">JGLOBAL_TITLE</option>
-			<option value="author">JAUTHOR</option>
-			<option value="hits">JGLOBAL_HITS</option>
-			<option value="hits">COM_LOGBOOK_LOG_DOWNLOADS</option>
-			<option value="tag">JTAG</option>
 		</field>
 
 		<field
@@ -619,6 +482,18 @@
 		</field>
 
 		<field
+			name="show_log_remarks"
+			type="radio"
+			default="1"
+			class="btn-group btn-group-yesno"
+			description="COM_LOGBOOK_FIELD_CONFIG_LOG_REMARKS_DESC"
+			label="COM_LOGBOOK_FIELD_CONFIG_LOG_REMARKS_LABEL"
+			>
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+		</field>
+
+		<field
 			name="list_show_date"
 			type="list"
 			label="JGLOBAL_SHOW_DATE_LABEL"
@@ -628,7 +503,7 @@
 			<option value="0">JHIDE</option>
 			<option value="created">JGLOBAL_CREATED</option>
 			<option value="modified">JGLOBAL_MODIFIED</option>
-			<option value="closed">COM_LOGBOOK_CLOSED</option>
+			<option value="published">JBLOBAL_PUBLISHED</option>
 		</field>
 
 		<field
@@ -685,9 +560,75 @@
 		    <option value="1">JSHOW</option>
 		    <option value="0">JHIDE</option>
 	    </field>
+
+		<field
+			name="show_pagination"
+			type="list"
+			default="2"
+			label="JGLOBAL_PAGINATION_LABEL"
+			description="JGLOBAL_PAGINATION_DESC"
+			>
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+			<option value="2">JGLOBAL_AUTO</option>
+		</field>
+
+		<field
+			name="show_pagination_results"
+			type="radio"
+			class="btn-group btn-group-yesno"
+			default="1"
+			label="JGLOBAL_PAGINATION_RESULTS_LABEL"
+			description="JGLOBAL_PAGINATION_RESULTS_DESC"
+			>
+			<option value="1">JSHOW</option>
+			<option value="0">JHIDE</option>
+		</field>
 	</fieldset>
 
-	<fieldset name="info_default_parameters"
+	<fieldset name="watchdog" label="COM_LOGBOOK_WATCHDOG_OPTIONS">
+		<field
+			name="show_watchdog_title"
+			type="list"
+			label="COM_LOGBOOK_SHOW_WATCHDOG_TITLE"
+			description="COM_LOGBOOK_SHOW_WATCHDOG_TITLE_DESC"
+			>
+			<option value="0">JHIDE</option>
+			<option value="1">JSHOW</option>
+		</field>
+
+		<field
+			name="show_inset_title"
+			type="list"
+			label="COM_LOGBOOK_SHOW_INSET_TITLE"
+			description="COM_LOGBOOK_SHOW_INSET_TITLE_DESC"
+			>
+			<option value="0">JHIDE</option>
+			<option value="1">JSHOW</option>
+		</field>
+
+		<field
+			name="show_bprint_title"
+			type="list"
+			label="COM_LOGBOOK_SHOW_BPRINT_TITLE"
+			description="COM_LOGBOOK_SHOW_BPRINT_TITLE_DESC"
+			>
+			<option value="0">JHIDE</option>
+			<option value="1">JSHOW</option>
+		</field>
+
+		<field
+			name="show_tinterval_title"
+			type="list"
+			label="COM_LOGBOOK_SHOW_TINTERVAL_TITLE"
+			description="COM_LOGBOOK_SHOW_TINTERVAL_TITLE_DESC"
+			>
+			<option value="0">JHIDE</option>
+			<option value="1">JSHOW</option>
+		</field>
+	</fieldset>
+
+	<fieldset name="log_default_parameters"
 	    label="COM_LOGBOOK_CONFIG_LOG_SETTINGS_LABEL"
 	    description="COM_LOGBOOK_CONFIG_LOG_SETTINGS_DESC"
 	>
@@ -706,170 +647,11 @@
 		    <option value="1">JSHOW</option>
 		    <option value="0">JHIDE</option>
 	    </field>
-
-	    <field name="show_put_online_by"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    default="1"
-		    label="COM_LOGBOOK_FIELD_SHOW_PUT_ONLINE_BY_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_PUT_ONLINE_BY_DESC">
-		    <option value="1">JYES</option>
-		    <option value="0">JNO</option>
-	    </field>
-
-	    <field name="show_author"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="COM_LOGBOOK_FIELD_SHOW_AUTHOR_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_AUTHOR_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field name="show_file_name"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="COM_LOGBOOK_FIELD_SHOW_FILE_NAME_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_FILE_NAME_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field name="show_file_size"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="COM_LOGBOOK_FIELD_SHOW_FILE_SIZE_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_FILE_SIZE_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
-
-	    <field name="show_file_type"
-		    type="radio"
-		    class="btn-group btn-group-yesno"
-		    label="COM_LOGBOOK_FIELD_SHOW_FILE_TYPE_LABEL"
-		    description="COM_LOGBOOK_FIELD_SHOW_FILE_TYPE_DESC"
-		    default="1">
-		    <option value="1">JSHOW</option>
-		    <option value="0">JHIDE</option>
-	    </field>
     </fieldset>
-
-	<fieldset
-		name="shared"
-		label="COM_LOGBOOK_SHARED_LABEL"
-		description="COM_LOGBOOK_SHARED_DESC"
-	>
-		<field
-			name="orderby_pri"
-			type="list"
-			label="JGLOBAL_CATEGORY_ORDER_LABEL"
-			description="JGLOBAL_CATEGORY_ORDER_DESC"
-			default="none"
-			>
-			<option value="none">JGLOBAL_NO_ORDER</option>
-			<option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
-			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
-			<option value="order">JGLOBAL_CATEGORY_MANAGER_ORDER</option>
-		</field>
-
-		<field
-			name="orderby_sec"
-			type="list"
-			label="JGLOBAL_ARTICLE_ORDER_LABEL"
-			description="JGLOBAL_ARTICLE_ORDER_DESC"
-			default="rdate"
-			>
-			<option value="rdate">JGLOBAL_MOST_RECENT_FIRST</option>
-			<option value="date">JGLOBAL_OLDEST_FIRST</option>
-			<option value="alpha">JGLOBAL_TITLE_ALPHABETICAL</option>
-			<option value="ralpha">JGLOBAL_TITLE_REVERSE_ALPHABETICAL</option>
-			<option value="author">JGLOBAL_AUTHOR_ALPHABETICAL</option>
-			<option value="rauthor">JGLOBAL_AUTHOR_REVERSE_ALPHABETICAL</option>
-			<option value="hits">JGLOBAL_MOST_HITS</option>
-			<option value="rhits">JGLOBAL_LEAST_HITS</option>
-			<option value="order">COM_LOGBOOK_LOG_MANAGER_ORDER</option>
-			<option value="rorder">COM_LOGBOOK_LOG_MANAGER_REVERSE_ORDER</option>
-			<option value="downloads">COM_LOGBOOK_DOWNLOADS_DESC</option>
-			<option value="rdownloads">COM_LOGBOOK_DOWNLOAD_ASC</option>
-		</field>
-
-		<field
-			name="order_date"
-			type="list"
-			label="JGLOBAL_ORDERING_DATE_LABEL"
-			description="JGLOBAL_ORDERING_DATE_DESC"
-			showon="orderby_sec:rdate,date"
-			default="published"
-			>
-			<option value="created">JGLOBAL_CREATED</option>
-			<option value="modified">JGLOBAL_MODIFIED</option>
-			<option value="published">JPUBLISHED</option>
-		</field>
-
-		<field
-			name="show_pagination"
-			type="list"
-			label="JGLOBAL_PAGINATION_LABEL"
-			description="JGLOBAL_PAGINATION_DESC"
-			default="2"
-			>
-			<option value="0">JHIDE</option>
-			<option value="1">JSHOW</option>
-			<option value="2">JGLOBAL_AUTO</option>
-		</field>
-
-		<field
-			name="show_pagination_results"
-			type="radio"
-			label="JGLOBAL_PAGINATION_RESULTS_LABEL"
-			description="JGLOBAL_PAGINATION_RESULTS_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			showon="show_pagination:1,2"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="spacer3"
-			type="spacer"
-			hr="true"
-		/>
-
-		<field
-			name="show_watchdog"
-			type="radio"
-			label="COM_LOGBOOK_SHOW_WATCHDOG_LABEL"
-			description="COM_LOGBOOK_SHOW_WATCHDOG_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			>
-			<option value="1">JSHOW</option>
-			<option value="0">JHIDE</option>
-		</field>
-
-		<field
-			name="link_watchdog"
-			type="radio"
-			label="COM_LOGBOOK_LINK_WATCHDOG_LABEL"
-			description="COM_LOGBOOK_LINK_WATCHDOG_DESC"
-			class="btn-group btn-group-yesno"
-			default="1"
-			showon="show_watchdog:1"
-			>
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-	</fieldset>
 	<fieldset
 		name="uninstallsettings"
-		label="COM_LOGBOOK_UNINSTALL_SETTINGS"
-		description="COM_LOGBOKK_UNISTALL_SETTINGS_DESC"
+		label="COM_LOGBOOK_UNINSTALL_SETTINGS_LABEL"
+		description="COM_LOGBOOK_UNINSTALL_SETTINGS_DESC"
 	>
 		<field name="uninstall_remove_all" type="radio" default="0"
 			class="btn-group btn-group-yesno"

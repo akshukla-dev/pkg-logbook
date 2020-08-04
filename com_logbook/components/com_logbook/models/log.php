@@ -7,6 +7,8 @@
 // No direct access to this file
 defined('_JEXEC') or die;
 
+JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.'/tables');
+
 /**
  * Logbook_Log Model.
  *
@@ -34,6 +36,15 @@ class LogbookModelLog extends JModelItem
         //Load the global parameters of the component.
         $params = $app->getParams();
         $this->setState('params', $params);
+
+        /*$user = JFactory::getUser();
+
+        if ((!$user->authorise('core.edit.state', 'com_logbook')) && (!$user->authorise('core.edit', 'com_logbook'))) {
+            $this->setState('filter.published', 1);
+            $this->setState('filter.archived', 2);
+        }
+
+        $this->setState('filter.language', JLanguageMultilang::isEnabled()); */
     }
 
     /**
@@ -63,6 +74,8 @@ class LogbookModelLog extends JModelItem
      */
     public function getItem($pk = null)
     {
+        $user = JFactory::getUser();
+
         $pk = (!empty($pk)) ? $pk : (int) $this->getState('log.id');
 
         if ($this->_item === null) {
@@ -75,25 +88,32 @@ class LogbookModelLog extends JModelItem
             $query->select('l.*');
             $query->from('#__logbook_logs AS l');
 
-            // Join on watchdog table.
-            $query->select('wd.title AS wdog_title, wd.alias AS wdog_alias, wd.access AS wd_access', 'wd.isid', 'wd.wcid', 'wd.bprint', 'wd.tiid')
+            // Join on category table.
+            $query->select('c.title AS category_title, c.alias AS category_alias, c.access AS category_access')
+                ->join('LEFT', '#__categories AS c on c.id = l.catid');
+
+            // Join over the watchdog table.
+            $query->select('wd.title AS watchdog_title, wd.isid, wd.bpid, wd.tiid, wd.wcid')
                 ->join('LEFT', '#__logbook_watchdogs AS wd ON wd.id = l.wdid');
 
-            //Join over Instruction Sets Table
-            $query->select('inset.title AS inset_title')
-                ->join('LEFT', '#__logbook_instructionsets AS inset ON inset.id = wd.isid');
-            //Join over Workcenters Table
+            // Join over the workcenter table.
             $query->select('wc.title AS wcenter_title')
                 ->join('LEFT', '#__logbook_workcenters AS wc ON wc.id = wd.wcid');
-            //Join over Blueprints Sets Table
-            $query->select('bp.title AS blueprint_title')
-                ->join('LEFT', '#__logbook_blueprints AS bp ON bp.id = wd.bpid');
-            //Join over Time Intervals Table
+
+            // Join over the inset tabel.
+            $query->select('inset.title AS inset_title')
+                ->join('LEFT', '#__logbook_instructionsets AS inset ON inset.id = wd.isid');
+
+            // Join over the tiid table.
             $query->select('ti.title AS tinterval_title')
                 ->join('LEFT', '#__logbook_timeintervals AS ti ON ti.id = wd.tiid');
 
+            // Join over the bpid table.
+            $query->select('bp.title AS bprint_title')
+                ->join('LEFT', '#__logbook_blueprints AS bp ON bp.id = wd.bpid');
+
             // Join over the users.
-            $query->select('u.name AS put_online_by')
+            $query->select('u.name AS author')
                 ->join('LEFT', '#__users AS u ON u.id = l.created_by');
 
             $query->where('l.id='.$pk);
@@ -132,6 +152,11 @@ class LogbookModelLog extends JModelItem
                     }
                 }
             }
+
+            // Get the tags
+            $data->tags = new JHelperTags();
+            $data->tags->getItemTags('com_logbook.log', $data->id);
+
             $this->_item[$pk] = $data;
         }
 
@@ -145,19 +170,12 @@ class LogbookModelLog extends JModelItem
      *
      * @return bool true if successful; false otherwise and internal error set
      */
-    public function hit($pk = 0)
+    public function hit($pk = null)
     {
-        $input = JFactory::getApplication()->input;
-        $hitcount = $input->getInt('hitcount', 1);
-
-        if ($hitcount) {
-            $pk = (!empty($pk)) ? $pk : (int) $this->getState('log.id');
-
-            $table = JTable::getInstance('Log', 'LogbookTable');
-            $table->load($pk);
-            $table->hit($pk);
+        if (empty($pk)) {
+            $pk = $this->getState('log.id');
         }
 
-        return true;
+        return $this->getTable('Log', 'LogbookTable')->hit($pk);
     }
 }

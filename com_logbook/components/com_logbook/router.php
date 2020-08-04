@@ -24,16 +24,19 @@ class LogbookRouter extends JComponentRouterView
     {
         $params = JComponentHelper::getParams('com_logbook');
         $this->noIDs = (bool) $params->get('sef_ids');
-        $categories = new JComponentRouterViewconfiguration('categories');
-        $categories->setKey('id');
-        $this->registerView($categories);
-        $category = new JComponentRouterViewconfiguration('category');
-        $category->setKey('id')->setParent($categories, 'catid')->setNestable()->addLayout('blog');
-        $this->registerView($category);
+        //$categories = new JComponentRouterViewconfiguration('categories');
+        //$categories->setKey('id');
+        // $this->registerView($categories);
+        // $category = new JComponentRouterViewconfiguration('category');
+        // $category->setKey('id')->setParent($categories, 'catid')->setNestable()->addLayout('blog');
+        // $this->registerView($category);
         $log = new JComponentRouterViewconfiguration('log');
-        $log->setKey('id')->setParent($category, 'catid');
+        $log->setKey('id'); //->setParent($category, 'catid');
         $this->registerView($log);
         $this->registerView(new JComponentRouterViewconfiguration('archive'));
+        $watchdog = new JComponentRouterViewconfiguration('watchdog');
+        $watchdog->setKey('id');
+        $this->registerView($watchdog);
         $form = new JComponentRouterViewconfiguration('form');
         $form->setKey('l_id');
         $this->registerView($form);
@@ -59,47 +62,47 @@ class LogbookRouter extends JComponentRouterView
      *
      * @return array|string The segments of this item
      */
-    public function getCategorySegment($id, $query)
-    {
-        $category = JCategories::getInstance($this->getName())->get($id);
+    /* public function getCategorySegment($id, $query)
+     {
+         $category = JCategories::getInstance($this->getName())->get($id);
 
-        if ($category) {
-            $path = array_reverse($category->getPath(), true);
-            $path[0] = '1:root';
+         if ($category) {
+             $path = array_reverse($category->getPath(), true);
+             $path[0] = '1:root';
 
-            if ($this->noIDs) {
-                foreach ($path as &$segment) {
-                    list($id, $segment) = explode(':', $segment, 2);
-                }
-            }
+             if ($this->noIDs) {
+                 foreach ($path as &$segment) {
+                     list($id, $segment) = explode(':', $segment, 2);
+                 }
+             }
 
-            return $path;
-        }
+             return $path;
+         }
 
-        return array();
-    }
+         return array();
+     }
 
-    /**
-     * Method to get the segment(s) for a category.
-     *
-     * @param string $id    ID of the category to retrieve the segments for
-     * @param array  $query The request that is built right now
-     *
-     * @return array|string The segments of this item
-     */
-    public function getCategoriesSegment($id, $query)
-    {
-        return $this->getCategorySegment($id, $query);
-    }
+     /**
+      * Method to get the segment(s) for a category.
+      *
+      * @param string $id    ID of the category to retrieve the segments for
+      * @param array  $query The request that is built right now
+      *
+      * @return array|string The segments of this item
+      */
+    /* public function getCategoriesSegment($id, $query)
+     {
+         return $this->getCategorySegment($id, $query);
+     }
 
-    /**
-     * Method to get the segment(s) for an log.
-     *
-     * @param string $id    ID of the log to retrieve the segments for
-     * @param array  $query The request that is built right now
-     *
-     * @return array|string The segments of this item
-     */
+     /**
+      * Method to get the segment(s) for an log.
+      *
+      * @param string $id    ID of the log to retrieve the segments for
+      * @param array  $query The request that is built right now
+      *
+      * @return array|string The segments of this item
+      */
     public function getLogSegment($id, $query)
     {
         if (!strpos($id, ':')) {
@@ -145,48 +148,48 @@ class LogbookRouter extends JComponentRouterView
      *
      * @return mixed The id of this item or false
      */
-    public function getCategoryId($segment, $query)
-    {
-        if (isset($query['id'])) {
-            $category = JCategories::getInstance($this->getName())->get($query['id']);
+    /* public function getCategoryId($segment, $query)
+     {
+         if (isset($query['id'])) {
+             $category = JCategories::getInstance($this->getName())->get($query['id']);
 
-            foreach ($category->getChildren() as $child) {
-                if ($this->noIDs) {
-                    if ($child->alias == $segment) {
-                        return $child->id;
-                    }
-                } else {
-                    if ($child->id == (int) $segment) {
-                        return $child->id;
-                    }
-                }
-            }
-        }
+             foreach ($category->getChildren() as $child) {
+                 if ($this->noIDs) {
+                     if ($child->alias == $segment) {
+                         return $child->id;
+                     }
+                 } else {
+                     if ($child->id == (int) $segment) {
+                         return $child->id;
+                     }
+                 }
+             }
+         }
 
-        return false;
-    }
+         return false;
+     }
 
-    /**
-     * Method to get the segment(s) for a category.
-     *
-     * @param string $segment Segment to retrieve the ID for
-     * @param array  $query   The request that is parsed right now
-     *
-     * @return mixed The id of this item or false
-     */
-    public function getCategoriesId($segment, $query)
-    {
-        return $this->getCategoryId($segment, $query);
-    }
+     /**
+      * Method to get the segment(s) for a category.
+      *
+      * @param string $segment Segment to retrieve the ID for
+      * @param array  $query   The request that is parsed right now
+      *
+      * @return mixed The id of this item or false
+      */
+    /* public function getCategoriesId($segment, $query)
+     {
+         return $this->getCategoryId($segment, $query);
+     }
 
-    /**
-     * Method to get the segment(s) for an log.
-     *
-     * @param string $segment Segment of the log to retrieve the ID for
-     * @param array  $query   The request that is parsed right now
-     *
-     * @return mixed The id of this item or false
-     */
+     /**
+      * Method to get the segment(s) for an log.
+      *
+      * @param string $segment Segment of the log to retrieve the ID for
+      * @param array  $query   The request that is parsed right now
+      *
+      * @return mixed The id of this item or false
+      */
     public function getLogId($segment, $query)
     {
         if ($this->noIDs) {
@@ -196,6 +199,61 @@ class LogbookRouter extends JComponentRouterView
                 ->from($dbquery->qn('#__logbook_logs'))
                 ->where('alias = '.$dbquery->q($segment))
                 ->where('catid = '.$dbquery->q($query['id']));
+            $db->setQuery($dbquery);
+
+            return (int) $db->loadResult();
+        }
+
+        return (int) $segment;
+    }
+
+    /**
+     * Method to get the segment(s) for an watchdog.
+     *
+     * @param string $id    ID of the watchdog to retrieve the segments for
+     * @param array  $query The request that is built right now
+     *
+     * @return array|string The segments of this item
+     */
+    public function getWatchdogSegment($id, $query)
+    {
+        if (!strpos($id, ':')) {
+            $db = JFactory::getDbo();
+            $dbquery = $db->getQuery(true);
+            $dbquery->select($dbquery->qn('alias'))
+                ->from($dbquery->qn('#__logbook_logs'))
+                ->where('wdid = '.$dbquery->q($id));
+            $db->setQuery($dbquery);
+
+            $id .= ':'.$db->loadResult();
+        }
+
+        if ($this->noIDs) {
+            list($void, $segment) = explode(':', $id, 2);
+
+            return array($void => $segment);
+        }
+
+        return array((int) $id => $id);
+    }
+
+    /**
+     * Method to get the segment(s) for an watchdog.
+     *
+     * @param string $segment Segment of the watchdog to retrieve the ID for
+     * @param array  $query   The request that is parsed right now
+     *
+     * @return mixed The id of this item or false
+     */
+    public function getWatchdogId($segment, $query)
+    {
+        if ($this->noIDs) {
+            $db = JFactory::getDbo();
+            $dbquery = $db->getQuery(true);
+            $dbquery->select($dbquery->qn('id'))
+                ->from($dbquery->qn('#__logbook_logs'))
+                ->where('alias = '.$dbquery->q($segment))
+                ->where('wdid = '.$dbquery->q($query['id']));
             $db->setQuery($dbquery);
 
             return (int) $db->loadResult();

@@ -28,6 +28,7 @@
 
 	<media folder="media/com_logbook" destination="com_logbook">
 		<folder>images</folder>
+		<folder>js</folder>
 		<folder>extensions</folder>
 	</media>
 
@@ -64,7 +65,6 @@
             <file>logbook.php</file>
             <folder>controllers</folder>
             <folder>helpers</folder>
-			<folder>js</folder>
             <folder>models</folder>
             <folder>sql</folder>
 			<folder>tables</folder>

@@ -22,7 +22,7 @@ $columns = 7;
 
 $assoc = JLanguageAssociations::isEnabled();
 
-// Check for at least one editable article
+// Check for at least one editablewatchdog
 $isEditable = false;
 
 if (!empty($this->items)) {

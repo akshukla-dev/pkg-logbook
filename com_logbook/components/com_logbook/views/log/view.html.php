@@ -13,44 +13,47 @@ defined('_JEXEC') or die;
 class LogbookViewLog extends JViewLegacy
 {
     protected $state;
+
+    protected $params;
+
     protected $item;
 
+    /**
+     * Execute and display a template script.
+     *
+     * @param string $tpl the name of the template file to parse; automatically searches through the template paths
+     *
+     * @return mixed a string if successful, otherwise an Error object
+     *
+     * @since   __DEPLOY_VERSION__
+     */
     public function display($tpl = null)
     {
+        $dispatcher = JEventDispatcher::getInstance();
+
         // Initialise variables
         $this->state = $this->get('State');
         $this->item = $this->get('Item');
-        $user = JFactory::getUser();
+        $this->params = $this->state->get('params');
 
-        // Check for errors.
-        if (count($errors = $this->get('Errors'))) {
-            JFactory::getApplication()->enqueueMessage($errors, 'error');
+        // Create a shortcut for $item.
+        $item = $this->item;
 
-            return false;
-        }
+        $offset = $this->state->get('list.offset');
 
-        //Get the possible extra class name.
-        //$this->pageclass_sfx = htmlspecialchars($this->item->params->get('pageclass_sfx'));
-        //Get the user object and the current url.
-        $user = JFactory::getUser();
-        $uri = JUri::getInstance();
-        //Variables needed in the document edit layout.
-        $this->item->user_id = $user->get('id');
-        $this->item->uri = $uri;
+        $dispatcher->trigger('onContentPrepare', array('com_logbook.log', &$item, &$item->params, $offset));
 
-        //Increment the hits for this document.
-        $model = $this->getModel();
-        $model->hit();
+        $item->event = new stdClass();
 
-        $this->setDocument();
+        $results = $dispatcher->trigger('onContentAfterTitle', array('com_logbook.log', &$item, &$item->params, $offset));
+        $item->event->afterDisplayTitle = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onContentBeforeDisplay', array('com_logbook.log', &$item, &$item->params, $offset));
+        $item->event->beforeDisplayContent = trim(implode("\n", $results));
+
+        $results = $dispatcher->trigger('onContentAfterDisplay', array('com_logbook.log', &$item, &$item->params, $offset));
+        $item->event->afterDisplayContent = trim(implode("\n", $results));
 
         parent::display($tpl);
-    }
-
-    protected function setDocument()
-    {
-        //Include css files.
-        $doc = JFactory::getDocument();
-        //$doc->addStyleSheet(JURI::base().'components/com_lrm/css/lrm.css');
     }
 }

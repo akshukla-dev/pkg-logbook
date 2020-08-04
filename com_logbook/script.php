@@ -54,6 +54,48 @@ class com_logbookInstallerScript
      */
     public function install($parent)
     {
+        // Initialize a new category
+        /** @var JTableCategory $category */
+        $category = JTable::getInstance('Category');
+
+        // Check if the Uncategorised category exists before adding it
+        if (!$category->load(array('extension' => 'com_logbook', 'title' => 'Uncategorised'))) {
+            $category->extension = 'com_logbook';
+            $category->title = 'Uncategorised';
+            $category->description = '';
+            $category->published = 1;
+            $category->access = 1;
+            $category->params = '{"category_layout":"","image":""}';
+            $category->metadata = '{"author":"","robots":""}';
+            $category->metadesc = '';
+            $category->metakey = '';
+            $category->language = '*';
+            $category->checked_out_time = JFactory::getDbo()->getNullDate();
+            $category->version = 1;
+            $category->hits = 0;
+            $category->modified_user_id = 0;
+            $category->checked_out = 0;
+
+            // Set the location in the tree
+            $category->setLocation(1, 'last-child');
+
+            // Check to make sure our data is valid
+            if (!$category->check()) {
+                JFactory::getApplication()->enqueueMessage(JText::sprintf('com_logbook_ERROR_INSTALL_CATEGORY', $category->getError()));
+
+                return;
+            }
+
+            // Now store the category
+            if (!$category->store(true)) {
+                JFactory::getApplication()->enqueueMessage(JText::sprintf('com_logbook_ERROR_INSTALL_CATEGORY', $category->getError()));
+
+                return;
+            }
+
+            // Build the path for our category
+            $category->rebuildPath($category->id);
+        }
     }
 
     /**

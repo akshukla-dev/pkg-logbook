@@ -9,10 +9,19 @@
 defined('_JEXEC') or die;
 
 /**
- * Document Table class.
+ * Log Table class.
  */
 class LogbookTableLog extends JTable
 {
+    /**
+     * Ensure the params and metadata in json encoded in the bind method.
+     *
+     * @var array
+     *
+     * @since  3.4
+     */
+    protected $_jsonEncode = array('params', 'metadata');
+
     /**
      * Constructor.
      *
@@ -21,8 +30,13 @@ class LogbookTableLog extends JTable
     public function __construct(&$db)
     {
         parent::__construct('#__logbook_logs', 'id', $db);
+
+        // Set the published column alias
+        $this->setColumnAlias('published', 'state');
+
         //Needed to use the Joomla tagging system with the document items.
         JTableObserverTags::createObserver($this, array('typeAlias' => 'com_logbook.log'));
+        JTableObserverContenthistory::createObserver($this, array('typeAlias' => 'com_logbook.log'));
     }
 
     /**
@@ -73,7 +87,7 @@ class LogbookTableLog extends JTable
             $this->modified = $date->toSql();
             $this->modified_by = $user->get('id');
         } else {
-            // New document. A document created and created_by field can be set by the user,
+            // New Log. A log created and created_by field can be set by the user,
             // so we don't touch either of these if they are set.
             if (!(int) $this->created) {
                 $this->created = $date->toSql();
@@ -82,6 +96,25 @@ class LogbookTableLog extends JTable
             if (empty($this->created_by)) {
                 $this->created_by = $user->get('id');
             }
+        }
+
+        //TODO: Cleanup here Set publish_up to null date if not set
+        if (!$this->publish_up) {
+            $this->publish_up = $this->getDbo()->getNullDate();
+        }
+
+        //TODO: Set publish_down to null date if not set
+        if (!$this->publish_down) {
+            $this->publish_down = $this->getDbo()->getNullDate();
+        }
+
+        // Verify that the alias is unique
+        $table = JTable::getInstance('Log', 'LogbookTable', array('dbo' => $this->getDbo()));
+
+        if ($table->load(array('language' => $this->language, 'alias' => $this->alias, 'catid' => $this->catid)) && ($table->id != $this->id || $this->id == 0)) {
+            $this->setError(JText::_('COM_LOGBOOK_ERROR_UNIQUE_ALIAS'));
+
+            return false;
         }
 
         return parent::store($updateNulls);
@@ -133,8 +166,8 @@ class LogbookTableLog extends JTable
             // Build the query to get the asset id for the parent category.
             $query = $this->_db->getQuery(true)
               ->select($this->_db->quoteName('asset_id'))
-              ->from($this->_db->quoteName('#__logbook_watchdogs'))
-              ->where($this->_db->quoteName('id').' = '.(int) $this->wdid);
+              ->from($this->_db->quoteName('#__categories'))
+              ->where($this->_db->quoteName('id').' = '.(int) $this->catid);
 
             // Get the asset id from the database.
             $this->_db->setQuery($query);

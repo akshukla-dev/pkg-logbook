@@ -7,7 +7,6 @@
 defined('_JEXEC') or die; //No direct access to this file.
 
 use Joomla\Registry\Registry;
-use Joomla\Utilities\ArrayHelper;
 
 JLoader::register('LogbookHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/logbook.php');
 
@@ -93,18 +92,39 @@ class LogbookModelLog extends JModelAdmin
      */
     protected function prepareTable($table)
     {
-        // Set the closing date to now
-        if ($table->state == 1 && (int) $table->closed == 0) {
-            $table->closed = JFactory::getDate()->toSql();
+        $date = JFactory::getDate();
+        $user = JFactory::getUser();
+
+        $table->title = htmlspecialchars_decode($table->title, ENT_QUOTES);
+        $table->alias = JApplicationHelper::stringURLSafe($table->alias);
+
+        if (empty($table->alias)) {
+            $table->alias = JApplicationHelper::stringURLSafe($table->title);
         }
 
-        // Increment the content version number.
-        $table->version++;
-
-        // Reorder the logs within the category so the new log is first
         if (empty($table->id)) {
-            $table->reorder('catid = '.(int) $table->catid.' AND state >= 0');
+            // Set the values
+
+            // Set ordering to the last item if not set
+            if (empty($table->ordering)) {
+                $db = $this->getDbo();
+                $query = $db->getQuery(true)
+                    ->select('MAX(ordering)')
+                    ->from($db->quoteName('#__logbook_logs'));
+
+                $db->setQuery($query);
+                $max = $db->loadResult();
+
+                $table->ordering = $max + 1;
+            } else {
+                // Set the values
+                $table->modified = $date->toSql();
+                $table->modified_by = $user->id;
+            }
         }
+
+        // Increment the log version number.
+        ++$table->version;
     }
 
     /**
@@ -140,24 +160,25 @@ class LogbookModelLog extends JModelAdmin
             $registry = new Registry($item->metadata);
             $item->metadata = $registry->toArray();
 
-            if (!empty($item->id)) {
-                $item->tags = new JHelperTags;
-                $item->tags->getTagIds($item->id, 'com_logbook.log');
-            }
-        }
+            // Load associated web links items
+            $assoc = JLanguageAssociations::isEnabled();
 
-        // Load associated content items
-        $assoc = JLanguageAssociations::isEnabled();
+            if ($assoc) {
+                $item->associations = array();
 
-        if ($assoc) {
-            $item->associations = array();
+                if ($item->id != null) {
+                    $associations = JLanguageAssociations::getAssociations('com_logbook', '#__logbook_logs', 'com_logbook.item', $item->id);
 
-            if ($item->id != null) {
-                $associations = JLanguageAssociations::getAssociations('com_logbook', '#__logbook_logs', 'com_logbook.item', $item->id);
-
-                foreach ($associations as $tag => $association) {
-                    $item->associations[$tag] = $association->id;
+                    foreach ($associations as $tag => $association) {
+                        $item->associations[$tag] = $association->id;
+                    }
                 }
+            }
+
+            if (!empty($item->id)) {
+                $item->tags = new JHelperTags();
+                $item->tags->getTagIds($item->id, 'com_logbook.log');
+                $item->metadata['tags'] = $item->tags;
             }
         }
 
@@ -183,12 +204,11 @@ class LogbookModelLog extends JModelAdmin
             return false;
         }
 
-        $jinput = JFactory::getApplication()->input;
-
         /*
          * The front end calls this model and uses l_id to avoid id clashes so we need to check for that first.
          * The back end uses id so we use that the rest of the time and set it to 0 by default.
          */
+        $jinput = JFactory::getApplication()->input;
         $id = $jinput->get('l_id', $jinput->get('id', 0));
 
         // Determine correct permissions to check.
@@ -214,11 +234,15 @@ class LogbookModelLog extends JModelAdmin
             // Disable fields for display.
             $form->setFieldAttribute('ordering', 'disabled', 'true');
             $form->setFieldAttribute('state', 'disabled', 'true');
+            $form->setFieldAttribute('publish_up', 'disabled', 'true');
+            $form->setFieldAttribute('publish_down', 'disabled', 'true');
 
             // Disable fields while saving.
             // The controller has already verified this is an log you can edit.
             $form->setFieldAttribute('ordering', 'filter', 'unset');
             $form->setFieldAttribute('state', 'filter', 'unset');
+            $form->setFieldAttribute('publish_up', 'filter', 'unset');
+            $form->setFieldAttribute('publish_down', 'filter', 'unset');
         }
 
         // Prevent messing with log language and category when editing existing log with associations
@@ -268,6 +292,8 @@ class LogbookModelLog extends JModelAdmin
                     )
                 );
                 $data->set('catid', $app->input->getInt('catid', (!empty($filters['category_id']) ? $filters['category_id'] : null)));
+                //TODO:Watchdog Filter for empty form
+                $data->set('wdid', $app->input->getInt('wdid', (!empty($filters['watchdog_id']) ? $filters['watchdog_id'] : null)));
                 $data->set('language', $app->input->getString('language', (!empty($filters['language']) ? $filters['language'] : null)));
                 $data->set('access',
                     $app->input->getInt('access', (!empty($filters['access']) ? $filters['access'] : JFactory::getConfig()->get('access')))
@@ -317,41 +343,33 @@ class LogbookModelLog extends JModelAdmin
     /**
      * Method to save the form data.
      *
-     * @param   array  $data  The form data.
+     * @param array $data the form data
      *
-     * @return  boolean  True on success.
+     * @return bool true on success
      *
      * @since   1.6
      */
     public function save($data)
     {
-        $input  = JFactory::getApplication()->input;
+        $input = JFactory::getApplication()->input;
         $filter = JFilterInput::getInstance();
 
-        if (isset($data['metadata']) && isset($data['metadata']['author']))
-        {
-            $data['metadata']['author'] = $filter->clean($data['metadata']['author'], 'TRIM');
-        }
-
-        if (isset($data['created_by_alias']))
-        {
+        if (isset($data['created_by_alias'])) {
             $data['created_by_alias'] = $filter->clean($data['created_by_alias'], 'TRIM');
         }
 
-        JLoader::register('CategoriesHelper', JPATH_ADMINISTRATOR . '/components/com_categories/helpers/categories.php');
+        JLoader::register('CategoriesHelper', JPATH_ADMINISTRATOR.'/components/com_categories/helpers/categories.php');
 
         // Cast catid to integer for comparison
         $catid = (int) $data['catid'];
 
         // Check if New Category exists
-        if ($catid > 0)
-        {
+        if ($catid > 0) {
             $catid = CategoriesHelper::validateCategoryId($data['catid'], 'com_logbook');
         }
 
         // Save New Categoryg
-        if ($catid == 0 && $this->canCreateCategory())
-        {
+        if ($catid == 0 && $this->canCreateCategory()) {
             $table = array();
             $table['title'] = $data['catid'];
             $table['parent_id'] = 1;
@@ -364,21 +382,16 @@ class LogbookModelLog extends JModelAdmin
         }
 
         // Alter the title for save as copy
-        if ($input->get('task') == 'save2copy')
-        {
+        if ($input->get('task') == 'save2copy') {
             $origTable = clone $this->getTable();
             $origTable->load($input->getInt('id'));
 
-            if ($data['title'] == $origTable->title)
-            {
+            if ($data['title'] == $origTable->title) {
                 list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
                 $data['title'] = $title;
                 $data['alias'] = $alias;
-            }
-            else
-            {
-                if ($data['alias'] == $origTable->alias)
-                {
+            } else {
+                if ($data['alias'] == $origTable->alias) {
                     $data['alias'] = '';
                 }
             }
@@ -387,31 +400,24 @@ class LogbookModelLog extends JModelAdmin
         }
 
         // Automatic handling of alias for empty fields
-        if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (!isset($data['id']) || (int) $data['id'] == 0))
-        {
-            if ($data['alias'] == null)
-            {
-                if (JFactory::getConfig()->get('unicodeslugs') == 1)
-                {
+        if (in_array($input->get('task'), array('apply', 'save', 'save2new')) && (!isset($data['id']) || (int) $data['id'] == 0)) {
+            if ($data['alias'] == null) {
+                if (JFactory::getConfig()->get('unicodeslugs') == 1) {
                     $data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['title']);
-                }
-                else
-                {
+                } else {
                     $data['alias'] = JFilterOutput::stringURLSafe($data['title']);
                 }
 
                 $table = JTable::getInstance('Log', 'LogbookTable');
 
-                if ($table->load(array('alias' => $data['alias'], 'catid' => $data['catid'])))
-                {
+                if ($table->load(array('alias' => $data['alias'], 'catid' => $data['catid']))) {
                     $msg = JText::_('COM_LOGBOOK_SAVE_WARNING');
                 }
 
                 list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
                 $data['alias'] = $alias;
 
-                if (isset($msg))
-                {
+                if (isset($msg)) {
                     JFactory::getApplication()->enqueueMessage($msg, 'warning');
                 }
             }
@@ -419,7 +425,6 @@ class LogbookModelLog extends JModelAdmin
 
         return parent::save($data);
     }
-
 
     /**
      * A protected method to get a set of ordering conditions.
@@ -432,7 +437,7 @@ class LogbookModelLog extends JModelAdmin
      */
     protected function getReorderConditions($table)
     {
-        return array('catid = ' . (int) $table->catid);
+        return array('catid = '.(int) $table->catid);
     }
 
     /**
@@ -450,7 +455,7 @@ class LogbookModelLog extends JModelAdmin
             $form->setFieldAttribute('catid', 'allowAdd', 'true');
         }
 
-        // Association content items
+        // Association logbook items
         if (JLanguageAssociations::isEnabled()) {
             $languages = JLanguageHelper::getLogbookLanguages(false, true, null, 'ordering', 'asc');
 
@@ -482,24 +487,8 @@ class LogbookModelLog extends JModelAdmin
     }
 
     /**
-     * Custom clean the cache of com_logbook and content modules
+     * Void hit function for pagebreak when editing content from frontend.
      *
-     * @param   string   $group      The cache group
-     * @param   integer  $client_id  The ID of the client
-     *
-     * @return  void
-     *
-     * @since   1.6
-     */
-    protected function cleanCache($group = null, $client_id = 0)
-    {
-        parent::cleanCache('com_logbook');
-    }
-
-    /**
-     * Void hit function for pagebreak when editing content from frontend
-     *
-     * @return  void
      *
      * @since   3.6.0
      */
@@ -511,7 +500,7 @@ class LogbookModelLog extends JModelAdmin
     /**
      * Is the user allowed to create an on the fly category?
      *
-     * @return  boolean
+     * @return bool
      *
      * @since   3.6.1
      */
@@ -519,32 +508,4 @@ class LogbookModelLog extends JModelAdmin
     {
         return JFactory::getUser()->authorise('core.create', 'com_logbook');
     }
-
-
-    /**
-     * Method to change the title & alias.
-     *
-     * @param int    $category_id the id of the parent
-     * @param string $alias       the alias
-     * @param string $name        the title
-     *
-     * @return array contains the modified title and alias
-     *
-     * @since   3.1
-     */
-    /*protected function generateNewTitle($category_id, $alias, $name)
-    {
-        // Alter the title & alias
-        $table = $this->getTable();
-
-        while ($table->load(array('alias' => $alias, 'catid' => $category_id))) {
-            if ($name == $table->title) {
-                $name = JString::increment($name);
-            }
-
-            $alias = JString::increment($alias, 'dash');
-        }
-
-        return array($name, $alias);
-    }*/
 }

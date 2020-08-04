@@ -101,7 +101,6 @@ class plgContentLogmanager extends JPlugin
             //Existing item.
             //The previous setting of the log might be needed to check against the current setting.
             if (!$isNew) {
-
                 $query->select('l.wdid AS wdid, l.file AS file, l.file_path AS file_path, l.created AS log_date', 'wd.tiid AS tiid');
                 $query->from('#__logbook_logs AS l');
                 $query->join('LEFT', '#__logbook_watchdogs AS wd ON wd.id=l.wdid');
@@ -145,9 +144,9 @@ class plgContentLogmanager extends JPlugin
                             $query->select('t.title')
                                 ->from('#__logbook_timeintervals AS t')
                                 ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
-                                ->where('wd.id='.(int)$data->wdid);
+                                ->where('wd.id='.(int) $data->wdid);
                             $db->setQuery($query);
-                            $newtinterval=$db->loadResult();
+                            $newtinterval = $db->loadResult();
                             //Update Values in new wdid:
                             $query->clear();
                             $query->update('#__logbook_watchdogs');
@@ -155,7 +154,7 @@ class plgContentLogmanager extends JPlugin
                                 array(
                                     'log_count=log_count+1',
                                     'latest_log_date='.$db->quote(new Date($data->created)),
-                                    'next_due_date='.$db->quote(new Date($data->created.'=+1'.$newtinterval)),
+                                    'next_due_date='.$db->quote(new Date($data->created.'+1'.$newtinterval)),
                                 )
                             );
                             $query->where('id='.(int) $data->wdid);
@@ -165,22 +164,22 @@ class plgContentLogmanager extends JPlugin
                             $query->clear();
                             $query->select('created')
                                 ->from('#__logbook_logs')
-                                ->where('id='.$data->id-1);
+                                ->where('id='.$data->id - 1);
                             $db->setQuery($query);
-                            $prevSetting->second_last_log_date=$db->loadResult();
+                            $prevSetting->second_last_log_date = $db->loadResult();
                             $query->clear();
                             $query->select('t.title')
                                 ->from('#__logbook_timeintervals AS t')
                                 ->where('t.id='.$prevSetting->tiid);
                             $db->setQuery($query);
-                            $prevSetting->tinterval=$db->loadResult();
+                            $prevSetting->tinterval = $db->loadResult();
                             $query->clear();
                             $query->update('#__logbook_watchdogs');
                             $query->set(
                                 array(
                                     'log_count=log_count-1',
-                                    'latest_log_date='.$db->quote(new Date($prevSetting>second_last_log_date)),
-                                    'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval))
+                                    'latest_log_date='.$db->quote(new Date($prevSetting > second_last_log_date)),
+                                    'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval)),
                                 )
                             );
                             $query->where('id='.(int) $prevSetting->wdid);
@@ -207,50 +206,50 @@ class plgContentLogmanager extends JPlugin
                             return false;
                         } else {
                             //Get T interval for the new wdid:
-                                $query->clear();
-                                $query->select('t.title')
+                            $query->clear();
+                            $query->select('t.title')
                                     ->from('#__logbook_timeintervals AS t')
                                     ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
-                                    ->where('wd.id='.(int)$data->wdid);
-                                $db->setQuery($query);
-                                $newtinterval=$db->loadResult();
-                                //Update Values in new wdid:
-                                $query->clear();
-                                $query->update('#__logbook_watchdogs');
-                                $query->set(array(
+                                    ->where('wd.id='.(int) $data->wdid);
+                            $db->setQuery($query);
+                            $newtinterval = $db->loadResult();
+                            //Update Values in new wdid:
+                            $query->clear();
+                            $query->update('#__logbook_watchdogs');
+                            $query->set(array(
                                     'log_count=log_count+1',
                                     'latest_log_date='.$db->quote(new Date($data->created)),
-                                    'next_due_date='.$db->quote(new Date($data->created.'=+1'.$newtinterval))
+                                    'next_due_date='.$db->quote(new Date($data->created.'+1 '.$newtinterval)),
                                     )
                                 );
-                                $query->where('id='.(int) $data->wdid);
-                                $db->setQuery($query);
-                                $db->execute();
-                                //Reset values related to $prevSetting->wdid
-                                $query->clear();
-                                $query->select('created')
+                            $query->where('id='.(int) $data->wdid);
+                            $db->setQuery($query);
+                            $db->execute();
+                            //Reset values related to $prevSetting->wdid
+                            $query->clear();
+                            $query->select('created')
                                     ->from('#__logbook_logs')
-                                    ->where('id='.$data->id-1);
-                                $db->setQuery($query);
-                                $prevSetting->second_last_log_date=$db->loadResult();
-                                $query->clear();
-                                $query->select('t.title')
+                                    ->where('id='.$data->id - 1);
+                            $db->setQuery($query);
+                            $prevSetting->second_last_log_date = $db->loadResult();
+                            $query->clear();
+                            $query->select('t.title')
                                     ->from('#__logbook_timeintervals AS t')
                                     ->where('t.id='.$prevSetting->tiid);
-                                $db->setQuery($query);
-                                $prevSetting->tinterval=$db->loadResult();
-                                $query->clear();
-                                $query->update('#__logbook_watchdogs');
-                                $query->set(
+                            $db->setQuery($query);
+                            $prevSetting->tinterval = $db->loadResult();
+                            $query->clear();
+                            $query->update('#__logbook_watchdogs');
+                            $query->set(
                                     array(
                                         'log_count=log_count-1',
-                                        'latest_log_date='.$db->quote(new Date($prevSetting>second_last_log_date)),
-                                        'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval))
+                                        'latest_log_date='.$db->quote(new Date($prevSetting > second_last_log_date)),
+                                        'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval)),
                                     )
                                 );
-                                $query->where('id='.(int) $prevSetting->wdid);
-                                $db->setQuery($query);
-                                $db->execute();
+                            $query->where('id='.(int) $prevSetting->wdid);
+                            $db->setQuery($query);
+                            $db->execute();
                         }
                     }
                     //Don't need to go further...
@@ -274,9 +273,9 @@ class plgContentLogmanager extends JPlugin
                     $query->select('t.title')
                         ->from('#__logbook_timeintervals AS t')
                         ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
-                        ->where('wd.id='.(int)$data->wdid);
+                        ->where('wd.id='.(int) $data->wdid);
                     $db->setQuery($query);
-                    $tinterval=$db->loadResult();
+                    $tinterval = $db->loadResult();
 
                     //Update watchdog database (Increment the number of files in the folder & .....)
                     $query->clear();
@@ -400,7 +399,7 @@ class plgContentLogmanager extends JPlugin
     {
     }
 
-    public function onContentAfterDisplay($context, &$article, &$params, $limitstart = 0)
+    public function onContentAfterDisplay($context, &$log, &$params, $limitstart = 0)
     {
     }
 }

@@ -6,7 +6,7 @@
 defined('_JEXEC') or die;
 
 /**
- * This models supports retrieving lists of article categories.
+ * This models supports retrieving lists of watchdog categories.
  *
  * @since  1.6
  */

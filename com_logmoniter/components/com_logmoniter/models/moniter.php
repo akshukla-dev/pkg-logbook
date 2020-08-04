@@ -237,7 +237,7 @@ class LogmoniterModelMoniter extends JModelList
         // Join over the associations.
         if (JLanguageAssociations::isEnabled()) {
             $query->select('COUNT(asso2.id)>1 as association')
-                ->join('LEFT', '#__associations AS asso ON asso.id = wd.id AND asso.context='.$db->quote('com_content.item'))
+                ->join('LEFT', '#__associations AS asso ON asso.id = wd.id AND asso.context='.$db->quote('com_logmoniter.item'))
                 ->join('LEFT', '#__associations AS asso2 ON asso2.key = asso.key')
                 ->group($assogroup);
         }

@@ -25,7 +25,7 @@ class JFormFieldLogWatchdogs extends JFormFieldList
         $itemId = $this->form->getValue('id');
 
         if ($itemId) {
-            //Get the article ids previously selected.
+            //Get the watchdog ids previously selected.
             $db = JFactory::getDbo();
             $query = $db->getQuery(true);
             $query->select('id');

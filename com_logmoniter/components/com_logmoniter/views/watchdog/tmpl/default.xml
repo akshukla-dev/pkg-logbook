@@ -35,7 +35,7 @@
 				name="show_title"
 				type="list"
 				label="JGLOBAL_SHOW_TITLE_LABEL"
-				description="JGLOBAL_SHOW_TITLE_DESC"
+				description="COM_LOGMONITER_SHOW_TITLE_DESC"
 				useglobal="true"
 				>
 				<option value="1">JSHOW</option>

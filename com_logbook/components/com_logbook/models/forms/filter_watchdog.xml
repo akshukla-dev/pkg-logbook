@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset>
+		<fields name="filter">
+			<field
+				name="search"
+				type="text"
+				label="COM_LOGMONITER_MODAL_FILTER_SEARCH_LABEL"
+				description="COM_LOGMONITER_MODAL_FILTER_SEARCH_DESC"
+				hint="JSEARCH_FILTER"
+				class="js-stools-search-string"
+			/>
+
+			<field
+				name="published"
+				type="status"
+				label="JOPTION_SELECT_PUBLISHED"
+				description="JOPTION_SELECT_PUBLISHED_DESC"
+				statuses="0,1"
+				onchange="this.form.submit();"
+			>
+				<option value="">JOPTION_SELECT_PUBLISHED</option>
+			</field>
+		</fields>
+	</fieldset>
+</form>

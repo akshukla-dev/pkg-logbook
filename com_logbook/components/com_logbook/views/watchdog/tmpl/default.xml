@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_LOGBOOK_WATCHDOG_VIEW_DEFAULT_TITLE" option="COM_LOGBOOK_WATCHDOG_VIEW_DEFAULT_OPTION">
+		<help
+			key = "JHELP_MENUS_MENU_ITEM_WATCHDOG_WATCHDOG"
+		/>
+		<message>
+			<![CDATA[COM_LOGBOOK_WATCHDOG_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<!-- Add fields to the request variables for the layout. -->
+	<fields name="request">
+		<fieldset
+		name="request"
+		addfieldpath="/administrator/components/com_logbook/models/fields"
+		>
+			<field
+				name="id"
+				type="logwatchdogs"
+				label="COM_LOGBOOK_FIELD_SELECT_WATCHDOG_LABEL"
+				description="COM_LOGBOOK_FIELD_SELECT_WATCHDOG_DESC"
+				default=""
+				required="true"
+			/>
+		</fieldset>
+	</fields>
+
+	<!-- Add fields to the parameters object for the layout. -->
+	<fields name="params">
+		<fieldset name="basic" label="COM_LOGBOOK_WATCHDOG_OPTIONS">
+
+			<field
+				name="spacer1"
+				type="spacer"
+				label="COM_LOGBOOK_SUBSLIDER_DRILL_CATEGORIES_LABEL"
+				class="text"
+			/>
+
+			<field
+				name="show_watchdog_title"
+				type="list"
+				label="COM_LOGBOOK_SHOW_WATCHDOG_TITLE"
+				description="COM_LOGBOOK_SHOW_WATCHDOG_TITLE_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_inset_title"
+				type="list"
+				label="COM_LOGBOOK_SHOW_INSET_TITLE"
+				description="COM_LOGBOOK_SHOW_INSET_TITLE_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_bprint_title"
+				type="list"
+				label="COM_LOGBOOK_SHOW_BPRINT_TITLE"
+				description="COM_LOGBOOK_SHOW_BPRINT_TITLE_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_tinterval_title"
+				type="list"
+				label="COM_LOGBOOK_SHOW_TINTERVAL_TITLE"
+				description="COM_LOGBOOK_SHOW_TINTERVAL_TITLE_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+		</fieldset>
+
+		<fieldset name="advanced" label="COM_LOGBOOK_LIST_LAYOUT_OPTIONS">
+			<field
+				name="spacer2"
+				type="spacer"
+				label="COM_LOGBOOK_SUBSLIDER_DRILL_CATEGORIES_LABEL"
+				class="text"
+			/>
+
+			<field
+				name="filter_field"
+				type="list"
+				label="COM_LOGBOOK_FILTER_FIELD_LABEL"
+				description="COM_LOGBOOK_FILTER_FIELD_DESC"
+				default=""
+				useglobal="true"
+				>
+				<option value="hide">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_pagination_limit"
+				type="list"
+				label="COM_LOGBOOK_DISPLAY_SELECT_LABEL"
+				description="COM_LOGBOOK_DISPLAY_SELECT_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_headings"
+				type="list"
+				label="COM_LOGBOOK_SHOW_HEADINGS_LABEL"
+				description="COM_LOGBOOK_SHOW_HEADINGS_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_log_remarks"
+				type="list"
+				label="COM_LOGBOOK_FIELD_CONFIG_LINKDESCRIPTION_LABEL"
+				description="COM_LOGBOOK_FIELD_CONFIG_LINKDESCRIPTION_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_log_hits"
+				type="list"
+				label="COM_LOGBOOK_HITS"
+				description="COM_LOGBOOK_FIELD_CONFIG_HITS_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_log_downloads"
+				type="list"
+				label="COM_LOGBOOK_LOGS"
+				description="COM_LOGBOOK_FIELD_CONFIG_LOGS_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+
+			<field
+				name="show_pagination"
+				type="list"
+				label="COM_LOGBOOK_PAGINATION_LABEL"
+				description="COM_LOGBOOK_PAGINATION_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+				<option value="2">COM_LOGBOOK_AUTO</option>
+			</field>
+
+			<field
+				name="show_pagination_results"
+				type="list"
+				label="COM_LOGBOOK_PAGINATION_RESULTS_LABEL"
+				description="COM_LOGBOOK_PAGINATION_RESULTS_DESC"
+				useglobal="true"
+				>
+				<option value="0">JHIDE</option>
+				<option value="1">JSHOW</option>
+			</field>
+		</fieldset>
+	</fields>
+
+</metadata>

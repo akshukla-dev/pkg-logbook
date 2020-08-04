@@ -19,7 +19,7 @@
 			type="contenthistory"
 			label="JTOOLBAR_VERSIONS"
 			id="contenthistory"
-			data-typeAlias="COM_LOGBOOK.article"
+			data-typeAlias="com-logbook.log"
 		/>
 
 		<field
@@ -257,16 +257,6 @@
 					<option value="index, nofollow">JGLOBAL_INDEX_NOFOLLOW</option>
 					<option value="noindex, nofollow">JGLOBAL_NOINDEX_NOFOLLOW</option>
 				</field>
-
-				<field
-					name="author"
-					type="hidden"
-					label="JAUTHOR"
-					description="JFIELD_METADATA_AUTHOR_DESC"
-					filter="unset"
-					size="20"
-					labelclass="control-label"
-				/>
 
 				<field
 					name="rights"

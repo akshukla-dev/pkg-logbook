@@ -126,7 +126,7 @@ class LogmoniterModelWatchdog extends JModelAdmin
             }
         }
 
-        // Increment the weblink version number.
+        // Increment the log version number.
         ++$table->version;
     }
 

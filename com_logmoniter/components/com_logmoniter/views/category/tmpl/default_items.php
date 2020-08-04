@@ -23,7 +23,7 @@ $n = count($this->items);
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn = $this->escape($this->state->get('list.direction'));
 
-// Check for at least one editable article
+// Check for at least one editable watchdog
 $isEditable = false;
 
 if (!empty($this->items)) {

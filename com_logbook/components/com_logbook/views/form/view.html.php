@@ -31,8 +31,7 @@ class LogbookViewForm extends JViewLegacy
     public function display($tpl = null)
     {
         $user = JFactory::getUser();
-        $app  = JFactory::getApplication();
-
+        $app = JFactory::getApplication();
 
         //Redirect unregistered users to the login page.
         if ($user->guest) {
@@ -87,7 +86,7 @@ class LogbookViewForm extends JViewLegacy
         $this->params->merge($this->item->params);
         $this->user = $user;
 
-        // Propose current language as default when creating new article
+        // Propose current language as default when creating new log
         if (empty($this->item->id) && JLanguageMultilang::isEnabled()) {
             $lang = JFactory::getLanguage()->getTag();
             $this->form->setFieldAttribute('language', 'default', $lang);

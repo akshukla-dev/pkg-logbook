@@ -55,7 +55,7 @@ class LogmoniterViewForm extends JViewLegacy
         }
 
         if (!empty($this->item)) {
-            // Override the base weblink data with any data in the session.
+            // Override the base log data with any data in the session.
             $temp = (array) JFactory::getApplication()->getUserState('com_logmoniter.edit.watchdog.data', array());
 
             foreach ($temp as $k => $v) {

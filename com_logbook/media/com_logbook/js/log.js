@@ -13,6 +13,9 @@
 	  //Get the value of the item id to determine if it is new or not.
 	  var itemId = $('#jform_id').val();
 
+	  $('#jform_uploaded_file').parent('div').parent('div').show();
+	  $('#jform_uploaded_file').prop('required', true);
+
 	  //Existing item.
 	  if(itemId != 0) {
 		$.fn.replaceHide();

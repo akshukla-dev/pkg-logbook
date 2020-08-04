@@ -2,7 +2,7 @@
 <metadata>
 	<layout title="com_logmoniter_categories_view_default_title" option="com_logmoniter_categories_view_default_option">
 		<help
-			key="JHELP_MENUS_MENU_ITEM_WEBLINK_CATEGORIES"
+			key="JHELP_MENUS_MENU_ITEM_log_CATEGORIES"
 		/>
 		<message>
 			<![CDATA[com_logmoniter_categories_view_default_desc]]>

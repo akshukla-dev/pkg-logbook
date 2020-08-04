@@ -2,7 +2,6 @@
 -- Table structure for table `#__logbook_logs`
 --
 
-DROP TABLE IF EXISTS `#__logbook_logs`;
 CREATE TABLE `#__logbook_logs`(
 	`id`	INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `asset_id` INT(10) UNSIGNED NOT NULL DEFAULT 0 ,
@@ -30,9 +29,8 @@ CREATE TABLE `#__logbook_logs`(
 	`checked_out` INT(10) UNSIGNED NOT NULL DEFAULT 0 ,
   `checked_out_time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ,
   `modified_by` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-	`closed` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `closed_by` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-	`publish_down` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 	`params` TEXT NOT NULL ,
   `metakey` TEXT NOT NULL,
 	`metadesc` TEXT NOT NULL ,

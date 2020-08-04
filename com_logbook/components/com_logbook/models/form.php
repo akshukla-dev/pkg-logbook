@@ -10,7 +10,8 @@ use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
 // Base this model on the backend version.
-JLoader::register('LogbookModelLog', JPATH_ADMINISTRATOR . '/components/com_logbook/models/log.php');
+JLoader::register('LogbookModelLog', JPATH_ADMINISTRATOR.'/components/com_logbook/models/log.php');
+//JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR.'/tables');
 
 //Inherit the backend version.
 class LogbookModelForm extends LogbookModelLog
@@ -115,13 +116,10 @@ class LogbookModelForm extends LogbookModelLog
             // New item.
             $catId = (int) $this->getState('log.catid');
 
-            if ($catId)
-            {
-                $item->params->set('access-change', $user->authorise('core.edit.state', 'com_logbook.category.' . $catId));
+            if ($catId) {
+                $item->params->set('access-change', $user->authorise('core.edit.state', 'com_logbook.category.'.$catId));
                 $item->catid = $catId;
-            }
-            else
-            {
+            } else {
                 $item->params->set('access-change', $user->authorise('core.edit.state', 'com_logbook'));
             }
         }
@@ -130,10 +128,9 @@ class LogbookModelForm extends LogbookModelLog
         $registry = new Registry($item->metadata);
         $item->metadata = $registry->toArray();
 
-        if ($itemId)
-        {
-            $item->tags = new JHelperTags;
-            $item->tags->getTagIds($item->id, 'com_logbook.article');
+        if ($itemId) {
+            $item->tags = new JHelperTags();
+            $item->tags->getTagIds($item->id, 'com_logbook.log');
             $item->metadata['tags'] = $item->tags;
         }
 
@@ -165,26 +162,23 @@ class LogbookModelForm extends LogbookModelLog
     {
         // Associations are not edited in frontend ATM so we have to inherit them
         if (JLanguageAssociations::isEnabled() && !empty($data['id'])
-            && $associations = JLanguageAssociations::getAssociations('com_logbook', '#__content', 'com_logbook.item', $data['id']))
-        {
-            foreach ($associations as $tag => $associated)
-            {
+            && $associations = JLanguageAssociations::getAssociations('com_logbook', '#__content', 'com_logbook.item', $data['id'])) {
+            foreach ($associations as $tag => $associated) {
                 $associations[$tag] = (int) $associated->id;
             }
 
             $data['associations'] = $associations;
         }
+
         return parent::save($data);
     }
 
     /**
      * Allows preprocessing of the JForm object.
      *
-     * @param   JForm   $form   The form object
-     * @param   array   $data   The data to be merged into the form object
-     * @param   string  $group  The plugin group to be executed
-     *
-     * @return  void
+     * @param JForm  $form  The form object
+     * @param array  $data  The data to be merged into the form object
+     * @param string $group The plugin group to be executed
      *
      * @since   3.7.0
      */
@@ -192,8 +186,7 @@ class LogbookModelForm extends LogbookModelLog
     {
         $params = $this->getState()->get('params');
 
-        if ($params && $params->get('enable_category') == 1)
-        {
+        if ($params && $params->get('enable_category') == 1) {
             $form->setFieldAttribute('catid', 'default', $params->get('catid', 1));
             $form->setFieldAttribute('catid', 'readonly', 'true');
         }

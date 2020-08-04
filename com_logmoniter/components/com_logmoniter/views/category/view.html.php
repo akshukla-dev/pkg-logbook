@@ -45,7 +45,7 @@ class LogmoniterViewCategory extends JViewCategory
         parent::commonCategoryDisplay();
 
         // Prepare the data.
-        // Compute the weblink slug & link url.
+        // Compute the log slug & link url.
         foreach ($this->items as $item) {
             $item->slug = $item->alias ? ($item->id.':'.$item->alias) : $item->id;
 
