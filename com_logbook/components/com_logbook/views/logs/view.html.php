@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
  *
  * @since  1.5
  */
-class LogbookViewWatchdog extends JViewLegacy
+class LogbookViewLogs extends JViewLegacy
 {
     /**
      * Execute and display a template script.

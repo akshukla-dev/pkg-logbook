@@ -1,47 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
-	<layout title="COM_LOGBOOK_WATCHDOG_VIEW_DEFAULT_TITLE" option="COM_LOGBOOK_WATCHDOG_VIEW_DEFAULT_OPTION">
+	<layout title="COM_LOGBOOK_LOGS_VIEW_DEFAULT_TITLE" option="COM_LOGBOOK_LOGS_VIEW_DEFAULT_OPTION">
 		<help
-			key = "JHELP_MENUS_MENU_ITEM_WATCHDOG_WATCHDOG"
+			key = "JHELP_MENUS_MENU_ITEM_LOGS_LOGS"
 		/>
 		<message>
-			<![CDATA[COM_LOGBOOK_WATCHDOG_VIEW_DEFAULT_DESC]]>
+			<![CDATA[COM_LOGBOOK_LOGS_VIEW_DEFAULT_DESC]]>
 		</message>
 	</layout>
 
-	<!-- Add fields to the request variables for the layout. -->
-	<fields name="request">
-		<fieldset
-		name="request"
-		addfieldpath="/administrator/components/com_logbook/models/fields"
-		>
-			<field
-				name="id"
-				type="logwatchdogs"
-				label="COM_LOGBOOK_FIELD_SELECT_WATCHDOG_LABEL"
-				description="COM_LOGBOOK_FIELD_SELECT_WATCHDOG_DESC"
-				default=""
-				required="true"
-			/>
-		</fieldset>
-	</fields>
-
 	<!-- Add fields to the parameters object for the layout. -->
 	<fields name="params">
-		<fieldset name="basic" label="COM_LOGBOOK_WATCHDOG_OPTIONS">
+		<fieldset name="basic" label="COM_LOGBOOK_LOGS_OPTIONS">
 
 			<field
-				name="spacer1"
-				type="spacer"
-				label="COM_LOGBOOK_SUBSLIDER_DRILL_CATEGORIES_LABEL"
-				class="text"
-			/>
-
-			<field
-				name="show_watchdog_title"
+				name="show_wcenter_title"
 				type="list"
-				label="COM_LOGBOOK_SHOW_WATCHDOG_TITLE"
-				description="COM_LOGBOOK_SHOW_WATCHDOG_TITLE_DESC"
+				label="COM_LOGBOOK_SHOW_WCENTER_TITLE"
+				description="COM_LOGBOOK_SHOW_WCENTER_TITLE_DESC"
 				useglobal="true"
 				>
 				<option value="0">JHIDE</option>
@@ -80,16 +56,9 @@
 				<option value="0">JHIDE</option>
 				<option value="1">JSHOW</option>
 			</field>
-
 		</fieldset>
 
 		<fieldset name="advanced" label="COM_LOGBOOK_LIST_LAYOUT_OPTIONS">
-			<field
-				name="spacer2"
-				type="spacer"
-				label="COM_LOGBOOK_SUBSLIDER_DRILL_CATEGORIES_LABEL"
-				class="text"
-			/>
 
 			<field
 				name="filter_field"
@@ -119,17 +88,6 @@
 				type="list"
 				label="COM_LOGBOOK_SHOW_HEADINGS_LABEL"
 				description="COM_LOGBOOK_SHOW_HEADINGS_DESC"
-				useglobal="true"
-				>
-				<option value="0">JHIDE</option>
-				<option value="1">JSHOW</option>
-			</field>
-
-			<field
-				name="show_log_remarks"
-				type="list"
-				label="COM_LOGBOOK_FIELD_CONFIG_LINKDESCRIPTION_LABEL"
-				description="COM_LOGBOOK_FIELD_CONFIG_LINKDESCRIPTION_DESC"
 				useglobal="true"
 				>
 				<option value="0">JHIDE</option>
@@ -182,5 +140,4 @@
 			</field>
 		</fieldset>
 	</fields>
-
 </metadata>

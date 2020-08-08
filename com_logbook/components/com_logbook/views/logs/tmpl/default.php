@@ -40,39 +40,21 @@ if (!empty($this->items)) {
 
 ?>
 
-<div class="archive<?php echo $this->pageclass_sfx; ?>">
+<div class="articles<?php echo $this->pageclass_sfx; ?>">
 <div class="page-header">
-<h1>
-    <?php echo $this->escape($item->watchdog_title); ?>
-</h1>
-	<blockquote class="blockquote text-wrap">
-		<?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_INSET').': '.$this->escape($item->inset_title); ?>
-	</blockquote>
-	<blockquote class="blockquote text-wrap">
-		<?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_BPRINT').': '.$this->escape($item->bprint_title); ?>
-	</blockquote>
-	<div class="badge badge-info">
-		<?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_TINTERVAL').': '.$this->escape($item->tinterval_title); ?>
-	</div>
+    <h1>
+        <?php echo JText::_('COM_LOGBOOK_LOGS'); ?>
+    </h1>
 </div>
-<form name="adminForm" id="adminForm" action="<?php echo JRoute::_('index.php?option=com_logbook&view=watchdog'); ?>" method="post">
+<form name="adminForm" id="adminForm" action="<?php echo JRoute::_('index.php?option=com_logbook&view=logs'); ?>" method="post">
     <?php // if ($this->params->get('filter_field') != 'hide' || $this->params->get('show_pagination_limit')) :?>
         <fieldset class="filters btn-toolbar">
-            <?php //if ($this->params->get('filter_field') != 'hide') :?>
-                <div class="btn-group">
-                    <label class="filter-search-lbl element-invisible" for="filter-search"><?php echo JText::_('COM_LOGBOOK_FILTER_LABEL').'&#160;'; ?></label>
-                    <input type="text" name="search" id="search" value="<?php echo $this->escape($this->state->get('list.filter')); ?>" class="inputbox" onchange="document.adminForm.submit();" title="<?php echo JText::_('COM_LOGBOOK_FILTER_SEARCH_DESC'); ?>" placeholder="<?php echo JText::_('COM_LOGBOOK_FILTER_SEARCH_DESC'); ?>" />
-                </div>
-            <?php // endif;?>
-
-            <?php //if ($this->params->get('show_pagination_limit')) :?>
-                <div class="btn-group pull-right">
-                    <label for="limit" class="element-invisible">
-                        <?php echo JText::_('JGLOBAL_DISPLAY_NUM'); ?>
-                    </label>
-                    <?php echo $this->pagination->getLimitBox(); ?>
-                </div>
-            <?php // endif;?>
+            <?php
+                echo JLayoutHelper::render(
+                    'joomla.searchtools.default',
+                    array('view' => $this)
+                );
+                ?>
         </fieldset>
     <?php // endif;?>
 
@@ -117,6 +99,18 @@ if (!empty($this->items)) {
                                     <a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_logbook&view=log&id='.$item->id); ?>" title="<?php echo JText::_('COM_LOGBOOK_VIEW_LOG'); ?>">
                                         <?php echo $this->escape($item->title); ?>
                                     </a>
+                                    <blockquote class="blockquote text-wrap">
+                                        <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_INSET').': '.$this->escape($item->inset_title); ?>
+                                    </blockquote>
+                                    <blockquote class="blockquote text-wrap">
+                                        <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_BPRINT').': '.$this->escape($item->bprint_title); ?>
+                                    </blockquote>
+                                    <div class="badge badge-info">
+                                        <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_TINTERVAL').': '.$this->escape($item->tinterval_title); ?>
+                                    </div>
+                                    <div class="badge badge-success">
+                                        <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_WCENTER').': '.$this->escape($item->wcenter_title); ?>
+                                    </div>
                                 </div>
                             </td>
                             <td class="hidden-phone center"><?php echo $this->escape($item->author); ?></td>

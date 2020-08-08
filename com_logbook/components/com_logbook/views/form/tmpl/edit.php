@@ -86,7 +86,7 @@ $params = $this->state->get('params');
                 <?php echo $this->form->renderField('file_name'); ?>
               </div>
               <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                <a class="btn btn-large btn-block btn-success" href="<?php echo $uri->root().'components/com_logbook/download/script.php?id='.$this->item->id; ?>"
+                <a class="btn btn-large btn-block btn-success" href="<?php echo JUri::root().'/components/com_logbook/download/script.php?id='.$this->item->id; ?>"
                     role="button" target="_blank"><span class="icon-download"></span>&#160;<?php echo JText::_('COM_LOGBOOK_BUTTON_DOWNLOAD'); ?>
                 </a>
               </div>

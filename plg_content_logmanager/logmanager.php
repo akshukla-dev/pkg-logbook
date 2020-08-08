@@ -154,7 +154,7 @@ class plgContentLogmanager extends JPlugin
                                 array(
                                     'log_count=log_count+1',
                                     'latest_log_date='.$db->quote(new Date($data->created)),
-                                    'next_due_date='.$db->quote(new Date($data->created.'+1'.$newtinterval)),
+                                    'next_due_date='.$db->quote(new Date($data->created.'+'.$newtinterval)),
                                 )
                             );
                             $query->where('id='.(int) $data->wdid);
@@ -179,7 +179,7 @@ class plgContentLogmanager extends JPlugin
                                 array(
                                     'log_count=log_count-1',
                                     'latest_log_date='.$db->quote(new Date($prevSetting > second_last_log_date)),
-                                    'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval)),
+                                    'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+'.$prevSetting->tinterval)),
                                 )
                             );
                             $query->where('id='.(int) $prevSetting->wdid);
@@ -219,7 +219,7 @@ class plgContentLogmanager extends JPlugin
                             $query->set(array(
                                     'log_count=log_count+1',
                                     'latest_log_date='.$db->quote(new Date($data->created)),
-                                    'next_due_date='.$db->quote(new Date($data->created.'+1 '.$newtinterval)),
+                                    'next_due_date='.$db->quote(new Date($data->created.'+ '.$newtinterval)),
                                     )
                                 );
                             $query->where('id='.(int) $data->wdid);
@@ -244,7 +244,7 @@ class plgContentLogmanager extends JPlugin
                                     array(
                                         'log_count=log_count-1',
                                         'latest_log_date='.$db->quote(new Date($prevSetting > second_last_log_date)),
-                                        'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+1'.$prevSetting->tinterval)),
+                                        'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+'.$prevSetting->tinterval)),
                                     )
                                 );
                             $query->where('id='.(int) $prevSetting->wdid);
@@ -284,7 +284,7 @@ class plgContentLogmanager extends JPlugin
                         array(
                         'log_count=log_count+1',
                         'latest_log_date='.$db->quote(new Date($data->created)),
-                        'next_due_date='.$db->quote(new Date($data->created.'+1'.$tinterval)),
+                        'next_due_date='.$db->quote(new Date($data->created.'+'.$tinterval)),
                         )
                     );
                     $query->where('id='.(int) $data->wdid);

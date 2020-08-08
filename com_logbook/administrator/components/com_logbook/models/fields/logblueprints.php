@@ -19,7 +19,7 @@ class JFormFieldLogBlueprints extends JFormFieldList
 {
     protected $type = 'logblueprints';
 
-    protected function getInput()
+    /*protected function getInput()
     {
         //Get the item id directly from the form loaded with data.
         $itemId = $this->form->getValue('isid');
@@ -42,7 +42,7 @@ class JFormFieldLogBlueprints extends JFormFieldList
         $input = parent::getInput();
 
         return $input;
-    }
+    }*/
 
     protected function getOptions()
     {
@@ -52,7 +52,8 @@ class JFormFieldLogBlueprints extends JFormFieldList
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
 
-        $insetId = $app->getUserStateFromRequest('com_logmoniter.moniter.filter.inset_id', 'filter_inset_id');
+        //$insetId = $this->getState('filter.inset_id');
+        $insetId = $app->getUserStateFromRequest('com_logbook.logs.filter.inset_id', 'filter_inset_id');
         if (is_numeric($insetId)) {
             $query->select('id AS value, title AS text');
             $query->from('#__logbook_blueprints')
@@ -65,8 +66,8 @@ class JFormFieldLogBlueprints extends JFormFieldList
             $db->setQuery($query);
             $items = $db->loadObjectList();
         }
-
         // Merge any additional options in the XML definition.
+
         $options = array_merge(parent::getOptions(), $items);
 
         return $options;

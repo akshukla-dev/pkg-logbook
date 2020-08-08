@@ -41,7 +41,7 @@ class LogmoniterModelMoniter extends JModelList
                 'hits', 'wd.hits',
                 'logs', 'wd.log_count',
                 'latest_log_date', 'wd.latest_log_date',
-                'next-due_date', 'wd.next_due_date',
+                'next_due_date', 'wd.next_due_date',
             );
         }
 
