@@ -9,7 +9,6 @@ JHtml::addIncludePath(JPATH_COMPONENT.'/helpers/html');
 JHtml::_('behavior.framework');
 
 JHtml::_('bootstrap.tooltip');
-//JHtml::_('behavior.multiselect');
 JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.caption');
 
@@ -17,6 +16,7 @@ $app = JFactory::getApplication();
 $user = JFactory::getUser();
 $userId = $user->get('id');
 
+//$params = $app->getParams();
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn = $this->escape($this->state->get('list.direction'));
 $columns = 7;
@@ -48,7 +48,7 @@ if (!empty($this->items)) {
 </div>
 <form name="adminForm" id="adminForm" action="<?php echo JRoute::_('index.php?option=com_logbook&view=logs'); ?>" method="post">
     <?php // if ($this->params->get('filter_field') != 'hide' || $this->params->get('show_pagination_limit')) :?>
-        <fieldset class="filters btn-toolbar">
+        <fieldset class="filters btn-toolbar clearfix">
             <?php
                 echo JLayoutHelper::render(
                     'joomla.searchtools.default',
@@ -56,6 +56,12 @@ if (!empty($this->items)) {
                 );
                 ?>
         </fieldset>
+        <input type="hidden" name="filter_order" value="" />
+        <input type="hidden" name="filter_order_Dir" value="" />
+        <input type="hidden" name="limitstart" value="" />
+        <input type="hidden" name="task" value="" />
+    	<input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
+    	<?php echo JHtml::_('form.token'); ?>
     <?php // endif;?>
 
     <?php if (empty($this->items)) : ?>
@@ -67,14 +73,34 @@ if (!empty($this->items)) {
         <table class="table table-striped table-hover" id="logList">
             <thead>
                 <tr>
-                    <th class="nowrap hidden-phone center" scope="col"><?php  echo JText::_('COM_LOGBOOK_NUM'); ?></th>
-                    <th class="hidden-phone" scope="col"><?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_TITLE', 'l.title', $listDirn, $listOrder); ?></th>
-                    <th class="nowrap hidden-phone center" scope="col"><?php  echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_AUTHOR', 'l.created_by', $listDirn, $listOrder); ?></th>
-                    <th class="nowrap hidden-phone center" scope="col"><?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_CREATED_DATE', 'l.created', $listDirn, $listOrder); ?></th>
+                    <th class="nowrap hidden-phone center" scope="col">
+                        <?php  echo JText::_('COM_LOGBOOK_NUM'); ?>
+                    </th>
+                    <th class="hidden-phone" scope="col">
+                        <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_TITLE', 'l.title', $listDirn, $listOrder); ?>
+                    </th>
+                    <th class="nowrap hidden-phone center" scope="col">
+                        <?php  echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_AUTHOR', 'l.created_by', $listDirn, $listOrder); ?>
+                    </th>
+                    <?php //if ($date = $this->params->get('list_show_date')) :?>
+                    <!--<th scope="col" id="loglist_header_date">
+                            <?php if ($date === 'created') : ?>
+                                <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_'.$date.'_DATE', 'l.created', $listDirn, $listOrder); ?>
+                            <?php elseif ($date === 'modified') : ?>
+                                <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_'.$date.'_DATE', 'l.modified', $listDirn, $listOrder); ?>
+                            <?php elseif ($date === 'published') : ?>
+                                <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_'.$date.'_DATE', 'l.publish_up', $listDirn, $listOrder); ?>
+                            <?php endif; ?>
+                        </th> -->
+                    <?php //endif;?>
+
+                    <th class="nowrap hidden-phone center" scope="col">
+                        <?php echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_CREATED_DATE', 'l.created', $listDirn, $listOrder); ?>
+                    </th>
                     <th class="nowrap hidden-phone center" scope="col"><?php  echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_DOWNLOADS', 'l.downloads', $listDirn, $listOrder); ?></th>
                     <th class="nowrap hidden-phone center" scope="col"><?php  echo JHtml::_('grid.sort', 'COM_LOGBOOK_LOG_HITS', 'l.hits', $listDirn, $listOrder); ?></th>
                     <?php if ($isEditable) : ?>
-                        <th class="nowrap hidden-phone center" scope="col" id="categorylist_header_edit"><?php echo JText::_('COM_LOGBOOK_FORM_EDIT_LOG'); ?></th>
+                        <th class="nowrap hidden-phone center" scope="col" id="loglist_header_edit"><?php echo JText::_('COM_LOGBOOK_FORM_EDIT_LOG'); ?></th>
                     <?php endif; ?>
                 </tr>
             </thead>
@@ -92,7 +118,11 @@ if (!empty($this->items)) {
                         $canEditOwn = $user->authorise('core.edit.own', 'com_logbook.log.'.$item->id) && $item->created_by == $userId;
                         $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
                     ?>
-                        <tr>
+                        <?php if ($this->items[$i]->state == 0) : ?>
+                        <tr class="system-unpublished cat-list-row<?php echo $i % 2; ?>">
+                        <?php else : ?>
+                        <tr class="cat-list-row<?php echo $i % 2; ?>" >
+                        <?php endif; ?>
                             <td class="hidden-phone center"><?php echo $this->pagination->getRowOffset($i); ?></td>
                             <td class="hidden-phone">
                                 <div class="pull-left">
@@ -100,10 +130,12 @@ if (!empty($this->items)) {
                                         <?php echo $this->escape($item->title); ?>
                                     </a>
                                     <blockquote class="blockquote text-wrap">
-                                        <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_INSET').': '.$this->escape($item->inset_title); ?>
+                                        <b><?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_INSET').': '; ?></b>
+                                        <?php echo $this->escape($item->inset_title); ?>
                                     </blockquote>
                                     <blockquote class="blockquote text-wrap">
-                                        <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_BPRINT').': '.$this->escape($item->bprint_title); ?>
+                                        <b><?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_BPRINT').': '; ?></b>
+                                        <?php echo $this->escape($item->bprint_title); ?>
                                     </blockquote>
                                     <div class="badge badge-info">
                                         <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_TINTERVAL').': '.$this->escape($item->tinterval_title); ?>
@@ -111,9 +143,33 @@ if (!empty($this->items)) {
                                     <div class="badge badge-success">
                                         <?php echo JText::_('COM_LOGBOOK_LOG_DETAILS_WCENTER').': '.$this->escape($item->wcenter_title); ?>
                                     </div>
+                                    <?php if ($item->state == 0) : ?>
+                                        <span class="list-published label label-warning">
+                                            <?php echo JText::_('JUNPUBLISHED'); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                    <?php if (strtotime($item->publish_up) > strtotime(JFactory::getDate())) : ?>
+                                        <span class="list-published label label-warning">
+                                            <?php echo JText::_('JNOTPUBLISHEDYET'); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                    <?php if ((strtotime($item->publish_down) < strtotime(JFactory::getDate())) && $item->publish_down != JFactory::getDbo()->getNullDate()) : ?>
+                                        <span class="list-published label label-warning">
+                                            <?php echo JText::_('JEXPIRED'); ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                             <td class="hidden-phone center"><?php echo $this->escape($item->author); ?></td>
+                            <?php //if ($this->params->get('list_show_date')) :?>
+                               <!-- <td headers="loglist_header_date" class="list-date small">
+                                    <?php
+                                   // echo JHtml::_(
+                                   //     'date', $item->displayDate,
+                                   //     $this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC3')))
+                                  //  );?>
+                                </td> -->
+                            <?php // endif;?>
                             <td class="hidden-phone center"><?php echo $this->escape($item->created); ?></td>
                             <td class="hidden-phone center"><span class="badge badge-warning"><?php echo (int) $item->downloads; ?></span></td>
                             <td class="hidden-phone center"><span class="badge badge-info"><?php echo (int) $item->hits; ?></span></td>
@@ -137,9 +193,5 @@ if (!empty($this->items)) {
         </table>
     </div>
     <?php endif; ?>
-    <input type="hidden" name="task" value=""/>
-    <input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
-    <?php echo JHtml::_('form.token'); ?>
-
 </form>
 

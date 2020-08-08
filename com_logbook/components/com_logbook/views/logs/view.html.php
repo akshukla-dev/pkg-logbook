@@ -12,6 +12,16 @@ defined('_JEXEC') or die;
  */
 class LogbookViewLogs extends JViewLegacy
 {
+    protected $state = null;
+
+    protected $item = null;
+
+    protected $items = null;
+
+    protected $pagination = null;
+
+    protected $years = null;
+
     /**
      * Execute and display a template script.
      *

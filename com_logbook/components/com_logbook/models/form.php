@@ -109,9 +109,6 @@ class LogbookModelForm extends LogbookModelLog
         if ($itemId) {
             // Check edit state permission.
             $item->params->set('access-change', $user->authorise('core.edit.state', $asset));
-
-            //Set up the text to display in the editor.
-            $item->remarks = $item->remarks;
         } else { // New item.
             // New item.
             $catId = (int) $this->getState('log.catid');

@@ -51,7 +51,7 @@ $tmpl = $isModal || $input->get('tmpl', '', 'cmd') === 'component' ? '&tmpl=comp
                                 <?php echo JText::_('COM_LOGBOOK_FIELD_DOWNLOAD_LABEL'); ?>
                             </div>
                             <div class="controls">
-                                <a class="btn btn-success" href="<?php JUri::root().'/components/com_logbook/download/script.php?id='.$this->item->id; ?>"
+                                <a class="btn btn-success" href="<?php JUri::root().'components/com_logbook/download/script.php?id='.$this->item->id; ?>"
                                     target="_blank"><span class="icon-download"></span>&#160;<?php echo JText::_('COM_LOGBOOK_BUTTON_DOWNLOAD'); ?>
                                 </a>
                             </div>

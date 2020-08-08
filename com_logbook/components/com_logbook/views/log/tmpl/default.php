@@ -25,7 +25,7 @@ $item = $this->item;
   <div class="page-header">
     <?php echo $this->loadTemplate('title'); ?>
     <?php echo $this->loadTemplate('edit'); ?>
-    <a href="<?php echo JUri::root().'/components/com_logbook/download/script.php?id='.$item->id; ?>" class="btn btn-success" target="_blank">
+    <a href="<?php echo JUri::root().'components/com_logbook/download/script.php?id='.$item->id; ?>" class="btn btn-success" target="_blank">
       <span class="icon-download"></span>&#160;<?php echo JText::_('COM_LOGBOOK_BUTTON_DOWNLOAD'); ?>
     </a>
   </div>

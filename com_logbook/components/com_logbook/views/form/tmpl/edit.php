@@ -76,32 +76,31 @@ $params = $this->state->get('params');
           <?php endif; ?>
           <?php echo $this->form->renderField('wdid'); ?>
           <?php if ($this->form->getValue('id') != 0) : //Existing item.?>
-            <div class="container">
-              <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                <span class="label">
-                  <?php echo JText::_('COM_LOGBOOK_FIELD_DOWNLOAD_LABEL'); ?>
-                </span>
-              </div>
-              <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <?php echo $this->form->renderField('file_name'); ?>
-              </div>
-              <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                <a class="btn btn-large btn-block btn-success" href="<?php echo JUri::root().'/components/com_logbook/download/script.php?id='.$this->item->id; ?>"
-                    role="button" target="_blank"><span class="icon-download"></span>&#160;<?php echo JText::_('COM_LOGBOOK_BUTTON_DOWNLOAD'); ?>
-                </a>
-              </div>
-              <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                <a href="#" id="switch_replace" style="margin-bottom:10px;"
-                    class="btn-info">
-                  <span id="replace-title">
-                    <?php echo JText::_('COM_LOGBOOK_REPLACE'); ?>
-                  </span>
-                  <span id="cancel-title">
-                    <?php echo JText::_('JCANCEL'); ?>
-                  </span>
-                </a>
-              </div>
+            <div class="control-group">
+							<div class="control-label">
+								<?php echo JText::_('COM_LOGBOOK_FIELD_DOWNLOAD_LABEL'); ?>
+							</div>
+							<div class="controls">
+								<a class="btn btn-success" href="<?php echo JUri::root().'components/com_logbook/download/script.php?id='.$this->item->id; ?>"
+									role="button" target="_blank"><span class="icon-download"></span>&#160;<?php echo JText::_('COM_LOGBOOK_BUTTON_DOWNLOAD'); ?>
+								</a>
+							</div>
+						</div>
+            <div>
+              <?php echo $this->form->renderField('file_name'); ?>
             </div>
+            <div>
+              <a href="#" id="switch_replace" style="margin-bottom:10px;" class="btn btn-warning">
+                <span id="replace-title">
+                  <?php echo JText::_('COM_LOGBOOK_REPLACE'); ?>
+                </span>
+                <span id="cancel-title">
+                  <?php echo JText::_('JCANCEL'); ?>
+                </span>
+              </a>
+            </div>
+
+
           <?php endif; ?>
           <?php echo $this->form->renderField('uploaded_file'); ?>
           <?php echo $this->form->renderField('signatories'); ?>

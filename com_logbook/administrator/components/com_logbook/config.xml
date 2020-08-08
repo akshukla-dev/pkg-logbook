@@ -503,7 +503,7 @@
 			<option value="0">JHIDE</option>
 			<option value="created">JGLOBAL_CREATED</option>
 			<option value="modified">JGLOBAL_MODIFIED</option>
-			<option value="published">JBLOBAL_PUBLISHED</option>
+			<option value="published">JGLOBAL_PUBLISHED</option>
 		</field>
 
 		<field
@@ -586,7 +586,7 @@
 		</field>
 	</fieldset>
 
-	<fieldset name="watchdog" label="COM_LOGBOOK_WATCHDOG_OPTIONS">
+	<fieldset name="logs" label="COM_LOGBOOK_LOGS_OPTIONS">
 		<field
 			name="show_watchdog_title"
 			type="list"

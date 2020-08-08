@@ -71,6 +71,38 @@
 			>
 				<option value="">JOPTION_SELECT_PUBLISHED</option>
 			</field>
+
+			<field
+				name="month"
+				type="list"
+				label="COM_LOGBOOK_FIELD_MONTHS_LIST_LABEL"
+				description="COM_LOGBOOK_FIELD_MONTHS_LIST_DESC"
+				onchange="this.form.submit();"
+				>
+				<option value="">COM_LOGBOOK_OPTION_SELECT_MONTH</option>
+				<option value="1">JANUARY</option>
+				<option value="2">FEBRUARY</option>
+				<option value="3">MARCH</option>
+				<option value="4">APRIL</option>
+				<option value="5">MAY</option>
+				<option value="6">JUNE</option>
+				<option value="7">JULY</option>
+				<option value="8">AUGUST</option>
+				<option value="9">SEPTEMBER</option>
+				<option value="10">OCTOBER</option>
+				<option value="11">NOVEMBER</option>
+				<option value="12">DECEMBER</option>
+			</field>
+
+			<field
+				name="year"
+				type="logyears"
+				label="COM_LOGBOOK_FIELD_YEARS_LIST_LABEL"
+				description="COM_LOGBOOK_FIELD_YEARS_LIST_DESC"
+				onchange="this.form.submit();"
+				>
+				<option value="">COM_LOGBOOK_OPTION_SELECT_YEAR</option>
+			</field>
 		</fields>
 	</fieldset>
 	<fields name="list">

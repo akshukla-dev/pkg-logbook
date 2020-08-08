@@ -43,7 +43,7 @@ class LogbookModelLog extends JModelAdmin
      */
     protected function canDelete($record)
     {
-        if (!empty($record->id)) {
+        /*if (!empty($record->id)) {
             if ($record->state != -2) {
                 return;
             }
@@ -53,7 +53,15 @@ class LogbookModelLog extends JModelAdmin
             }
 
             return parent::canDelete($record);
+        } */if (!empty($record->id)) {
+            if ($record->state != -2) {
+                return false;
+            }
+
+            return JFactory::getUser()->authorise('core.delete', 'com_logbook.log.'.(int) $record->id);
         }
+
+        return false;
     }
 
     /**

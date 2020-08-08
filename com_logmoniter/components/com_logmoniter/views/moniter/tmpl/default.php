@@ -132,6 +132,9 @@ if (!empty($this->items)) {
             </table>
         </div>
         <?php endif; ?>
+    <input type="hidden" name="filter_order" value="" />
+    <input type="hidden" name="filter_order_Dir" value="" />
+    <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="task" value=""/>
     <input type="hidden" name="return" value="<?php echo $this->return_page; ?>" />
     <?php echo JHtml::_('form.token'); ?>

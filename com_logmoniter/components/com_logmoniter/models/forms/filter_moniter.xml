@@ -64,7 +64,7 @@
 		</fields>
 	</fieldset>
 	<fields name="list">
-		<field
+		<!--<field
 			name="fullordering"
 			type="list"
 			label="COM_LOGMONITER_LIST_FULL_ORDERING"
@@ -98,7 +98,7 @@
 			<option value="wd.logs ASC">COM_LOGMONITER_LOG_COUNT_ASC</option>
 			<option value="wd.logs DESC">COM_LOGMONITER_LOG_COUNT_DESC</option>
 
-		</field>
+		</field> -->
 
 		<field
 			name="limit"

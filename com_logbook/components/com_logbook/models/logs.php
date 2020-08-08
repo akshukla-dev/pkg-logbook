@@ -134,6 +134,13 @@ class LogbookModelLogs extends JModelList
         $search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search');
         $this->setState('list.search', $search);
 
+        // Filter on month, year
+        $month = $this->getUserStateFromRequest($this->context.'.filter.month', 'filter_month');
+        $this->setState('filter.month', $month);
+
+        $year = $this->getUserStateFromRequest($this->context.'.filter.year', 'filter_year');
+        $this->setState('filter.year', $year);
+
         $watchdogId = $this->getUserStateFromRequest($this->context.'.filter.watchdog_id', 'filter_watchdog_id');
         $this->setState('filter.watchdog_id', $watchdogId);
 
@@ -202,6 +209,8 @@ class LogbookModelLogs extends JModelList
      */
     protected function getListQuery()
     {
+        $params = $this->state->params;
+        $logOrderDate = $params->get('order_date');
         // Get the current user for authorisation checks
         $user = JFactory::getUser();
         $groups = implode(',', $user->getAuthorisedViewLevels());
@@ -276,7 +285,7 @@ class LogbookModelLogs extends JModelList
         if (is_numeric($state)) {
             $query->where('l.state = '.(int) $state);
         } elseif ($state === '') {
-            $query->where('(l.state IN (0, 1, 2))');
+            $query->where('(l.state IN (0, 1))');
         }
 
         // Do not show trashed links on the front-end
@@ -345,6 +354,18 @@ class LogbookModelLogs extends JModelList
             $tintervalId = implode(',', $tintervalId);
             $type = $this->getState('filter.tinterval_id.include', true) ? 'IN' : 'NOT IN';
             $query->where('wd.tiid '.$type.' ('.$tintervalId.')');
+        }
+
+        // Filter on month, year
+        // First, get the date field
+        $queryDate = LogbookHelperQuery::getQueryDate($logOrderDate);
+
+        if ($month = $this->getState('filter.month')) {
+            $query->where($query->month($queryDate).' = '.$month);
+        }
+
+        if ($year = $this->getState('filter.year')) {
+            $query->where($query->year($queryDate).' = '.$year);
         }
 
         // Filter by start and end dates.

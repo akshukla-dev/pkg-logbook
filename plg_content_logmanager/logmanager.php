@@ -90,7 +90,9 @@ class plgContentLogmanager extends JPlugin
                 }
             }
         } elseif ($context == 'com_logbook.log' || $context == 'com_logbook.form') { /////--LOG CREATION / EDITION--//////.
-            //Check (again) if a component category is selected.
+            JFactory::getApplication()->enqueueMessage('inside com_logbook.log context : '.$context);
+
+            //Check (again) if a component watchdog is selected.
             if (empty($data->wdid)) {
                 $data->setError(JText::_('COM_LOGBOOK_NO_SELECTED_CATEGORY'));
 
@@ -101,7 +103,7 @@ class plgContentLogmanager extends JPlugin
             //Existing item.
             //The previous setting of the log might be needed to check against the current setting.
             if (!$isNew) {
-                $query->select('l.wdid AS wdid, l.file AS file, l.file_path AS file_path, l.created AS log_date', 'wd.tiid AS tiid');
+                $query->select('l.wdid AS wdid, l.file AS file, l.file_path AS file_path, l.created , wd.tiid');
                 $query->from('#__logbook_logs AS l');
                 $query->join('LEFT', '#__logbook_watchdogs AS wd ON wd.id=l.wdid');
                 $query->where('l.id='.(int) $data->id);
@@ -114,11 +116,15 @@ class plgContentLogmanager extends JPlugin
                 $jform = $jinput->post->get('jform', array(), 'array');
                 if ($jform['replace_file']) {
                     //The file must be uploaded on the server.
+                    JFactory::getApplication()->enqueueMessage('Replacing File: '.$jform['replace_file']);
+
                     //Upload the file.
                     require_once JPATH_ADMINISTRATOR.'/components/com_logbook/helpers/logbook.php';
                     $file = LogbookHelper::uploadFile($data->wdid);
 
                     if (empty($file['error'])) {//File upload was successful
+                        JFactory::getApplication()->enqueueMessage('Replacement file uploaded successfully.');
+
                         //Set the file fields.
                         $data->file = $file['file'];
                         $data->file_name = $file['file_name'];
@@ -132,18 +138,23 @@ class plgContentLogmanager extends JPlugin
                         //Warning: Don't ever use the JFile delete function cause if a problem occurs with
                         //the file, the returned value is undefined (nor boolean or whatever).
                         //Stick to the unlink PHP function which is safer.
+                        JFactory::getApplication()->enqueueMessage('Old File to be Deleted:'.JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file);
                         if (!unlink(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file)) {
-                            $data->setError(JText::sprintf('COM_LRM_FILE_COULD_NOT_BE_DELETED', $prevSetting->file));
+                            $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_DELETED', $prevSetting->file));
 
                             return false;
                         }
+                        JFactory::getApplication()->enqueueMessage('Old File Deleted. That\'s it for a replaced file if wdid has not changed.');
+
                         //That's it for a replaced file if wdid has not changed.
                         if ($data->wdid != $prevSetting->wdid) {
+                            JFactory::getApplication()->enqueueMessage('$data->wdid!=$prevSetting->wdid');
+
                             //Get T interval for the new wdid:
                             $query->clear();
                             $query->select('t.title')
                                 ->from('#__logbook_timeintervals AS t')
-                                ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
+                                ->join('LEFT', '`#__logbook_watchdogs` AS wd ON wd.tiid=t.id')
                                 ->where('wd.id='.(int) $data->wdid);
                             $db->setQuery($query);
                             $newtinterval = $db->loadResult();
@@ -178,7 +189,7 @@ class plgContentLogmanager extends JPlugin
                             $query->set(
                                 array(
                                     'log_count=log_count-1',
-                                    'latest_log_date='.$db->quote(new Date($prevSetting > second_last_log_date)),
+                                    'latest_log_date='.$db->quote(new Date($prevSetting->second_last_log_date)),
                                     'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+'.$prevSetting->tinterval)),
                                 )
                             );
@@ -195,31 +206,47 @@ class plgContentLogmanager extends JPlugin
                         return false;
                     }
                 } else {
-                    // user might have changed the associated category
+                    // user might have changed the associated watchdog
                     if ($data->wdid != $prevSetting->wdid) {
+
+
+                        //Get $newpath for the new wdid:
+                        $query->clear();
+                        $query->select('log_path')
+                            ->from('#__logbook_watchdogs')
+                            ->where('id='.(int) $data->wdid);
+                        $db->setQuery($query);
+						$newpath= $db->loadResult();
+
+						$data->file_path = $newpath;
+
+
+
                         //Move the log into the new folder. Generate an error message if the move fails.
                         //Note: JFile::move() function doesn't return false when a fail occurs. So we must test it against "not true".
                         if (JFile::move(JPATH_ROOT.'/'.$prevSetting->file_path.'/'.$prevSetting->file,
-                        JPATH_ROOT.'/'.$newPath.'/'.$prevSetting->file) !== true) {
+                        JPATH_ROOT.'/'.$newpath.'/'.$prevSetting->file) !== true) {
                             $data->setError(JText::sprintf('COM_LOGBOOK_FILE_COULD_NOT_BE_MOVED', $prevSetting->file));
 
                             return false;
-                        } else {
+                        } else { //Moving the file was successful...
+
                             //Get T interval for the new wdid:
                             $query->clear();
                             $query->select('t.title')
-                                    ->from('#__logbook_timeintervals AS t')
-                                    ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
-                                    ->where('wd.id='.(int) $data->wdid);
+                                ->from('#__logbook_timeintervals AS t')
+                                ->join('LEFT', '`#__logbook_watchdogs` AS wd ON wd.tiid=t.id')
+                                ->where('wd.id='.(int) $data->wdid);
                             $db->setQuery($query);
-                            $newtinterval = $db->loadResult();
+                            $newtinterval= $db->loadResult();
+                            JFactory::getApplication()->enqueueMessage('Moved file now found new time text for new wacthdog: '.$newtinterval);
                             //Update Values in new wdid:
                             $query->clear();
                             $query->update('#__logbook_watchdogs');
                             $query->set(array(
                                     'log_count=log_count+1',
                                     'latest_log_date='.$db->quote(new Date($data->created)),
-                                    'next_due_date='.$db->quote(new Date($data->created.'+ '.$newtinterval)),
+                                    'next_due_date='.$db->quote(new Date($data->created.'+'.$newtinterval)),
                                     )
                                 );
                             $query->where('id='.(int) $data->wdid);
@@ -243,7 +270,7 @@ class plgContentLogmanager extends JPlugin
                             $query->set(
                                     array(
                                         'log_count=log_count-1',
-                                        'latest_log_date='.$db->quote(new Date($prevSetting > second_last_log_date)),
+                                        'latest_log_date='.$db->quote(new Date($prevSetting->second_last_log_date)),
                                         'next_due_date='.$db->quote(new Date($prevSetting->second_last_log_date.'+'.$prevSetting->tinterval)),
                                     )
                                 );
@@ -272,7 +299,7 @@ class plgContentLogmanager extends JPlugin
                     $query->clear();
                     $query->select('t.title')
                         ->from('#__logbook_timeintervals AS t')
-                        ->join('RIGHT', '`#__logbook_watchdogs` AS wd ON t.id=wd.tiid')
+                        ->join('LEFT', '`#__logbook_watchdogs` AS wd ON wd.tiid=t.id')
                         ->where('wd.id='.(int) $data->wdid);
                     $db->setQuery($query);
                     $tinterval = $db->loadResult();
@@ -341,7 +368,7 @@ class plgContentLogmanager extends JPlugin
 
             //Decrement the number of the files in the folder.
             $query->clear();
-            $query->update('#__logbook_folders');
+            $query->update('#__logbook_watchdogs');
             $query->set('files=files-1');
             $query->where('id='.(int) $log->folder_id);
             $db->setQuery($query);
