@@ -6,18 +6,18 @@
 	<copyright>(C) 2020 Amit Kumar Shukla. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>akshukla.dev@gmail.com</authorEmail>
-	<authorUrl>http://www.github.com/akshukla-dev/pkg-logbook</authorUrl>
-	<version>4.0.0</version>
+	<authorUrl>http://www.github.com/akshukla-dev/</authorUrl>
+	<version>2.0.6</version>
 	<description>COM_LOGBOOK_XML_DESCRIPTION</description>
 
 	<install>
 		<sql>
-			<file charset="utf8" driver="mysql">sql/install.mysql.utf8.sql</file>
+			<file charset="utf8" driver="mysql">sql/install.mysql.sql</file>
 		</sql>
 	</install>
 	<uninstall>
 		<sql>
-			<file charset="utf8" driver="mysql">sql/uninstall.mysql.utf8.sql</file>
+			<file charset="utf8" driver="mysql">sql/uninstall.mysql.sql</file>
 		</sql>
 	</uninstall>
 	<update>
@@ -28,19 +28,17 @@
 
 	<media folder="media/com_logbook" destination="com_logbook">
 		<folder>images</folder>
-		<folder>js</folder>
-		<folder>extensions</folder>
 	</media>
 
 	<files folder="components/com_logbook">
-		<folder>controllers</folder>
-		<folder>download</folder>
-		<folder>helpers</folder>
-        <folder>models</folder>
-        <folder>views</folder>
 		<file>controller.php</file>
-        <file>logbook.php</file>
+        <!--<file>metadata.xml</file>
+        <folder>models</folder>
         <file>router.php</file>
+        <folder>controllers</folder>
+        <folder>views</folder>
+        <folder>helpers</folder>-->
+        <file>logbook.php</file>
 	</files>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.com_logbook.ini</language>
@@ -53,11 +51,18 @@
 				XML and be parsed by the installer
 			-->
 			<menu link="option=com_logbook" view="logs" img="class:book"
-				alt="Logbook/Logs">COM_LOGBOOK_SUBMENU_LOGS</menu>
-	     	<menu link="option=com_categories&amp;extension=com_logbook" view="categories"
-		    img="class:log" alt="Logbook/Categories">COM_LOGBOOK_SUBMENU_CATEGORIES</menu>
+				alt="Logbook/Logs">COM_LOGBOOK_LOGS</menu>
+			<menu link="option=com_categories&amp;extension=com_logbook"
+				view="categories" img="class:logbook-cat" alt="Logbook/Categories">COM_LOGBOOK_CATEGORIES</menu>
+            <menu link="option=com_logbook" view="locations" img="class:location"
+				alt="Logbook/Locations">COM_LOGBOOK_LOCATIONS</menu>
+            <menu link="option=com_logbook" view="blueprints" img="class:paste"
+				alt="Logbook/Blueprint">COM_LOGBOOK_BLUEPRINTS</menu>
+			<menu link="option=com_logbook" view="folders" img="class:folder-2"
+				alt="Logbook/Locations">COM_LOGBOOK_FOLDERS</menu>
+            <menu link="option=com_logbook" view="logrefs" img="class:alarm"
+				alt="Logbook/Schedule">COM_LOGBOOK_LOGREFS</menu>
 		</submenu>
-
 		<files folder="administrator/components/com_logbook">
 			<file>access.xml</file>
 			<file>config.xml</file>

@@ -161,10 +161,10 @@ class PlgSearchLogbook extends JPlugin
 		$case_when = ' CASE WHEN ';
 		$case_when .= $query->charLength('a.alias', '!=', '0');
 		$case_when .= ' THEN ';
-		$l_id = $query->castAsChar('a.id');
-		$case_when .= $query->concatenate(array($l_id, 'a.alias'), ':');
+		$a_id = $query->castAsChar('a.id');
+		$case_when .= $query->concatenate(array($a_id, 'a.alias'), ':');
 		$case_when .= ' ELSE ';
-		$case_when .= $l_id . ' END as slug';
+		$case_when .= $a_id . ' END as slug';
 
 		$case_when1 = ' CASE WHEN ';
 		$case_when1 .= $query->charLength('c.alias', '!=', '0');

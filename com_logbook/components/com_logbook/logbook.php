@@ -4,20 +4,10 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
+JHtml::_('behavior.tabstate');
 
-JLoader::register('LogbookHelperRoute', JPATH_COMPONENT.'/helpers/route.php');
-JLoader::register('LogbookHelperQuery', JPATH_COMPONENT.'/helpers/query.php');
-JLoader::register('LogbookHelperAssociation', JPATH_COMPONENT.'/helpers/association.php');
-
-$input = JFactory::getApplication()->input;
-$user = JFactory::getUser();
-
-if ($input->get('view') === 'logs' && $input->get('layout') === 'modal') {
-    if (!$user->authorise('core.create', 'com_logbook')) {
-        JFactory::getApplication()->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'warning');
-
-        return;
-    }
+if (!JFactory::getUser()->authorise('core.manage', 'com_logbook')) {
+    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
 $controller = JControllerLegacy::getInstance('Logbook');

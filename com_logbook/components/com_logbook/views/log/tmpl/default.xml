@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata>
 	<layout title="COM_LOGBOOK_LOG_VIEW_DEFAULT_TITLE">
-		<message><![CDATA[COM_LOGBOOK_LOG_VIEW_DEFAULT_DESC]]></message>
+		<message>COM_LOGBOOK_LOG_VIEW_DEFAULT_DESC</message>
 	</layout>
-	<fields	name="request">
-		<fieldset
-			name="request"
-			addfieldpath="/administrator/components/com_logbook/models/fields"
+	<fields
+		name="request"
+		addfieldpath="/administrator/components/com_logbook/models/fields"
 		>
+		<fieldset name="request">
 			<field
 				name="id"
-				type="modal_log"
+				type="log"
 				label="COM_LOGBOOK_LOG_TITLE_FIELD_LABEL"
 				description="COM_LOGBOOK_LOG_TITLE_FIELD_DESC"
-				required="true"
-				select="true"
-				new="true"
-				edit="true"
-				clear="true"
-			/>
+				>
+            </field>
 		</fieldset>
 	</fields>
 </metadata>
