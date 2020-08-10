@@ -76,7 +76,7 @@ if ($id) {
                   ->set('downloads=downloads+1')
                   ->where('id='.$id);
             $db->setQuery($query);
-            $result = $db->query();
+            $result = $db->execute();
 
             //$component = JComponentHelper::getComponent('com_lrm');
             //Build the path to the file.

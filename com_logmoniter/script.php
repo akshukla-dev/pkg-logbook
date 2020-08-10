@@ -77,7 +77,7 @@ class com_logmoniterInstallerScript
         $query->delete('#__content_types')
             ->where('type_alias="com_logmoniter.watchdog" OR type_alias="com_logmoniter.category"');
         $db->setQuery($query);
-        $db->query();
+        $db->execute();
     }
 
     /**
@@ -117,7 +117,7 @@ class com_logmoniterInstallerScript
             $query->set('params='.$db->Quote('{'.$JsonValues.'}'));
             $query->where('element='.$db->Quote('com_logmoniter').' AND type='.$db->Quote('component'));
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
 
             //In order to use the Joomla's tagging system we have to give to Joomla some
             //informations about the component items we want to tag.
@@ -133,7 +133,7 @@ class com_logmoniterInstallerScript
             $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created","core_modified_time":"modified","core_body":"introtext","core_hits":"hits","core_publish_up":"publish_up","core_publish_down":"publish_down","core_access":"access","core_params":"null","core_featured":"null","core_metadata":"null","core_language":"language","core_images":"null","core_urls":"null","core_version":"null","core_ordering":"ordering","core_metakey":"null","core_metadesc":"null","core_catid":"catid","core_xreference":"null","asset_id":"null"},"special": {}}').','.
             $db->Quote('LogmoniterHelperRoute::getWatchdogRoute'));
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
 
             //Informations about the Log Moniter category items.
             $query->clear();
@@ -144,7 +144,7 @@ class com_logmoniterInstallerScript
             $db->Quote('{"common"{"core_content_item_id":"id","core_title":"title","core_state":"published","core_alias":"alias","core_created_time":"created_time","core_modified_time":"modified_time","core_body":"introtext","core_hits":"hits","core_publish_up":"null","core_publish_down":"null","core_access":"access","core_params":"params","core_featured":"null","core_metadata":"metadata","core_language":"language","core_images":"null","core_urls":"null","core_version":"version","core_ordering":"null","core_metakey":"metakey","core_metadesc":"metadesc","core_catid":"parent_id","core_xreference":"null","asset_id":"asset_id"},"special":{"parent_id":"parent_id","lft":"lft","rgt":"rgt","level":"level","path":"path","extension":"extension","note":"note"}}').','.
             $db->Quote('LogmoniterHelperRoute::getCategoryRoute'));
             $db->setQuery($query);
-            $db->query();
+            $db->execute();
         }
     }
 

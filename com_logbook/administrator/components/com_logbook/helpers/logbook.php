@@ -6,6 +6,10 @@
 defined('_JEXEC') or die;
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
+use Joomla\CMS\Date\Date;
+
+
+
 /**
  * Logbook Component helper.
  *
@@ -155,7 +159,7 @@ class LogbookHelper extends JHelperContent
      */
     public static function uploadFile($wdid)
     {
-        //Array to store the log file data. Set an error index for a possible error message.
+        //Array to store the log file data. Set an error index for a possible error error.
         $log = array('error' => '');
 
         //Get the name of the destination folder.
@@ -171,14 +175,11 @@ class LogbookHelper extends JHelperContent
         $files = $jinput->files->get('jform');
         $files = $files['uploaded_file'];
 
-        JFactory::getApplication()->enqueueMessage('$files empty : '.empty($files));
-
         //Get the component parameters:
 
         $params = JComponentHelper::getParams('com_logbook');
         //- The allowed extensions table
         $allowedExt = explode(';', $params->get('allowed_extensions'));
-        JFactory::getApplication()->enqueueMessage('Inside Logbook  helper upload file : Allowed Extensions : '.$allowedExt[1]);
         // - The available extension icons table
         $iconsExt = explode(';', $params->get('extensions_list'));
         //- Allow or not all types of file.
@@ -192,7 +193,6 @@ class LogbookHelper extends JHelperContent
         if ($files['error'] == 0) {
             //Get the file extension and convert it to lowercase.
             $ext = strtolower(JFile::getExt($files['name']));
-            JFactory::getApplication()->enqueueMessage('Inside Logbook  helper upload file : Uploaded File Extensions : '.$ext);
 
             //Check if the extension is allowed.
             if (!in_array($ext, $allowedExt) && !$allFiles) {
@@ -303,6 +303,113 @@ class LogbookHelper extends JHelperContent
         return $conversion;
     }
 
+
+    /**
+     * Restore Watchdog after deleteFile($id) returns true
+     * Update watchdog database
+     * 0. Find older log info and try to restore older info
+     * 1. Decrement the number of logs in watchdogs table
+     * 2. restore the latest log date to the previous log
+     * 3. calculate the new next due date as per the replaced latest log date.
+     *
+     * Will Call this function if deleteFile says to proceed futher
+     *
+     * @return mixed
+     *
+     * @since 1.0.0
+     */
+    public static function restoreWatchdog($wdid, $logid)
+    {
+        //Get the path of the corresponding file.
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('l.created')
+            ->from('#__logbook_logs AS l')
+            ->where($db->qn('l.id').' != '.$db->quote($logid))
+            ->where($db->qn('l.wdid').' = '.$db->quote($wdid))
+            ->order('l.created DESC')
+            ->setlimit('1');
+        $db->setQuery($query);
+        $lastlogdate = $db->loadResult();
+
+        //If a log found
+        if (!empty($lastlogdate)) {
+            //find the tinterval
+            $query->clear();
+            $query->select('ti.title')
+                ->from('#__logbook_timeintervals AS ti')
+                ->join('LEFT', '#__logbook_watchdogs as wd ON wd.tiid = ti.id')
+                ->where('wd.id='.(int)$wdid);
+            $db->setQuery($query);
+            $tinterval = $db->loadResult();
+
+            //Update Values in passed old wdid:
+            $query->clear();
+            $query->update('#__logbook_watchdogs');
+            $query->set(
+                array(
+                    'log_count=log_count-1',
+                    'latest_log_date='.$db->quote(new Date($lastlogdate)),
+                    'next_due_date='.$db->quote(new Date($lastlogdate.'+'.$tinterval)),
+                )
+            );
+            $query->where('id='.(int) $wdid);
+            $db->setQuery($query);
+            $db->execute();
+        } else {
+            JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGBOOK_WATCHDOG_NDD_SET_TO_NOW'), 'warning');
+            //Update Values in passed old wdid:
+            $query->clear();
+            $query->update('#__logbook_watchdogs');
+            $query->set(
+                array(
+                    'log_count=log_count-1',
+                    'latest_log_date='.$db->quote($db->getNullDate()),
+                    'next_due_date='.$db->quote(new Date('now')),
+                )
+            );
+            $query->where('id='.(int) $wdid);
+            $db->setQuery($query);
+            $db->execute();
+        }
+    }
+
+    /**
+     * Update Watchdog with new dates and added log_count
+     *
+     * @return void
+     *
+     * @since 1.0.0
+     */
+    public static function updateWatchdog($wdid, $latestlogdate)
+    {
+        //find the tinterval
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('ti.title')
+            ->from('#__logbook_timeintervals AS ti')
+            ->join('LEFT', '`#__logbook_watchdogs` AS wd on wd.tiid=ti.id')
+            ->where('wd.id = '.(int)$wdid);
+        $db->setQuery($query);
+        $tinterval = $db->loadResult();
+
+        //Update Values in passed new wdid:
+        $query->clear();
+        $query->update('#__logbook_watchdogs');
+        $query->set(
+            array(
+                'log_count=log_count+1',
+                'latest_log_date='.$db->quote(new Date($latestlogdate)),
+                'next_due_date='.$db->quote(new Date($latestlogdate.'+'.$tinterval)),
+            )
+        );
+        $query->where('id='.(int) $wdid);
+        $db->setQuery($query);
+        $db->execute();
+
+    }
+
+
     /**
      * Returns a valid section for logs. If it is not valid then null
      * is returned.
@@ -321,8 +428,8 @@ class LogbookHelper extends JHelperContent
                 // Editing an log
                 case 'form':
 
-                // Category list view
-                case 'category':
+                // logs list view
+                case 'logs':
                     $section = 'log';
             }
         }
