@@ -356,18 +356,6 @@ class LogbookModelLogs extends JModelList
             $query->where('wd.tiid '.$type.' ('.$tintervalId.')');
         }
 
-        // Filter on month, year
-        // First, get the date field
-        $queryDate = LogbookHelperQuery::getQueryDate($logOrderDate);
-
-        if ($month = $this->getState('filter.month')) {
-            $query->where($query->month($queryDate).' = '.$month);
-        }
-
-        if ($year = $this->getState('filter.year')) {
-            $query->where($query->year($queryDate).' = '.$year);
-        }
-
         // Filter by start and end dates.
         $nullDate = $db->quote($db->getNullDate());
         $nowDate = $db->quote(JFactory::getDate()->toSql());
@@ -402,6 +390,19 @@ class LogbookModelLogs extends JModelList
             case 'off':
             default:
                 break;
+        }
+
+        // Filter on month, year
+        // First, get the date field
+        $queryDate = LogbookHelperQuery::getQueryDate($logOrderDate);
+        //$queryDate = LogbookHelperQuery::getQueryDate('created');
+
+        if ($month = $this->getState('filter.month')) {
+            $query->where($query->month($queryDate).' = '.$month);
+        }
+
+        if ($year = $this->getState('filter.year')) {
+            $query->where($query->year($queryDate).' = '.$year);
         }
 
         // Add the list ordering clause.

@@ -37,9 +37,16 @@ class JFormFieldLogYears extends JFormFieldList
         $db->setQuery($query);
         $years = $db->loadColumn();
 
+        $yearsoptions = array('value' => '', 'text' => '');
+        foreach ($years as $i => $value) {
+            $yearsoptions[$i] = new stdClass();
+            $yearsoptions[$i]->value = $value;
+            $yearsoptions[$i]->text = $value;
+        }
+
         // Merge any additional options in the XML definition.
 
-        $options = array_merge(parent::getOptions(), $years);
+        $options = array_merge(parent::getOptions(), $yearsoptions);
 
         return $options;
     }

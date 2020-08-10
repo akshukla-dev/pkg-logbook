@@ -10,7 +10,7 @@ defined('_JEXEC') or die;
 // Create a shortcuts.
 $item = $this->item;
 $params = $this->item->params;
-//$canEdit = $item->params->get('access-edit');
+$canEdit = $item->params->get('access-edit');
 JHtml::_('behavior.framework');
 ?>
 

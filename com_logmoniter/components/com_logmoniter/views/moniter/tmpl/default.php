@@ -24,7 +24,7 @@ $assoc = JLanguageAssociations::isEnabled();
 
 // Check for at least one editablewatchdog
 $isEditable = false;
-
+$nullDate = JFactory::getDbo()->getNullDate();
 if (!empty($this->items)) {
     foreach ($this->items as $item) {
         $canEdit = $user->authorise('core.edit', 'com_logmoniter.watchdog.'.$item->id);
@@ -108,8 +108,20 @@ if (!empty($this->items)) {
                                         </div>
                                     </div>
                                 </td>
-                                <td class="hidden-phone center"><?php echo JHtml::_('date', $item->next_due_date, JText::_('DATE_FORMAT_LC3')); ?></td>
-                                <td class="hidden-phone center"><?php echo JHtml::_('date', $item->latest_log_date, JText::_('DATE_FORMAT_LC3')); ?></td>
+                                <td class="hidden-phone center">
+                                    <?php if ($item->next_due_date == $nullDate) : ?>
+                                        <?php echo '---'; ?>
+                                    <?php else : ?>
+                                        <?php echo JHTML::_('date', $item->next_due_date, JText::_('DATE_FORMAT_LC3')); ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="hidden-phone center">
+                                    <?php if ($item->latest_log_date == $nullDate) : ?>
+                                        <?php echo '---'; ?>
+                                    <?php else : ?>
+                                        <?php echo JHTML::_('date', $item->latest_log_date, JText::_('DATE_FORMAT_LC3')); ?>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="hidden-phone center"><span class="badge badge-warning"><?php echo (int) $item->log_count; ?></span></td>
                                 <td class="hidden-phone center"><span class="badge badge-info"><?php echo (int) $item->hits; ?></span></td>
                                 <td class="has-context">

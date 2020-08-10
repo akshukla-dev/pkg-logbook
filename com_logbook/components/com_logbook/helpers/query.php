@@ -120,8 +120,12 @@ class LogbookHelperQuery
             break;
 
         // use created if closed is not set
-        case 'closed':
-            $queryDate = ' CASE WHEN l.closed = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.closed END ';
+        case 'published':
+            $queryDate = ' CASE WHEN l.publish_up = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.publish_up END ';
+            break;
+
+        case 'unpublished':
+            $queryDate = ' CASE WHEN l.publish_down = '.$db->quote($db->getNullDate()).' THEN l.created ELSE l.publish_down END ';
             break;
 
         case 'created':
