@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_LOGMONITER_FORM_VIEW_DEFAULT_TITLE" option="COM_LOGMONITER_FORM_VIEW_DEFAULT_OPTION">
+		<help
+			key = "JHELP_MENUS_MENU_ITEM_LOG_CREATE"
+		/>
+		<message>
+			<![CDATA[COM_LOGMONITER_FORM_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+	<fields name="params">
+		<fieldset name="basic"
+			addfieldpath="/administrator/components/com_categories/models/fields"
+		>
+			<field name="enable_category"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default="0"
+				label="COM_LOGMONITER_CREATE_LOG_CATEGORY_LABEL"
+				description="COM_LOGMONITER_CREATE_LOG_CATEGORY_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+			</field>
+			<field
+				name="catid"
+				type="modal_category"
+				label="JGLOBAL_CHOOSE_CATEGORY_LABEL"
+				description="JGLOBAL_CHOOSE_CATEGORY_DESC"
+				extension="COM_LOGMONITER"
+				select="true"
+				new="true"
+				edit="true"
+				clear="true"
+				showon="enable_category:1"
+			/>
+			<field
+				name="redirect_menuitem"
+				type="modal_menu"
+				label="COM_LOGMONITER_CREATE_LOG_REDIRECTMENU_LABEL"
+				description="COM_LOGMONITER_CREATE_LOG_REDIRECTMENU_DESC"
+				>
+				<option value="">JDEFAULT</option>
+			</field>
+		</fieldset>
+	</fields>
+</metadata>

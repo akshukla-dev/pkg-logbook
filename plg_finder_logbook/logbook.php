@@ -264,7 +264,7 @@ class PlgFinderLogbook extends FinderIndexerAdapter
 		// Build the necessary route and path information.
 		$item->url = $this->getURL($item->id, $this->extension, $this->layout);
 		$item->route = LogbookHelperRoute::getLogRoute($item->slug, $item->catslug, $item->language);
-		$item->path = FinderIndexerHelper::getContentPath($item->route);
+		$item->path = FinderIndexerHelper::getLogbookPath($item->route);
 
 		/*
 		 * Add the meta-data processing instructions based on the newsfeeds
@@ -291,7 +291,7 @@ class PlgFinderLogbook extends FinderIndexerAdapter
 		$item->addTaxonomy('Language', $item->language);
 
 		// Get content extras.
-		FinderIndexerHelper::getContentExtras($item);
+		FinderIndexerHelper::getLogbookExtras($item);
 
 		// Index the item.
 		$this->indexer->index($item);
@@ -338,10 +338,10 @@ class PlgFinderLogbook extends FinderIndexerAdapter
 		$case_when_item_alias = ' CASE WHEN ';
 		$case_when_item_alias .= $query->charLength('a.alias', '!=', '0');
 		$case_when_item_alias .= ' THEN ';
-		$a_id = $query->castAsChar('a.id');
-		$case_when_item_alias .= $query->concatenate(array($a_id, 'a.alias'), ':');
+		$l_id = $query->castAsChar('a.id');
+		$case_when_item_alias .= $query->concatenate(array($l_id, 'a.alias'), ':');
 		$case_when_item_alias .= ' ELSE ';
-		$case_when_item_alias .= $a_id . ' END as slug';
+		$case_when_item_alias .= $l_id . ' END as slug';
 		$query->select($case_when_item_alias);
 
 		$case_when_category_alias = ' CASE WHEN ';
