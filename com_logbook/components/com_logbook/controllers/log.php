@@ -1,6 +1,7 @@
 <?php
 /**
- * @copyright Copyright (c)2020 Amit Kumar Shukla
+ * @package LMI/Logbook
+ * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
  */

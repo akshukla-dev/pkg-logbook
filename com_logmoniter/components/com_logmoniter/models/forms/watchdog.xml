@@ -77,19 +77,22 @@
 				size="22"
 				filter="user_utc"
 			/>
-
+		
 		<field
-				name="published"
-				type="radio"
-				label="JSTATUS"
-				description="JFIELD_PUBLISHED_DESC"
-				id="published"
-				class="inputbox"
-				default="1"
-				>
-				<option value="1">JPUBLISHED</option>
-				<option value="0">JUNPUBLISHED</option>
-			</field>
+			name="state"
+			type="list"
+			label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC"
+			id="state"
+			class="inputbox"
+			size="1"
+			default="1"
+			>
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+			<option value="2">JARCHIVED</option>
+			<option value="-2">JTRASHED</option>
+		</field>
 
 		<field
 				name="created"
@@ -207,7 +210,6 @@
 			id="lwid"
 			class="inputbox"
 			validate="logtimeintervals"
-			required="true"
 			size="80"
 		/>
 

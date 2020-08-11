@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright (c)2020 Amit Kumar Shukla
+ * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  */
 defined('_JEXEC') or die; //No direct access to this file.

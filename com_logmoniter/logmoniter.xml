@@ -9,7 +9,7 @@
     <authorUrl>https://github.com/akshukla-dev/pkg-logmoniter</authorUrl>
     <license>GPL 3.0</license>
     <!--  The version string is recorded in the components table -->
-    <version>5.1.0</version>
+    <version>5.1.0rc</version>
     <!-- The description is optional and defaults to the name -->
     <description>COM_LOGMONITER_INSTALLATION_DESC</description>
 
