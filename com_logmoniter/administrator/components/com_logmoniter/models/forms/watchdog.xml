@@ -241,7 +241,8 @@
 			class="inputbox"
 			validate="logworkcenters"
 			required="true"
-			size="80"
+			size="40"
+			default=""
 		/>
 
 		<field
@@ -253,7 +254,7 @@
 			class="input-xxlarge input-large-text"
 			validate="loginstructionsets"
 			required="true"
-			size="80"
+			size="40"
 
 		/>
 
@@ -266,7 +267,7 @@
 			class="input-xxlarge input-large-text"
 			validate="logblueprints"
 			required="true"
-			size="80"
+			size="40"
 		/>
 
 		<field
@@ -278,7 +279,7 @@
 			class="input-xxlarge input-large-text"
 			validate="logtimeintervals"
 			required="true"
-			size="80"
+			size="40"
 		/>
 
 		<field
@@ -290,7 +291,7 @@
 			class="inputbox"
 			validate="logtimeintervals"
 			required="true"
-			size="80"
+			size="40"
 		/>
 
 		<field
