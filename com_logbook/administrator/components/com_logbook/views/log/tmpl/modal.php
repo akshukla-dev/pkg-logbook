@@ -1,7 +1,9 @@
 <?php
 /**
- * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package LMI/LogManager/LogBook/LogMoniter
+ * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
+ * @license GNU General Public License version 3, or later
+ * @contact akshukla.dev@gmail.com
  */
 defined('_JEXEC') or die;
 JHtml::_('bootstrap.tooltip', '.hasTooltip', array('placement' => 'bottom'));

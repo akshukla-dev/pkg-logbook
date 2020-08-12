@@ -1,7 +1,9 @@
 <?php
 /**
- * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package LMI/LogManager/LogBook/LogMoniter
+ * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
+ * @license GNU General Public License version 3, or later
+ * @contact akshukla.dev@gmail.com
  */
 defined('_JEXEC') or die;
 
@@ -253,9 +255,9 @@ class LogmoniterModelMoniter extends JModelList
         $published = $this->getState('filter.published');
 
         if (is_numeric($published)) {
-            $query->where('state = '.(int) $published);
+            $query->where('wd.state = '.(int) $published);
         } elseif ($published === '') {
-            $query->where('(state IN (0, 1))');
+            $query->where('(wd.state IN (0, 1))');
         }
 
         // Filter by a single or group of work-centers
