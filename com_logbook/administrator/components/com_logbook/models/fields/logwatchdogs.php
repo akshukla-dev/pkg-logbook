@@ -19,31 +19,6 @@ class JFormFieldLogWatchdogs extends JFormFieldList
 {
     protected $type = 'logwatchdogs';
 
-    protected function getInput()
-    {
-        //Get the item id directly from the form loaded with data.
-        $itemId = $this->form->getValue('id');
-
-        if ($itemId) {
-            //Get the watchdog ids previously selected.
-            $db = JFactory::getDbo();
-            $query = $db->getQuery(true);
-            $query->select('id');
-            $query->from('#__logbook_watchdogs');
-            $query->where('id='.$itemId);
-            $db->setQuery($query);
-            $selected = $db->loadColumn();
-
-            //Assign the id array to the value attribute to get the selected items
-            //displayed in the input field.
-            $this->value = $selected;
-        }
-
-        $input = parent::getInput();
-
-        return $input;
-    }
-
     protected function getOptions()
     {
         $options = array();

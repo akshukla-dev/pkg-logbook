@@ -19,31 +19,6 @@ class JFormFieldLogBlueprints extends JFormFieldList
 {
     protected $type = 'logblueprints';
 
-    /*protected function getInput()
-    {
-        //Get the item id directly from the form loaded with data.
-        $itemId = $this->form->getValue('isid');
-
-        if ($itemId) {
-            //Get the inset ids previously selected.
-            $db = JFactory::getDbo();
-            $query = $db->getQuery(true);
-            $query->select('id');
-            $query->from('#__logbook_blueprints');
-            $query->where('isid='.$itemId);
-            $db->setQuery($query);
-            $selected = $db->loadValue();
-
-            //Assign the id array to the value attribute to get the selected items
-            //displayed in the input field.
-            //$this->value = $selected;
-        }
-
-        $input = parent::getInput();
-
-        return $input;
-    }*/
-
     protected function getOptions()
     {
         $app = JFactory::getApplication();

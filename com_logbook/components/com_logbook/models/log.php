@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -39,14 +38,14 @@ class LogbookModelLog extends JModelItem
         $params = $app->getParams();
         $this->setState('params', $params);
 
-        /*$user = JFactory::getUser();
+        $user = JFactory::getUser();
 
         if ((!$user->authorise('core.edit.state', 'com_logbook')) && (!$user->authorise('core.edit', 'com_logbook'))) {
             $this->setState('filter.published', 1);
             $this->setState('filter.archived', 2);
         }
 
-        $this->setState('filter.language', JLanguageMultilang::isEnabled()); */
+        $this->setState('filter.language', JLanguageMultilang::isEnabled());
     }
 
     /**
