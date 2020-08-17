@@ -28,14 +28,15 @@ class com_logbookInstallerScript
 
         //Abort if the component being installed is not newer than the
         //currently installed version.
-        /*if($type == 'update') {
+        if ($type == 'update') {
             $oldRelease = $this->getParam('version');
             $rel = ' v-'.$oldRelease.' -> v-'.$this->release;
-            if(version_compare($this->release, $oldRelease, 'le')) {
-              JFactory::getApplication()->enqueueMessage(JText::_('COM_Logbook_UPDATE_INCORRECT_VERSION').$rel, 'error');
-              return false;
+            if (version_compare($this->release, $oldRelease, 'le')) {
+                JFactory::getApplication()->enqueueMessage(JText::_('COM_Logbook_UPDATE_INCORRECT_VERSION').$rel, 'error');
+
+                return false;
             }
-        }*/
+        }
 
         if ($type == 'install') {
             //Create a "logbookfiles" folder in the root directory of the site.
@@ -113,7 +114,7 @@ class com_logbookInstallerScript
         //put it into a csv file.
         $db = JFactory::getDbo();
             $query = $db->getQuery(true);
-            $query->select('d.file, d.file_name, d.file_size, d.file_path, d.created');
+            $query->select('d.file, d.file_name, d.file_size, d.file_path, d.created, wd.title as wdog_title');
             $query->from('#__logbook_logs AS d');
             $query->join('LEFT', '#__logbook_watchdogs AS wd ON wd.id=d.wdid');
             $db->setQuery($query);
@@ -121,12 +122,11 @@ class com_logbookInstallerScript
 
             $cR = "\r\n"; //Carriage return.
             //Create the csv header.
-            $buffer = 'file,file_name,file_size,folder_name,created,wdid,wdog_title'.$cR;
+            $buffer = 'file,file_name,file_size,file_path,created,wdog_title'.$cR;
             foreach ($logs as $log) {
                 $buffer .= $log->file.','.$log->file_name.','.$log->file_size.','.
                 //Remove "logbookfiles/" from the beginning of the path.
-                substr($log->file_path, 13).','.$log->created.','.$log->catid.','.
-                $log->cat_level.','.$log->cat_parent_id.','.$log->category_alias.$cR;
+                substr($log->file_path, 13).','.$log->created.','.$log->wdog_title.','.$cR;
             }
             //Create the csv file.
             JFile::write(JPATH_ROOT.'/logbookfiles/logs_info.csv', $buffer);
