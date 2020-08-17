@@ -54,7 +54,7 @@ JHtml::_('behavior.caption');
         </li>
         <li class="list-group-item">
             <span class="badge badge-success"><?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_CREATED'); ?></span>
-            <?php echo JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC3')); ?>
+            <?php echo JHtml::_('date', $this->item->created, JText::_('DATE_FORMAT_LC')); ?>
         </li>
         <li class="list-group-item">
             <span class="badge badge-warning"><?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_AUTHOR'); ?></span>
@@ -86,11 +86,11 @@ JHtml::_('behavior.caption');
                 </tr>
                 <tr>
                     <td><?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_LATEST_LOG_DATE'); ?></td>
-                    <td><?php echo JHtml::_('date', $this->item->latest_log_date, JText::_('DATE_FORMAT_LC3')); ?></td>
+                    <td><?php echo JHtml::_('date', $this->item->latest_log_date, JText::_('DATE_FORMAT_LC')); ?></td>
                 </tr>
                 <tr>
                     <td><?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_NEXT_DUE_DATE'); ?></td>
-                    <td><?php echo JHtml::_('date', $this->item->next_due_date, JText::_('DATE_FORMAT_LC3')); ?></td>
+                    <td><?php echo JHtml::_('date', $this->item->next_due_date, JText::_('DATE_FORMAT_LC')); ?></td>
                 </tr>
                 <tr>
                     <td><?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_LOGS'); ?></td>

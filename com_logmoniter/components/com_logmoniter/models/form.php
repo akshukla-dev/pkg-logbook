@@ -101,6 +101,13 @@ class LogmoniterModelForm extends LogmoniterModelWatchdog
      */
     protected function preprocessForm(JForm $form, $data, $group = 'content')
     {
+        $logs = $data->log_count;
+        if ($logs) {
+            $form->setFieldAttribute('wcid', 'readonly', true);
+            $form->setFieldAttribute('isid', 'readonly', true);
+            $form->setFieldAttribute('bpid', 'readonly', true);
+        }
+
         $params = $this->getState()->get('params');
 
         if ($params && $params->get('enable_category') == 1) {

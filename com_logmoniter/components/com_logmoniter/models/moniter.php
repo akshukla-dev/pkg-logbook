@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -68,11 +67,74 @@ class LogmoniterModelMoniter extends JModelList
     {
         $app = JFactory::getApplication();
 
+        //Get and set the current category id.
+        $pk = $app->input->getInt('id');
+        $this->setState('category.id', $pk);
+
         $forcedLanguage = $app->input->get('forcedLanguage', '', 'cmd');
 
         // Adjust the context to support forced languages.
         if ($forcedLanguage) {
             $this->context .= '.'.$forcedLanguage;
+        }
+
+        //getParams function return global parameters overrided by the menu parameters (if any).
+        //Note: Some specific parameters of this menu are not returned.
+        $params = $app->getParams();
+
+        $menuParams = new JRegistry();
+
+        //Get the menu with its specific parameters.
+        if ($menu = $app->getMenu()->getActive()) {
+            $menuParams->loadString($menu->params);
+        }
+
+        //Merge Global and Menu Item params into a new object.
+        $mergedParams = clone $menuParams;
+        $mergedParams->merge($params);
+
+        // Load the parameters in the session.
+        $this->setState('params', $mergedParams);
+
+        //The user is not allowed to see the registered watchdogs unless he has the proper view permissions.
+        if (!$params->get('show_noauth')) {
+            //Set the access filter to true. This way the SQL query checks against the user
+            //view permissions and fetchs only the watchdogs this user is allowed to see.
+            $this->setState('filter.access', true);
+        }
+        //The user is allowed to see any of the registred watchdogs.
+        else {
+            //The user is allowed to see all the watchdogs or some of them.
+            //All of the watchdogs are returned and it's up to the
+            //layout to deal with the access.
+            $this->setState('filter.access', false);
+        }
+
+        $user = JFactory::getUser();
+        $asset = 'com_logmoniter';
+
+        if ($pk) {
+            $asset .= '.category.'.$pk;
+        }
+
+        if ((!$user->authorise('core.edit.state', $asset)) && (!$user->authorise('core.edit', $asset))) {
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+
+            // Filter by start and end dates.
+            $this->setState('filter.publish_date', true);
+        } else {
+            $this->setState('filter.published', array(0, 1, 2));
+        }
+
+        if ((!$user->authorise('core.edit.state', $asset)) && (!$user->authorise('core.edit', $asset))) {
+            // limit to published for people who can't edit or edit.state.
+            $this->setState('filter.published', 1);
+
+            // Filter by start and end dates.
+            $this->setState('filter.publish_date', true);
+        } else {
+            $this->setState('filter.published', array(0, 1, 2));
         }
 
         // List state information
@@ -131,38 +193,6 @@ class LogmoniterModelMoniter extends JModelList
     }
 
     /**
-     * saveListState: saves the present list parameters in the UserState.
-     *
-     * in een $(document).ready wordt <input id="js-stools-field-order" name="list[fullordering]">
-     * on the fly aangemaakt die meekomt met de Joomla.tableOrdering('id','desc','') submit as
-     * ["list"]=>  array(1) { ["fullordering"]=>string(8) "null ASC" }
-     * See media/jui/js/jquery.searchtools.js
-     * This is for the ProtoStar template and may work differently for other templates.
-     *
-     * so:
-     * * for a 'submit', e.g. by clicking the sort column, the 'list' array does not help
-     * as it only contains "fullordering" and not the column id. However, populateState also
-     * checks the "old ordering fields" 'get' parameters and still sets 'filter_order' in State.
-     * So selecting the order column should be fine.
-     * * a page reload without a submit, for instance when returning after visiting the item
-     * edit page has no list[fullordering]. In this case the saved 'list' values are restored
-     * by the standard populateState, as intended.
-     * * Note: do not call getUserStateFromRequest(list...) in the mean time, as this function not only
-     * retrieves 'list' but also updates the UserState from the 'get' parameters as side effect!
-     */
-    /*public function saveListState()
-    {
-        $limit = $this->state->get('list.limit');
-        $filter_order = $this->state->get('list.ordering');
-        $filter_order_Dir = $this->state->get('list.direction');
-        JFactory::getApplication()->setUserState($this->context.'.list', array(
-            'limit' => $limit,
-            'ordering' => $filter_order,
-            'direction' => $filter_order_Dir,
-            ));
-    }*/
-
-    /**
      * Get the master query for retrieving a list of watchdogs subject to the model state.
      *
      * @return JDatabaseQuery
@@ -173,6 +203,7 @@ class LogmoniterModelMoniter extends JModelList
     {
         // Get the current user for authorisation checks
         $user = JFactory::getUser();
+        $groups = implode(',', $user->getAuthorisedViewLevels());
 
         // Create a new query object.
         $db = $this->getDbo();
@@ -251,16 +282,13 @@ class LogmoniterModelMoniter extends JModelList
             $query->where('wd.title LIKE '.$like);
         }
 
-        // Filter by published state
-        $published = $this->getState('filter.published');
-
-        if (is_numeric($published)) {
-            $query->where('wd.state = '.(int) $published);
-        } elseif ($published === '') {
-            $query->where('(wd.state IN (0, 1))');
+        // Filter by access level.
+        if ($access = $this->getState('filter.access')) {
+            $query->where('wd.access IN ('.$groups.')')
+              ->where('c.access IN ('.$groups.')');
         }
 
-        // Filter by a single or group of work-centers
+        // Filter by a wcenter
         $wcenterId = $this->getState('filter.wcenter_id');
 
         if (is_numeric($wcenterId)) {
@@ -312,7 +340,23 @@ class LogmoniterModelMoniter extends JModelList
             $query->where('wd.tiid '.$type.' ('.$tintervalId.')');
         }
 
-        /*// Define null and now dates
+        // Filter by published state
+        $published = $this->getState('filter.published');
+
+        if (is_numeric($published)) {
+            $query->where('wd.state = '.(int) $published);
+        }
+
+        //Do not show trashed or archived documents on the front-end.
+        $query->where('wd.state != -2');
+        $query->where('wd.state != 2');
+
+        //Do not show unpublished watchdogs to users who can't edit or edit.state.
+        if ($this->getState('filter.published')) {
+            $query->where('wd.state != 0');
+        }
+
+        // Define null and now dates
         $nullDate = $db->quote($db->getNullDate());
         $nowDate = $db->quote(JFactory::getDate()->toSql());
 
@@ -347,7 +391,7 @@ class LogmoniterModelMoniter extends JModelList
             case 'off':
             default:
                 break;
-        }*/
+        }
 
         // Add the list ordering clause.
         $orderCol = $this->state->get('list.ordering', 'wd.title');

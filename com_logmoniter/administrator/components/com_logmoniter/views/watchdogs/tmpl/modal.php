@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -127,7 +126,7 @@ $onclick = $this->escape($function);
                             <?php echo JLayoutHelper::render('joomla.content.language', $item); ?>
                         </td>
                         <td class="nowrap small hidden-phone">
-                            <?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC3')); ?>
+                            <?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC')); ?>
                         </td>
                         <td class="nowrap small hidden-phone">
                             <?php echo (int) $item->id; ?>

@@ -124,7 +124,7 @@ $iconStates = array(
                             <?php echo JLayoutHelper::render('joomla.content.language', $item); ?>
                         </td>
                         <td class="nowrap small hidden-phone">
-                            <?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
+                            <?php echo JHtml::_('date', $item->created, JText::_('DATE_FORMAT_LC')); ?>
                         </td>
                         <td class="nowrap small hidden-phone">
                             <?php echo (int) $item->id; ?>

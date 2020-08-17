@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -108,20 +107,36 @@ if (!empty($this->items)) {
                                         <div class="badge badge-success">
                                             <?php echo JText::_('COM_LOGMONITER_WATCHDOG_DETAILS_WCENTER').': '.$this->escape($item->wcenter_title); ?>
                                         </div>
+                                        <?php if ($item->state == 0) : ?>
+                                            <span class="list-published label label-warning">
+                                                <?php echo JText::_('JUNPUBLISHED'); ?>
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if (strtotime($item->publish_up) > strtotime(JFactory::getDate())) : ?>
+                                            <span class="list-published label label-warning">
+                                                <?php echo JText::_('JNOTPUBLISHEDYET'); ?>
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if ((strtotime($item->publish_down) < strtotime(JFactory::getDate())) && $item->publish_down != JFactory::getDbo()->getNullDate()) : ?>
+                                            <span class="list-published label label-warning">
+                                                <?php echo JText::_('JEXPIRED'); ?>
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
+
                                 </td>
                                 <td class="hidden-phone center">
                                     <?php if ($item->next_due_date == $nullDate) : ?>
                                         <?php echo '---'; ?>
                                     <?php else : ?>
-                                        <?php echo JHTML::_('date', $item->next_due_date, JText::_('DATE_FORMAT_LC3')); ?>
+                                        <?php echo JHTML::_('date', $item->next_due_date, JText::_('DATE_FORMAT_LC')); ?>
                                     <?php endif; ?>
                                 </td>
                                 <td class="hidden-phone center">
                                     <?php if ($item->latest_log_date == $nullDate) : ?>
                                         <?php echo '---'; ?>
                                     <?php else : ?>
-                                        <?php echo JHTML::_('date', $item->latest_log_date, JText::_('DATE_FORMAT_LC3')); ?>
+                                        <?php echo JHTML::_('date', $item->latest_log_date, JText::_('DATE_FORMAT_LC')); ?>
                                     <?php endif; ?>
                                 </td>
                                 <td class="hidden-phone center"><span class="badge badge-warning"><?php echo (int) $item->log_count; ?></span></td>

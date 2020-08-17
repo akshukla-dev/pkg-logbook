@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -220,9 +219,7 @@ class plgContentLogmanager extends JPlugin
                 $prevSetting = $db->loadObject();
 
                 if ((int) $prevSetting->log_count !== 0) {
-                    $data->setError(JText::_('COM_LOGMANAGER_FOLDER_IS_NOT_EMPTY'));
-
-                    return false;
+                    JFactory::getApplication()->enqueueMessage(JText::_('COM_LOGMONITER_WATCHDOG_FOLDER_NOT_EMPTY'));
                 }
 
                 $renamed = false;

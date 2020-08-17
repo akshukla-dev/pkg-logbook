@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -286,12 +285,16 @@ class LogbookModelLogs extends JModelList
 
         if (is_numeric($state)) {
             $query->where('l.state = '.(int) $state);
-        } elseif ($state === '') {
-            $query->where('(l.state IN (0, 1))');
         }
 
-        // Do not show trashed links on the front-end
+        //Do not show unpublished documents to users who can't edit or edit.state.
+        if ($this->getState('filter.published')) {
+            $query->where('l.state != 0');
+        }
+
+        // Do not show trashed/archived links on the front-end
         $query->where('l.state != -2');
+        $query->where('l.state != 2');
 
         // Filter by a single or group of watchdogs
         $watchdogId = $this->getState('filter.watchdog_id');

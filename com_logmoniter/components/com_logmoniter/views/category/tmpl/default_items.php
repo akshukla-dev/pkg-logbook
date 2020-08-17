@@ -178,7 +178,7 @@ if (!empty($this->items)) {
                     <?php
                     echo JHtml::_(
                         'date', $item->displayDate,
-                        $this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC3')))
+                        $this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC')))
                     ); ?>
                 </td>
             <?php endif; ?>

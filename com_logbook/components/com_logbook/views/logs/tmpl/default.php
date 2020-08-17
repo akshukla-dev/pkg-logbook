@@ -1,6 +1,5 @@
 <?php
 /**
- * @package LMI/LogManager/LogBook/LogMoniter
  * @copyright Copyright (c)2020 Amit Kumar Shukla. All Rights Reserved.
  * @license GNU General Public License version 3, or later
  * @contact akshukla.dev@gmail.com
@@ -168,11 +167,13 @@ if (!empty($this->items)) {
                                     <?php
                                    // echo JHtml::_(
                                    //     'date', $item->displayDate,
-                                   //     $this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC3')))
+                                   //     $this->escape($this->params->get('date_format', JText::_('DATE_FORMAT_LC')))
                                   //  );?>
                                 </td> -->
                             <?php // endif;?>
-                            <td class="hidden-phone center"><?php echo $this->escape($item->created); ?></td>
+                            <td class="hidden-phone center">
+								<?php echo JHTML::_('date', $item->created, JText::_('DATE_FORMAT_LC4')); ?>
+							</td>
                             <td class="hidden-phone center"><span class="badge badge-warning"><?php echo (int) $item->downloads; ?></span></td>
                             <td class="hidden-phone center"><span class="badge badge-info"><?php echo (int) $item->hits; ?></span></td>
                             <td class="has-context">
