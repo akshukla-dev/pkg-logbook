@@ -1,0 +1,70 @@
+1,Visual inspection of control/lube oil inspection to be done during startup of turbine ,1
+2,Monthly check list of turbine oil leakage and pipe lines support/ hangers healthiness,1
+3,Check list of turbine lub oil/control oil system during overhaul,1
+4,Fire protection trips of turbine,1
+5,Hydraulic test of oil lines during overhauling,1
+6,Dos & don’ts ,2
+7,Parameters to be monitored,2
+8,Protocol for air heater cleanliness,3
+9,Protocol for aph fire water,3
+10,Protocol for air preheater oil carry over probes (ocp),3
+11,Protocol for air preheater sootblower,3
+12,Protections and interlocks air preheater motor auto start checking,3
+13,Air preheater auxiliaries availability,3
+14,Protocol for oil trip valve,3
+15,Protocol for oil burner valve,3
+16,Protocol for oil burners,3
+17,Cold start-up check list (post overhaul),3
+18,Boiler start up log,3
+19,Exception report on the status of unit protections,4
+20,Schedule for testing,5
+21,Dc lub oil pump ,5
+22,Remote trip actuator ,5
+23,Over speed device ,5
+24,Low vacuum trip device ,5
+25,Thrust brg. trip(stage-i) ,5
+26,Turbine stop v/v ,5
+27,Turbine control v/v ,5
+28,Remote trip actuator ,5
+29,Overspeed device ,5
+30,Low vacuum trip device ,5
+31,Turbine stop v/v ,5
+32,Turbine control v/v ,5
+33,Thrust brg. trip(stage-i) ,5
+34,Extraction nrvs ,5
+35,Fire protection ,5
+36,Record format for details of testing,5
+37,Boiler protections,6
+38,Turbine protections,6
+39,Generator protection(grp),6
+40,Sadc checking,7
+41,Wall blower pressure setting,7
+42,Protocol for dew point measurement before exciting the generator,8
+43,Format for oil filling in lub oil system,9
+44,Lrsb logbook,10
+45,Ht/lt bus auto changeover checklist,11
+46,Protocol for air & flue gas ducts cleaning and inspection,12
+47,Protocol for pfa agglomerates/flakes blown off by running id/fd fan,12
+48,Protocol for water jet washing of aph i/l and o/l duct & id fan i/l o/l duct & chimney walls,12
+49,Oil injection test of main turbine ,13
+50,Protocol for turbine actual over speed test ,13
+51,Protocol for testing of main trip valve,13
+52,Protocol of exercising the stop valves & control valves (without att) ,13
+53,Protocol of testing the stop valves & control valves with automatic turbine tester ,13
+54,Protocol for hydraulic governor charactristics,13
+55,Protocol for testing the leakage (passing) of stop valves and control valves ,13
+56,Protocol for testing of hydraulic low vacuum device & checking of electrical low vacuum trip,13
+57,Protocol for testing of thrust bearing trip device (stage-1) ,13
+58,Protocol for testing of extraction nrvs ,13
+59,Fire protection trips of turbine ,13
+60,Controlled fast cooling of turbine log sheet – i ,14
+61,Controlled fast cooling of turbine log sheet - ii,14
+62,Protocol for level switch checking of leakage pot in control fluid system,15
+63,Format for frf makeup in control fluid system ,15
+64,Protocol for governing characterstics for mcv/acv ,16
+65,Joint protocol to be signed prior esp field charging after overhauling,17
+66,Esp hoppers ash level checking protocol,17
+67,Esp rapping motors status,17
+68,Esp hopper temp. status,17
+69,Daily esp status,17
+70,Hopper heater current checking by emd,17
